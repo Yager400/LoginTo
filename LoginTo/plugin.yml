@@ -1,0 +1,24 @@
+name: LoginTo
+version: '2.0'
+main: net.loginto.Main
+api-version: '1.21.1'
+api: spigot
+authors: [ Yager400 ]
+commands:
+  register:
+    usage: /register <password> <confirm_password>
+  login:
+    usage: /login <password>
+  delacc:
+    usage: /delacc <user> <confirm>
+  changepassword:
+    usage: /changepassword <old_password> <new_password>
+permissions:
+  loginto.register:
+    default: true
+  loginto.login:
+    default: true
+  loginto.delacc:
+    default: op
+  loginto.changepassword:
+    default: true
