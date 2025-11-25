@@ -12,17 +12,11 @@
   ``/delacc <user>`` --> **Admin Only**  Delete a user account <br>
   ``/changepassword <old_password> <new_password>`` --> Let a player to change his password<br>
 
-## **News?**
-Rewrited the entire plugin for more often updates (and more quality ones)<br>
-Added a configuration version for updating yaml files without rewriting all the changes<br>
-Removed the ``loginto-reload`` command<br>
-Dynamic plugin's settings reload<br>
-Better settings<br>
-Better messages<br>
-(For devs) better general code<br>
-**Sad news**<br>
-For now the premium feature will be disabled due to external consequences, but i'm working on that using the minecraft session's api<br>
-I disabled the **kick after too many wrong password** feature but in the next update will be available<br>
+## **News**
+  Switch to Maven for dependencies<br>
+  Added BStats implementation<br>
+  Added DataBases support (MySQL, PostgreSQL and SQLite)<br>
+  Added the "Remove watermark feature", so if you want you can remove the " - Service offered by LoginTo on Modrinth"<br>
 
 ## **Permission**
 I tested those permission with **LuckPerms**
@@ -33,16 +27,20 @@ I tested those permission with **LuckPerms**
 ``loginto.changepassword`` --> Permission for changepassword command<br>
 
 ## **IMPORTANT**
-  Some things need to be tested, so if something doesn't work, please report it on github, thanks :)
+  Some things need to be tested, so if something doesn't work, please report it on github, thanks :)<br>
+  
 
 ## **How to customize the text?**
   Go in the plugin folder, open the message.yml and change the message text
 
 ## **Next?**
-  Some bug fix probably
+  Some bug fix probably<br>
+  A few more commands for the server's admins
 
 ## **About the premium command**
   Since version 2.0 the legacy premium command will not be supported even more, the new premium feature will have a comment like this: ``modern premium feature`` near in the configs
   
 ## **Social:**
   For anything that you need for this plugin you can join in too my [discord](https://discord.gg/Qmr22aaf4n)
+
+![BStats](https://bstats.org/signatures/bukkit/LoginTo.svg)
