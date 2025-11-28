@@ -48,9 +48,11 @@ public class Main extends JavaPlugin {
                 database = new DataBase(this, storageType);
            }
 
-            Metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                return storageType;
-           }));
+            if (storageType.equals("") || storageType == null) {
+                Metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                        return storageType;
+                }));
+            }
            
         }
         
@@ -110,3 +112,4 @@ public class Main extends JavaPlugin {
     }
 
 }
+
