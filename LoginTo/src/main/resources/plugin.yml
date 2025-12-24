@@ -1,0 +1,34 @@
+name: LoginTo
+version: '2.4'
+main: net.loginto.bukkit.Main
+api-version: '1.8'
+api: spigot
+authors: [ Yager400 ]
+commands:
+  register:
+    usage: /register <password> <confirm_password>
+  login:
+    usage: /login <password>
+  delacc:
+    usage: /delacc <user> <confirm>
+  changepassword:
+    usage: /changepassword <old_password> <new_password>
+  premium:
+    usage: /premium [optional]<user>
+  cracked:
+    usage: /cracked
+permissions:
+  loginto.register:
+    default: true
+  loginto.login:
+    default: true
+  loginto.delacc:
+    default: op
+  loginto.changepassword:
+    default: true
+  loginto.premium.me:
+    default: true
+  loginto.premium.other:
+    default: op
+  loginto.cracked.me:
+    default: true

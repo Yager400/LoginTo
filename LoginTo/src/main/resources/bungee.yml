@@ -1,0 +1,4 @@
+name: "LoginTo"
+main: "net.loginto.bungeecord.LoginTo"
+version: "1.0"
+author: "Yager400"
