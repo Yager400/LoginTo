@@ -52,7 +52,7 @@ public class LoginTo {
         sqlite = new SQLite();
         sqlite.connect();
 
-        server.getEventManager().register(this, new PreLogin(server, h2, sqlite));
+        server.getEventManager().register(this, new PreLogin(server, h2, sqlite, this));
         server.getEventManager().register(this, new PluginMessage(server, h2, logger));
     }
 

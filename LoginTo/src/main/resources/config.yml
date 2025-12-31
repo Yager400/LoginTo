@@ -1,4 +1,4 @@
-ConfigVersion: '1.3' # Version of this configuration, do not change this
+ConfigVersion: '1.4' # Version of this configuration, do not change this
           
 
 kick-rules:
@@ -163,5 +163,17 @@ premium:
 
     # The password for your database (the H2 default password is empty)
     password: ""
+
+
+logging:
+  # This feature is for logging all the players that joins in the server
+  logging: true
+
+  # The time format for showing the current date
+  # Do not use the space " " for the time, you can do this "hh-mm-ss dd-MM-yyyy", but not "hh mm ss dd MM yyyy", if you want, tell your staff to use only /getlogs <user> without the day
+  # You can change the time (ss:mm:hh) and not using the space, but if you use the /getlogs command with the time selector, the date must remain "dd/MM/yyyy"
+  date-format: "HH:mm:ss dd/MM/yyyy"
+
+  
 
     

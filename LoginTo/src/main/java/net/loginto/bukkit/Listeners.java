@@ -20,7 +20,7 @@ public class Listeners {
 
         instance.getServer().getPluginManager().registerEvents(new PlayerJoin(instance, database), instance);
         instance.getServer().getPluginManager().registerEvents(new PlayerQuit(instance), instance);
-        instance.getServer().getPluginManager().registerEvents(new InventoryPickupItem(), instance);
+        instance.getServer().getPluginManager().registerEvents(new PlayerPickup(), instance);
         instance.getServer().getPluginManager().registerEvents(new EntityDamage(), instance);
         instance.getServer().getPluginManager().registerEvents(new OnBlockBreak(), instance);
         instance.getServer().getPluginManager().registerEvents(new OnPlayerMove(), instance);

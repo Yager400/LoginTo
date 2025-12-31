@@ -11,8 +11,12 @@ import static net.loginto.bungeecord.Utility.CheckIfValidUsername.checkValidUser
 import static net.loginto.bungeecord.Utility.FileMGR.YamlRead;
 import static net.loginto.bungeecord.Utility.PremiumUserName.isUserNamePremium;
 
+import net.loginto.bungeecord.LoginTo;
+import net.loginto.bungeecord.Utility.AntiSpam;
+
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PreLoginEvent;
 import net.loginto.bungeecord.Database.H2;
@@ -22,10 +26,12 @@ public class PreLogin implements Listener {
 
     private final H2 h2;
     private final SQLite sqlite;
+    private final AntiSpam antispam;
 
-    public PreLogin(H2 h2, SQLite sqlite) {
+    public PreLogin(H2 h2, SQLite sqlite, ProxyServer server, LoginTo plugin) {
         this.h2 = h2;
         this.sqlite = sqlite;
+        this.antispam = new AntiSpam(server, plugin);
     }
 
     @EventHandler
@@ -33,6 +39,13 @@ public class PreLogin implements Listener {
 
 
         PendingConnection event = preLoginEvent.getConnection();
+
+        String ip = event.getAddress().getAddress().getHostAddress();
+
+        if (antispam.isIpOver(ip)) {
+            event.disconnect(YamlRead("anti_join-spam.ban-message"));
+            return;
+        }
 
         if (!Boolean.parseBoolean(YamlRead("loginto-premium-auth"))) {
             event.setOnlineMode(false); 
@@ -74,5 +87,7 @@ public class PreLogin implements Listener {
             event.setOnlineMode(false);
             h2.insertTempAuthPlayer(username, false);
         }
+
+        antispam.incrementConnection(ip);
     }
 }

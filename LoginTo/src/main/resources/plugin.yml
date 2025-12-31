@@ -1,5 +1,5 @@
 name: LoginTo
-version: '2.4'
+version: '2.5'
 main: net.loginto.bukkit.Main
 api-version: '1.8'
 api: spigot
@@ -17,6 +17,8 @@ commands:
     usage: /premium [optional]<user>
   cracked:
     usage: /cracked
+  getlogs:
+    usage: "/getlogs <user> [optional]<dd/MM/yyyy>"
 permissions:
   loginto.register:
     default: true
@@ -32,3 +34,5 @@ permissions:
     default: op
   loginto.cracked.me:
     default: true
+  loginto.getlogs:
+    default: op

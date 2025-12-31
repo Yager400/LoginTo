@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 
 public class VersionChecker {
 
-    public static String ConfigVersion = "1.3";
+    public static String ConfigVersion = "1.4";
     //TODO
     public static String MessageVersion = "1.2";
 

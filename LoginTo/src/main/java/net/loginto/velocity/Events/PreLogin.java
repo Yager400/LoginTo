@@ -17,6 +17,8 @@ import static net.loginto.velocity.Utility.CheckIfValidUsername.checkValidUserna
 import static net.loginto.velocity.Utility.FileMGR.YamlRead;
 
 import net.kyori.adventure.text.Component;
+import net.loginto.velocity.Utility.AntiSpam;
+import net.loginto.velocity.LoginTo;
 import net.loginto.velocity.Database.H2;
 import net.loginto.velocity.Database.SQLite;
 
@@ -25,16 +27,24 @@ public class PreLogin {
 
     private final H2 h2;
     private final SQLite sqlite;
+    private final AntiSpam antispam;
 
-    public PreLogin(ProxyServer server, H2 h2, SQLite sqlite) {
+    public PreLogin(ProxyServer server, H2 h2, SQLite sqlite, LoginTo plugin) {
         this.h2 = h2;
         this.sqlite = sqlite;
+        this.antispam = new AntiSpam(server, plugin);
     }
 
 
 
     @Subscribe
     public void onPreLogin(PreLoginEvent event) {
+
+        String ip = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
+        if (antispam.isIpOver(ip)) {
+            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(YamlRead("anti_join-spam.ban-message"))));
+            return;
+        }
 
         if (!Boolean.parseBoolean(YamlRead("loginto-premium-auth"))) {
             event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode()); 
@@ -84,6 +94,6 @@ public class PreLogin {
             h2.insertTempAuthPlayer(event.getUsername(), false);
         }
 
-
+        antispam.incrementConnection(ip);
     }
 }

@@ -80,6 +80,7 @@ public class Main extends JavaPlugin {
         this.getCommand("changepassword").setExecutor(new ChangePassword(this, database));
         this.getCommand("premium").setExecutor(new Premium(this));
         this.getCommand("cracked").setExecutor(new Cracked(this));
+        this.getCommand("getlogs").setExecutor(new PlayersLog(this));
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "loginto:authchannel");
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

@@ -20,6 +20,12 @@ public class FileMGR {
     public static void createBungeeConfigFile() {
         File file = new File("plugins/loginto/config.yml");
 
+        final String CONFIG_VER = "1.1";
+
+        if (file.exists() && !YamlRead("config-ver").equals(CONFIG_VER)) {
+            file.renameTo(new File("plugins/loginto/config.yml.old"));
+        }
+
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
@@ -27,6 +33,7 @@ public class FileMGR {
             try {
                 file.createNewFile();
                 Files.write(file.toPath(), (
+                    "config-ver: '1.1' # Do not change this\n\n" +
                     "# Hi, welcome to the LoginTo premium configuration, you will need to write here only a few information and follow the comments\n" +
                     "\n" +
                     "# Before starting please make sure that you server is not on a slow network, otherwise this feature probably will not work\n" +
@@ -61,13 +68,35 @@ public class FileMGR {
                     "   # This message will appear if the player joining has an invalid username\n" +
                     "   invalid-username: 'You got kicked because you username is invalid: %username%'\n" +
                     "\n" +
-                    "# This is for letting LoginTo save the player sessions, this is usefull if a player will return to the lobby\n" +
-                    "# The player session will be removed when he will disconnect from the proxy\n" +
-                    "use-player-sessions: 'true'\n" +
+                    "anti_join-spam:\n" +
+                    "   # This is for blocking the connection that will join and leave in a short period of time\n" +
+                    "   anti_join-spam: 'true'\n" +
+                    "\n" +
+                    "   # This is the cooldown in seconds, if a player enter the network too many times in this period, it will be kicked\n" +
+                    "   # By default this is set to 15, witch is pretty low, this is because an ip is a personal information,\n    # and it can't be saved for a long time without permission, if you are creating a large network, set this to 30-50\n" +
+                    "   cooldown: '15'\n" +
+                    "\n" +
+                    "   # This is how many times the player can connect/reconnect before getting kicked, the sweet spot for this setting is 3-6, or if you want you can set to 1/2 and the cooldown to 5/10\n" + 
+                    "   max-connection: '3'\n" +
+                    "\n"+
+                    "   # This will be the timeout (in seconds) of the player ban when it joins too many times\n" +
+                    "   ban-time: 300\n" +
+                    "\n" +
+                    "   # The message that the player will see if he will join too many times\n" +
+                    "   ban-message: 'You joined too many times with this ip, wait a few minutes'\n" +
                     "").getBytes());
                     
             } catch (IOException e) {}
         }
+
+        File filejson = new File("plugins/loginto/antispam.json");
+        try {
+            if (!filejson.exists()) {
+                filejson.createNewFile();
+            }
+            Files.write(filejson.toPath(), "{}".getBytes());
+        } catch (Exception e) {}
+       
     }
 
     
@@ -85,6 +114,7 @@ public class FileMGR {
                 }
                 current = ((Map<String, Object>) current).get(part);
                 if (current == null) {
+                    if (key.equals("config-ver")) return "1.0";
                     throw new RuntimeException("Key '" + key + "' not found in config.yml");
                 }
             }

@@ -23,6 +23,7 @@ import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
 import static net.loginto.bukkit.ExtraFeature.Tries.*;
 import static net.loginto.bukkit.Configuration.Messages.*;
 import static net.loginto.bukkit.Configuration.Config.*;
+import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
 import static net.loginto.bukkit.Premium.Check.CheckIfAPlayerCanAutoLogin;
 
@@ -82,7 +83,17 @@ public class PlayerJoin implements Listener {
 
             if (isFirstTimeInTheServer) {
                 if (isFeatureEnabled("password-security.required_character", plugin)) {
-                    event.getPlayer().sendMessage(getMessage("register.register_prompt_characters", plugin) + getStringFromConfig("password-security.characters_needed", plugin) + ChatColor.GRAY +  watermark);
+                    
+                    event.getPlayer().sendMessage(
+                        getMessage("register.register_prompt_characters", plugin)
+                        .replace(
+                            "%characters%", 
+                            getStringFromConfig("password-security.characters_needed", plugin)
+                        ) + 
+                        ChatColor.GRAY +  
+                        watermark
+                    );
+
                 } else {
                     event.getPlayer().sendMessage(getMessage("register.register_prompt", plugin) + ChatColor.GRAY +  watermark);
                 }
@@ -94,6 +105,7 @@ public class PlayerJoin implements Listener {
                         addPlayer(event.getPlayer());
                         event.getPlayer().sendMessage(getMessage("login.login_success", plugin));
                         unlockPlayer(event.getPlayer());
+                        logPlayer(event.getPlayer(), plugin, true);
                         return;
                     }
                 }

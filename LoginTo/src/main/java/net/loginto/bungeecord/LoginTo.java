@@ -7,7 +7,6 @@ See the LICENSE file for details.
  */
 package net.loginto.bungeecord;
 
-
 import java.util.logging.Logger;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -40,7 +39,7 @@ public class LoginTo extends Plugin {
         sqlite = new SQLite();
         sqlite.connect();
 
-        server.getPluginManager().registerListener(this, new PreLogin(h2, sqlite));
+        server.getPluginManager().registerListener(this, new PreLogin(h2, sqlite, server, this));
         server.getPluginManager().registerListener(this, new PluginMessage(server, h2, logger));
     }
 

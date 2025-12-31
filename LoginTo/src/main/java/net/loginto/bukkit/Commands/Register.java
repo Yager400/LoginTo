@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import static net.loginto.bukkit.Configuration.Messages.*;
 import static net.loginto.bukkit.Configuration.Config.*;
+import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
 
 
@@ -91,25 +92,18 @@ public class Register implements CommandExecutor  {
                 ReqChar.add(String.valueOf(c));
             }
 
-            for (char c : password.toCharArray()) {
-                for (String s : ReqChar) {
-                    if (String.valueOf(c).equals(s)) {
-                        ReqChar.remove(s);
-                    }
+            for (String c : ReqChar) {
+                if (!password.contains(c)) {
+                    sender.sendMessage(
+                        getMessage("errors.register_character_error", plugin)
+                        .replace(
+                            "%characters%", 
+                            getStringFromConfig("password-security.characters_needed", plugin)
+                        ));
+                    return true;
                 }
             }
-
-            Boolean missingChar = false;
-
-            for (@SuppressWarnings("unused") String i : ReqChar) {
-                missingChar = true;
-                break;
-            }
-
-            if (!missingChar) {
-                sender.sendMessage(getMessage("errors.register_character_error", plugin) + getStringFromConfig("password-security.characters_needed", plugin));
-                return true;
-            }
+            
         }
 
 
@@ -151,6 +145,7 @@ public class Register implements CommandExecutor  {
 
         sender.sendMessage(getMessage("register.register_success", plugin));
         unlockPlayer(player);
+        logPlayer(player, plugin, false);
 
         return true;
     }

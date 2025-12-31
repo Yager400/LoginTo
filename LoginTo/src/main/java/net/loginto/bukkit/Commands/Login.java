@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import static net.loginto.bukkit.ExtraFeature.Tries.*;
 import static net.loginto.bukkit.Configuration.LoggedPlayers.addPlayer;
 import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
+import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
 import net.loginto.bukkit.DataBases.DataBase;
 import net.loginto.bukkit.JSON.JsonMenager;
@@ -90,6 +91,7 @@ public class Login implements CommandExecutor {
                 unlockPlayer(player);
                 addPlayer(player);
                 removePlayerTries(player, plugin);
+                logPlayer(player, plugin, false);
             }
         } 
 
@@ -111,6 +113,7 @@ public class Login implements CommandExecutor {
                     unlockPlayer(player);
                     addPlayer(player);
                     removePlayerTries(player, plugin);
+                    logPlayer(player, plugin, false);
                 }
             } catch (Exception e) {}
         }

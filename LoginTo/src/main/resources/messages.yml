@@ -20,8 +20,8 @@ register:
     # When a user use the /register command wrong
     register_error: "Error, do /register <password> <confirm_password>"
 
-    # When a user join for the first time and you have the required characters option enabled
-    register_prompt_characters: 'Welcome! Use /register <password> <confirm_password> to register yourself, make sure to include one of these characters: '
+    # When a user join for the first time and you have the required characters option enabled (%characters% = required characters in the config)
+    register_prompt_characters: 'Welcome! Use /register <password> <confirm_password> to register yourself, make sure to include one of these characters: %characters%'
 
 
 login:
@@ -83,8 +83,8 @@ errors:
     # When a player try to do /login or /premium commands but he is not registered
     not_registered: "You are not registered"
 
-    # When a user do /register but his password didnt have a required character
-    register_character_error: "Your password needs those characters in it: "
+    # When a user do /register but his password didnt have a required character (%characters% = required characters in the config)
+    register_character_error: "Your password needs those characters in it: %characters%"
 
     # If a player use"s a command but he doesnt have permission
     no_permission: "You cant do this command because you dont have permission"

@@ -11,14 +11,14 @@ package net.loginto.bukkit.Events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import static net.loginto.bukkit.Configuration.LoggedPlayers.*;
 
-public class InventoryPickupItem implements Listener {
+public class PlayerPickup implements Listener {
     @EventHandler
-    public void onInventoryPickupItem(InventoryPickupItemEvent event) {
-        Player player = ((Player) event).getPlayer();
+    public void onPlayerPickup(PlayerPickupItemEvent event) {
+        Player player = event.getPlayer();
         if (!isPlayerLogged(player)) {
             event.setCancelled(true);
         }
