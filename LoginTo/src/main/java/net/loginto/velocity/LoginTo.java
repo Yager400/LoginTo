@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -14,28 +14,33 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import net.loginto.velocity.Database.H2;
 import net.loginto.velocity.Database.SQLite;
 import net.loginto.velocity.Events.PluginMessage;
 import net.loginto.velocity.Events.PreLogin;
+import net.loginto.velocity.Utility.LibraryDownloader;
 
 import static net.loginto.velocity.Utility.FileMGR.createVeloConfigFile;
+
+import java.nio.file.Path;
 
 
 public class LoginTo {
 
     private final ProxyServer server;
     private final Logger logger;
+    private final Path dataDirectory;
     private H2 h2;
     private SQLite sqlite;
 
     @Inject
-    public LoginTo(ProxyServer server, Logger logger) {
+    public LoginTo(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
-
+        this.dataDirectory = dataDirectory;
         
     }
 
@@ -44,7 +49,9 @@ public class LoginTo {
 
         logger.warn("Hello, thanks for using the LoginTo Premium feature, this version is still in BETA and i will really appreciate if you report any bug here, thank you\n https://github.com/Yager400/LoginTo/issues");
 
-        createVeloConfigFile();
+        LibraryDownloader.Libs(this, logger, dataDirectory, server);
+
+        createVeloConfigFile(this);
 
         h2 = new H2(server, this);
         h2.connect();

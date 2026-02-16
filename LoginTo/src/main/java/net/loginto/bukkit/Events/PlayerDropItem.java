@@ -5,23 +5,24 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
+
 package net.loginto.bukkit.Events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import static net.loginto.bukkit.Configuration.LoggedPlayers.isPlayerLogged;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
-public class InventoryOpen implements Listener {
-    
+import static net.loginto.bukkit.Configuration.LoggedPlayers.*;
+
+public class PlayerDropItem implements Listener {
+
     @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) {
-        
-        Player player = (Player)event.getPlayer();
-
+    public void onItemDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
         if (!isPlayerLogged(player)) {
             event.setCancelled(true);
         }
     }
+
 }

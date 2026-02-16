@@ -1,4 +1,4 @@
-ConfigVersion: '1.4' # Version of this configuration, do not change this
+ConfigVersion: '1.5' # Version of this configuration, do not change this
           
 
 kick-rules:
@@ -14,21 +14,29 @@ kick-rules:
   kick_on_too_many_second_passed: true
   seconds_before_kick: 20
 
-world:
+world_settings:
 
-  # Chose where the user get's teleported when he join, this feature is disabled by default
-  enabled_world_location_teleport: false
+  # Enable or disable automatic teleport when a player joins the world
+  teleport_on_join_enabled: false
   
-  # In what dimension will the player be teleported, vanilla world type:
-  # - world = The OverWorld
-  # - world_nether = The Nether
+  # Dimension where the player will be teleported
+  # Standard options:
+  # - world = The OverWorld 
+  # - world_nether = The Nether 
   # - world_the_end = The End
-  world: 'world'
+  #
+  # You can even put the world folder name if you have a custom world
+  teleport_dimension: 'world'
   
-  # Coords where the player get's teleported (for this feature you need 'enabled_world_location_teleport' on true)
-  x: 0
-  y: -64
-  z: 0
+  # Target coordinates for teleport
+  teleport_coordinates:
+    x: 0
+    y: -64
+    z: 0
+    
+  # Teleport the player back to their last location from before they logged out
+  teleport_to_previous_location: true
+
 
 
 password-security:
@@ -77,17 +85,27 @@ proxy-integration:
 discord-webhook:
   # Send a webhook in a discord server, you need to put your webhook's url
 
+  # Use this webhookName_webhook_message to send a custom message
+  # Messages works with the discord markdown, and if you want variables in it, use those string
+  # - %playerName% -> The name of the player who triggered the webhook
+  # - %targetPlayer% -> If present, the target player for that action
+  # - 
+
   # When a player sing up
   register_webhook: ''
+  register_webhook_message: "**%playerName%** completed the registration"
 
   # When a player sing in
   login_webhook: ''
+  login_webhook_message: "**%playerName%** completed the login"
   
   # When an admin delete a user account
   delacc_webhook: ''
+  delacc_webhook_message: "**%playerName%** deleted **%targetPlayer%**'s account"
 
   # When someone changes their password
   changepassword_webhook: ''
+  changepassword_webhook_message: "**%playerName%** changed his password"
 
 
 utility:

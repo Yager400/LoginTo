@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.loginto.bukkit.DataBases.DataBase;
+import net.loginto.bukkit.ExtraFeature.Utility;
+import net.loginto.bukkit.ExtraFeature.WebHooks;
 import net.loginto.bukkit.JSON.JsonMenager;
 
 public class Register implements CommandExecutor  {
@@ -146,6 +148,7 @@ public class Register implements CommandExecutor  {
         sender.sendMessage(getMessage("register.register_success", plugin));
         unlockPlayer(player);
         logPlayer(player, plugin, false);
+        WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("register", player, null, plugin), plugin);
 
         return true;
     }

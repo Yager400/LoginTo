@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -25,6 +25,8 @@ import java.io.DataOutputStream;
 import static net.loginto.bukkit.Configuration.Config.*;
 
 import net.loginto.bukkit.DataBases.DataBase;
+import net.loginto.bukkit.ExtraFeature.Utility;
+import net.loginto.bukkit.ExtraFeature.WebHooks;
 import net.loginto.bukkit.JSON.JsonMenager;
 
 public class DelAcc implements CommandExecutor  {
@@ -60,6 +62,7 @@ public class DelAcc implements CommandExecutor  {
             return true;
         }
 
+        @SuppressWarnings("deprecation")
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
         if (target == null || !target.hasPlayedBefore()) {
@@ -102,6 +105,7 @@ public class DelAcc implements CommandExecutor  {
         }
 
         sender.sendMessage(target.getName() + "'s account deleted");
+        WebHooks.send_delacc_webhook(Utility.getFormattedWebhookMessage("delacc", (Player)sender, (Player)target, plugin), plugin);
 
         return true;
     }

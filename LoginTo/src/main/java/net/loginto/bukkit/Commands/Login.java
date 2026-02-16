@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -16,10 +16,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import static net.loginto.bukkit.ExtraFeature.Tries.*;
 import static net.loginto.bukkit.Configuration.LoggedPlayers.addPlayer;
+import static net.loginto.bukkit.Configuration.LoggedPlayers.isPlayerLogged;
 import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
 import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
+import net.loginto.bukkit.Configuration.OldPlayerPosition;
 import net.loginto.bukkit.DataBases.DataBase;
+import net.loginto.bukkit.ExtraFeature.Utility;
+import net.loginto.bukkit.ExtraFeature.WebHooks;
 import net.loginto.bukkit.JSON.JsonMenager;
 
 import static net.loginto.bukkit.Configuration.Messages.*;
@@ -65,6 +69,13 @@ public class Login implements CommandExecutor {
             return true;
         }
 
+
+        if (isPlayerLogged(player)) {
+            sender.sendMessage(getMessage("errors.already_logged_in", plugin));
+            return true;
+        }
+
+
         String password = args[0];
 
         //Using JSON
@@ -92,6 +103,8 @@ public class Login implements CommandExecutor {
                 addPlayer(player);
                 removePlayerTries(player, plugin);
                 logPlayer(player, plugin, false);
+                OldPlayerPosition.teleportPlayerToTheOldPos(player, plugin);
+                WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("login", player, null, plugin), plugin);
             }
         } 
 
@@ -114,6 +127,8 @@ public class Login implements CommandExecutor {
                     addPlayer(player);
                     removePlayerTries(player, plugin);
                     logPlayer(player, plugin, false);
+                    OldPlayerPosition.teleportPlayerToTheOldPos(player, plugin);
+                    WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("login", player, null, plugin), plugin);
                 }
             } catch (Exception e) {}
         }

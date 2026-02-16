@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -26,6 +26,7 @@ public class Listeners {
         instance.getServer().getPluginManager().registerEvents(new OnPlayerMove(), instance);
         instance.getServer().getPluginManager().registerEvents(new onCommandEvent(instance), instance);
         instance.getServer().getPluginManager().registerEvents(new InventoryOpen(), instance);
+        instance.getServer().getPluginManager().registerEvents(new PlayerDropItem(), instance);
 
     }
 }

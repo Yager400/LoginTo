@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 package net.loginto.bungeecord;
@@ -16,6 +16,8 @@ import net.loginto.bungeecord.Database.H2;
 import net.loginto.bungeecord.Database.SQLite;
 import net.loginto.bungeecord.Events.PluginMessage;
 import net.loginto.bungeecord.Events.PreLogin;
+import net.loginto.bungeecord.Utility.LibraryDownloader;
+
 import static net.loginto.bungeecord.Utility.FileMGR.createBungeeConfigFile;
 
 public class LoginTo extends Plugin {
@@ -31,7 +33,9 @@ public class LoginTo extends Plugin {
 
         logger.warning("Hello, thanks for using the LoginTo Premium feature, this version is still in BETA and i will really appreciate if you report any bug here, thank you\n https://github.com/Yager400/LoginTo/issues");
 
-        createBungeeConfigFile();
+        LibraryDownloader.Libs(this);
+
+        createBungeeConfigFile(this);
 
         h2 = new H2(server, this);
         h2.connect();

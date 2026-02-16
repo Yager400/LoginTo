@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -11,13 +11,9 @@ package net.loginto.bukkit;
 import net.loginto.bukkit.Commands.*;
 import net.loginto.bukkit.DataBases.DataBase;
 
-import static net.loginto.bukkit.Configuration.ConfigMenager.VersionChecker.checkFilesVersion;
 import static net.loginto.bukkit.ExtraFeature.Utility.checkForUpdates;
-import static net.loginto.bukkit.Listeners.implementaListeners;
 import static net.loginto.bukkit.Configuration.Config.*;
-
-
-
+import static net.loginto.bukkit.Configuration.Version.checkFilesVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +30,15 @@ public class Main extends JavaPlugin {
     private DataBase database;
 
     @Override
+    public void onLoad() {
+
+        LibraryDownloader.Libs(this);
+
+    }
+
+    @Override
     public void onEnable() {
+
         getLogger().warning("LoginTo started");
 
         Metrics Metrics = new Metrics(this, 28083);
@@ -86,7 +90,7 @@ public class Main extends JavaPlugin {
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
 
-        implementaListeners(this, database);
+        Listeners.implementaListeners(this, database);
 
         createBasicFile(this);
 
@@ -105,6 +109,11 @@ public class Main extends JavaPlugin {
         File messageFile = new File(plugin.getDataFolder(), "messages.yml");
         if (!messageFile.exists()) {
             plugin.saveResource("messages.yml", false);
+        }
+
+        File oldPosFile = new File(plugin.getDataFolder(), "oldPosition.json");
+        if (!oldPosFile.exists()) {
+            plugin.saveResource("oldPosition.json", false);
         }
         
         File dataFile = new File(plugin.getDataFolder(), "data.json");
@@ -127,6 +136,7 @@ public class Main extends JavaPlugin {
         if (database != null) {
             database.close();
         }
+        
     }
 
 }

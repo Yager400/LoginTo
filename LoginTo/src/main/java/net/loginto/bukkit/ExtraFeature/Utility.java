@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -14,7 +14,10 @@ import java.security.MessageDigest;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import static net.loginto.bukkit.Configuration.Config.getStringFromConfig;
 
 public class Utility {
     public static String sha256(String input) throws Exception {
@@ -55,5 +58,17 @@ public class Utility {
                 
             }
         }, 0L, 72000L);
+    }
+
+    public static String getFormattedWebhookMessage(String webHookName, Player player, Player target, Plugin plugin) {
+
+        String s = getStringFromConfig("discord-webhook. " + webHookName + "_webhook_message", plugin);
+
+        if (s == null) return "Webhook error!, check the config.yml on the server";
+
+        if (player != null) s.replaceAll("%playerName%", player.getName());
+        if (target != null) s.replaceAll("%targetPlayer%", target.getName());
+
+        return s;
     }
 }

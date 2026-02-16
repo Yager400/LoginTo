@@ -2,12 +2,13 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
 package net.loginto.bukkit.Events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.loginto.bukkit.Configuration.OldPlayerPosition;
 import net.loginto.bukkit.DataBases.DataBase;
 import net.loginto.bukkit.JSON.JsonMenager;
 
@@ -26,8 +28,6 @@ import static net.loginto.bukkit.Configuration.Config.*;
 import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
 import static net.loginto.bukkit.Premium.Check.CheckIfAPlayerCanAutoLogin;
-
-import static net.loginto.bukkit.ExtraFeature.TeleportToALocation.*;
 
 public class PlayerJoin implements Listener {
 
@@ -44,9 +44,7 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        if (isFeatureEnabled("world.enabled_world_location_teleport", plugin)) {
-            TPPlayer(event.getPlayer(), plugin);
-        }
+        plugin.getLogger().info(event.getPlayer().getName() + " -> pos: X" + event.getPlayer().getLocation().getX() + " Y" + event.getPlayer().getLocation().getY() + " Z" + event.getPlayer().getLocation().getZ());
 
         
         if (!isPlayerLogged(event.getPlayer())) {
@@ -67,7 +65,7 @@ public class PlayerJoin implements Listener {
 
             else {
                 if (!database.isPlayerPresentInDB(event.getPlayer())) {
-                     isFirstTimeInTheServer = true;
+                    isFirstTimeInTheServer = true;
                 } else {
                     isFirstTimeInTheServer = false;
                 }
@@ -106,6 +104,9 @@ public class PlayerJoin implements Listener {
                         event.getPlayer().sendMessage(getMessage("login.login_success", plugin));
                         unlockPlayer(event.getPlayer());
                         logPlayer(event.getPlayer(), plugin, true);
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            OldPlayerPosition.teleportPlayerToTheOldPos(event.getPlayer(), plugin);
+                        }, 20);
                         return;
                     }
                 }

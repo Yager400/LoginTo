@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -12,6 +12,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class DataBase {
+
+    @SuppressWarnings("unused")
+    private static final Class<?>[] drivers = {
+        com.mysql.cj.jdbc.Driver.class,
+        org.postgresql.Driver.class,
+        org.h2.Driver.class,
+        org.sqlite.JDBC.class
+    };
 
 
     private String storage;

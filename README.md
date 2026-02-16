@@ -22,31 +22,39 @@
   
 
 ## **News**
-**Version 2.5**<br>
-Fixed the **Required characters** feature<br>
+
+**Version 2.6**<br>
+___
+
+Added the listener **onDropItem**, now if someone is not logged in, he won't be able to drop any item
 
 ___
 
-Changed the messages in those params:<br>
-- ``register_prompt_characters``<br>
-- ``register_character_error``
-
-The required characters are now displayed in the message using the ``%characters%`` placeholder<br>
-___
-
-Added the **Anti join-spam** feature, now if a player joins in the network too fast it will be banned for a specific ammount of seconds<br>
+Added the teleportation to the old location after the login, now if the player finish the login, he will be teleported where he was
 
 ___
 
-Fixed the **item pickup event**. Now, if someone isn’t logged in, they won’t be able to pick up an item, and the console won’t generate an error when something enters a hopper
+Fixed the /login spam bug, now if a player is already logged in, he won't be able to execute again the /login command
 
 ___
 
-Added the **players logs** feature
+Fixed the coordinates leek problem, now the player position will get changed when he leave
 
 ___
 
-Added command ``/getlogs <username> [optional]<dd/MM/yyyy>``, if you do **/getlogs notch** you will get the time and date when he joins + if the authentication is premium or not, if you use **/getlogs notch 12/31/2025** you will get the logs for that player in that day
+Fixed **WebHooks**, and now they work better than before :)
+
+___
+
+Added custom WebHooks messages
+
+___
+
+Reduced the plugin file size by ~24Mb total by using libby, now you can share this in more social online like discord
+
+___
+
+Changed the way for updating the config in the bukkit plugin, this change was done since it can cause bugs and an ungly config
 
 ___
 

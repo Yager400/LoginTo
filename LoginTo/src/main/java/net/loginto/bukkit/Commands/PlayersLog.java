@@ -39,6 +39,7 @@ public class PlayersLog implements CommandExecutor {
             return false;
         }
 
+        @SuppressWarnings("deprecation")
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         
 

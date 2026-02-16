@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -20,11 +20,11 @@ public class TeleportToALocation {
 
     public static void TPPlayer(Player player, Plugin plugin) {
 
-        World world = Bukkit.getWorld(getStringFromConfig("world.world", plugin));
+        World world = Bukkit.getWorld(getStringFromConfig("world_settings.teleport_dimension", plugin));
 
-        int x = getIntFromConfig("world.x", plugin);
-        int y = getIntFromConfig("world.y", plugin);
-        int z = getIntFromConfig("world.z", plugin);
+        int x = getIntFromConfig("world_settings.teleport_coordinates.x", plugin);
+        int y = getIntFromConfig("world_settings.teleport_coordinates.y", plugin);
+        int z = getIntFromConfig("world_settings.teleport_coordinates.z", plugin);
 
         Location loc = new Location(world, x, y, z);
         player.teleport(loc);

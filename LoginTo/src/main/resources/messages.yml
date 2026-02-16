@@ -1,4 +1,4 @@
-MessageVersion: '1.2' # Version of this configuration, do not change this
+MessageVersion: '1.3' # Version of this configuration, do not change this
 
 
 # Hi, welcome in the LoginTo personalization file
@@ -106,6 +106,9 @@ errors:
 
     # When a feature is not enabled
     feature_not_enabled: "This feature is not enabled"
+
+    # When a player do /login but hes already logged in
+    already_logged_in: "You are already logged in"
 
     
 premium:

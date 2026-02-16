@@ -2,7 +2,7 @@
 Copyright (C) 2025 Yager400
 
 This file is part of this project, released under the terms of
-the GNU General Public License v3.0 or (at your option) any later version.
+the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
@@ -21,7 +21,7 @@ public class WebHooks {
     public static void send_register_webhook(String infoToView, Plugin plugin) {
         String webhookUrl = getStringFromConfig("discord-webhook.register_webhook", plugin);
 
-        if (webhookUrl != null) {
+        if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
         
             Boolean success = send_webhook(webhookUrl, message);
@@ -35,7 +35,7 @@ public class WebHooks {
     public static void send_login_webhook(String infoToView, Plugin plugin) {
         String webhookUrl = getStringFromConfig("discord-webhook.login_webhook", plugin);
 
-        if (webhookUrl != null) {
+        if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
         
             Boolean success = send_webhook(webhookUrl, message);
@@ -49,7 +49,7 @@ public class WebHooks {
     public static void send_delacc_webhook(String infoToView, Plugin plugin) {
         String webhookUrl = getStringFromConfig("discord-webhook.delacc_webhook", plugin);
 
-        if (webhookUrl != null) {
+        if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
                 
             Boolean success = send_webhook(webhookUrl, message);
@@ -64,7 +64,7 @@ public class WebHooks {
     public static void send_changepassword_webhook(String infoToView, Plugin plugin) {
         String webhookUrl = getStringFromConfig("discord-webhook.changepassword_webhook", plugin);
 
-        if (webhookUrl != null) {
+        if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
 
             Boolean success = send_webhook(webhookUrl, message);
