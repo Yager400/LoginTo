@@ -51,11 +51,21 @@
         <id>sonatype</id>
         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
+    <!--Repo PacketEvents-->
+    <repository>
+        <id>codemc-releases</id>
+        <url>https://repo.codemc.io/repository/maven-releases/</url>
+    </repository>
     <!--Repo AlessioDP/libby-->
     <repository>
       <id>alessiodp-repo-releases</id>
       <name>AlessioDP Maven Repository</name>
       <url>https://repo.alessiodp.com/releases</url>
+    </repository>
+    <!--Repo PlaceHolderAPI-->
+    <repository>
+      <id>placeholderapi</id>
+      <url>https://repo.helpch.at/releases/</url>
     </repository>
   </repositories>
 
@@ -90,6 +100,22 @@
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>4.0.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--Depe packetevents-->
+    <dependency>
+      <groupId>com.github.retrooper</groupId>
+      <artifactId>packetevents-spigot</artifactId>
+      <version>2.11.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!--Depe placeholderapi-->
+    <dependency>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.12.2</version>
       <scope>provided</scope>
     </dependency>
 

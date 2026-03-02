@@ -1,4 +1,4 @@
-config-ver: '1.1' # Do not change this 
+config-ver: '1.2' # Do not change this 
 
 # Hi, welcome to the LoginTo premium configuration, you will need to write here only a few information and follow the comments 
   
@@ -7,13 +7,32 @@ config-ver: '1.1' # Do not change this
 # Should LoginTo authenticate players with mojang? (if this option is false the proxy will be 100% offline, if true the classic authentication will be executed) 
 loginto-premium-auth: 'true' 
   
-# This plugin uses H2 database so no external database installation is required 
-  
+
 # This will be the database info for sharing data with the bukkit server 
 database: 
   
-  # The port of your database, the H2 default port is 9092 
-  port: 9092 
+  # This is the type of database that will be used by the plugins for comunicating
+  # Options:
+  # mysql -> For MySQL (ONLY CONNECTION, you will need an external mysql database for this option)
+  # h2 -> For H2 database
+  database-type: 'h2'
+
+  # Database information, if you are using h2, change just the port if it's not 9092
+  database:
+    # The host for the database, if this param is null, the host will be 'localhost'
+    host: ""
+
+    # The port of your database, the H2 default port is 9092, while the default mysql port is 3306
+    port: 9092 
+
+    # The password for your mysql database
+    user: ""
+
+    # The password for your mysql database
+    password: ""
+
+    # The name of the mysql database, by default this will be "LoginTo_Sharing"
+    name: ""
   
   
 # This is the user authentication variables 

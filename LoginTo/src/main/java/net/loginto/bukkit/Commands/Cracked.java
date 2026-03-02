@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import static net.loginto.bukkit.Configuration.Config.isFeatureEnabled;
-import static net.loginto.bukkit.Configuration.Messages.getMessage;
+import net.loginto.bukkit.Configuration.Messages;
 import static net.loginto.bukkit.Premium.Cracked.*;
 
 public class Cracked implements CommandExecutor {
@@ -34,15 +34,17 @@ public class Cracked implements CommandExecutor {
             return true;
         }
 
+        Player player = (Player) sender;
+
         if (!sender.hasPermission("loginto.cracked.me")) {
-            sender.sendMessage(getMessage("errors.no_permission", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.no_permission", plugin)));
             return false;
         }
 
         if (isFeatureEnabled("premium.premium", plugin)){
             executeCrackedCommand((Player) sender, plugin);
         } else {
-            sender.sendMessage(getMessage("errors.feature_not_enabled", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.feature_not_enabled", plugin)));
         }
             
         return true;

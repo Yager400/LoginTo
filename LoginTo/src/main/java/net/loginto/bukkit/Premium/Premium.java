@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -13,11 +13,12 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.loginto.bukkit.Configuration.Messages.getMessage;
 import static net.loginto.bukkit.Premium.Check.*;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import net.loginto.bukkit.Configuration.Messages;
 
 public class Premium {
 
@@ -29,7 +30,7 @@ public class Premium {
 
             if (IsPlayerInThePremiumDB(player, plugin)) {
                 if (CheckIfAPlayerCanAutoLogin(player, plugin)) {
-                    player.sendMessage(getMessage("premium.premium.already_premium", plugin));
+                    player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.premium.already_premium", plugin)));
                     return;
                 }
             }
@@ -38,10 +39,10 @@ public class Premium {
 
             commandExecutedPlayerList.add(player);
 
-            player.sendMessage(getMessage("premium.premium.premium_warn", plugin));
+            player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.premium.premium_warn", plugin)));
         } else {
             sendPremiumPluginMessage(player, plugin);
-            player.sendMessage(getMessage("premium.premium.premium_done", plugin));
+            player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.premium.premium_done", plugin)));
             commandExecutedPlayerList.remove(player);
         }
 

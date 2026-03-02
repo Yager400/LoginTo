@@ -23,43 +23,41 @@
 
 ## **News**
 
-**Version 2.6**<br>
+**Version 2.7**<br>
 ___
 
-Added the listener **onDropItem**, now if someone is not logged in, he won't be able to drop any item
-
-___
-
-Added the teleportation to the old location after the login, now if the player finish the login, he will be teleported where he was
+Made the player not able to use the chat before the login
 
 ___
 
-Fixed the /login spam bug, now if a player is already logged in, he won't be able to execute again the /login command
+Added maximum and minimum length for the password
 
 ___
 
-Fixed the coordinates leek problem, now the player position will get changed when he leave
+Made the player not able to see the inventory before the registration/login
 
 ___
 
-Fixed **WebHooks**, and now they work better than before :)
+Added the packetevents plugin library (the plugin is not needed the plugin, loginto will still work )
 
 ___
 
-Added custom WebHooks messages
+Added the MySQL database type for the premium data sharing between plugins, so now it can work good on pderodactyl
 
 ___
 
-Reduced the plugin file size by ~24Mb total by using libby, now you can share this in more social online like discord
+Added sessions tracker for the proxy, now if the player stays on the network, in any case he won't need to re-login every time he changes server
 
 ___
 
-Changed the way for updating the config in the bukkit plugin, this change was done since it can cause bugs and an ungly config
+Fixed the bug where a player can use the proxy commands before the login process
 
 ___
 
-Added permissions for **/getlogs** command:<br>
-- ``loginto.getlogs`` (By default is set to op)
+Added the PlaceHolderAPI support for messages (is softdepended so if you don't want to install it, the plugin will still work)
+
+___
+
 
 ## **Permission**
 I tested those permission with **LuckPerms**
@@ -75,9 +73,6 @@ I tested those permission with **LuckPerms**
 
 ## **How to customize the text?**
   Go in the plugin folder, open the message.yml and change the message text
-
-## **Next?**
-  I don't know for now, i will check the github repo if any issue is send if i don't have any ideas
   
 ## **Social:**
   For anything that you need for this plugin you can go on [github issues](https://github.com/Yager400/LoginTo/issues)

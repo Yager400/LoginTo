@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -45,10 +45,6 @@ public class DelAcc implements CommandExecutor  {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Not a player");
-            return true;
-        }
 
         if (isFeatureEnabled("permissions.op_required_delacc", plugin)) {
             if (!sender.isOp()) {

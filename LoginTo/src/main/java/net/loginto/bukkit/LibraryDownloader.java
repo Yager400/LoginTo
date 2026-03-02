@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import net.byteflux.libby.LibraryManager;
 
 public class LibraryDownloader {
     
@@ -25,6 +26,8 @@ public class LibraryDownloader {
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(hikari);
+
+        downloadPacketEventsDependency(libManager);
 
         Library sqlite = Library.builder()
             .groupId("org.xerial")
@@ -57,5 +60,58 @@ public class LibraryDownloader {
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(h2);
+    }
+
+    private static void downloadPacketEventsDependency(LibraryManager libManager) {
+
+        //Kyori
+        Library kyoriAPI = Library.builder()
+            .groupId("net.kyori")
+            .artifactId("adventure-api")
+            .version("4.25.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(kyoriAPI);
+
+        Library kyoriNBT = Library.builder()
+            .groupId("net.kyori")
+            .artifactId("adventure-nbt")
+            .version("4.25.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(kyoriNBT);
+
+        Library kyoriKEY = Library.builder()
+            .groupId("net.kyori")
+            .artifactId("adventure-key")
+            .version("4.25.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(kyoriKEY);
+
+        //PacketEvents
+        Library packeteventsAPI = Library.builder()
+            .groupId("com.github.retrooper")
+            .artifactId("packetevents-api")
+            .version("2.11.2")
+            .repository("https://repo.codemc.io/repository/maven-releases/")
+            .build();
+        libManager.loadLibrary(packeteventsAPI);
+
+        Library packetEventsNettyCommon = Library.builder()
+            .groupId("com.github.retrooper")
+            .artifactId("packetevents-netty-common")
+            .version("2.11.2")
+            .repository("https://repo.codemc.io/repository/maven-releases/")
+            .build();
+        libManager.loadLibrary(packetEventsNettyCommon);
+
+        Library packetevents = Library.builder()
+            .groupId("com.github.retrooper")
+            .artifactId("packetevents-spigot")
+            .version("2.11.2")
+            .repository("https://repo.codemc.io/repository/maven-releases/")
+            .build();
+        libManager.loadLibrary(packetevents);
     }
 }

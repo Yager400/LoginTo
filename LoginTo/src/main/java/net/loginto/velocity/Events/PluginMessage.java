@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -18,22 +18,22 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 
-import net.loginto.velocity.Database.H2;
+import net.loginto.velocity.Database.Database;
 
 public class PluginMessage {
     
     
     private final Logger logger;
 
-    private final H2 h2;
+    private final Database database;
 
 
     public static String channel = "loginto:authchannel";
     private static final MinecraftChannelIdentifier CHANNEL_ID = MinecraftChannelIdentifier.from(channel);
 
-    public PluginMessage(ProxyServer server, H2 h2, Logger logger) {
+    public PluginMessage(ProxyServer server, Database database, Logger logger) {
         this.logger = logger;
-        this.h2 = h2;
+        this.database = database;
 
         server.getChannelRegistrar().register(CHANNEL_ID);
     }
@@ -57,11 +57,11 @@ public class PluginMessage {
             switch (subChannel) {
                 case "AddPlayersInfo":
                     Boolean ispremium = Boolean.valueOf(in.readUTF());
-                    h2.removePlayersInfo(username);
-                    h2.insertPlayersInfo(username, ispremium);
+                    database.removePlayersInfo(username);
+                    database.insertPlayersInfo(username, ispremium);
                     break;
                 case "RemovePlayersInfo":
-                    h2.removePlayersInfo(username);
+                    database.removePlayersInfo(username);
                     break;
                 default:
                     logger.warn("Subchannel not found in the channel " + channel + " , please make sure that the request is ok");

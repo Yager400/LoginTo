@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -20,13 +20,13 @@ import static net.loginto.bukkit.Configuration.LoggedPlayers.isPlayerLogged;
 import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
 import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
+import net.loginto.bukkit.Configuration.Messages;
 import net.loginto.bukkit.Configuration.OldPlayerPosition;
 import net.loginto.bukkit.DataBases.DataBase;
 import net.loginto.bukkit.ExtraFeature.Utility;
 import net.loginto.bukkit.ExtraFeature.WebHooks;
 import net.loginto.bukkit.JSON.JsonMenager;
-
-import static net.loginto.bukkit.Configuration.Messages.*;
+import net.loginto.bukkit.Premium.Check;
 
 
 public class Login implements CommandExecutor {
@@ -58,20 +58,20 @@ public class Login implements CommandExecutor {
         
 
         if (!sender.hasPermission("loginto.login")) {
-            sender.sendMessage(getMessage("errors.no_permission", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.no_permission", plugin)));
             return true;
         }
 
         
 
         if (args.length != 1) {
-            sender.sendMessage(getMessage("login.login_error", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("login.login_error", plugin)));
             return true;
         }
 
 
         if (isPlayerLogged(player)) {
-            sender.sendMessage(getMessage("errors.already_logged_in", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.already_logged_in", plugin)));
             return true;
         }
 
@@ -83,28 +83,30 @@ public class Login implements CommandExecutor {
             JsonMenager file = new JsonMenager(plugin.getDataFolder(), "data.json");
             
             if (file.getString(player.getName() + ".password") == null) {
-                sender.sendMessage(getMessage("errors.not_registered", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.not_registered", plugin)));
                 return true;
             }
             
             
 
             if (!file.exists()) {
-                sender.sendMessage(getMessage("errors.unexpected_error", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.unexpected_error", plugin)));
                 return true;
             }
 
             if (!file.getString(player.getName() + ".password").equals(password)) {
-                sender.sendMessage(getMessage("login.wrong_password", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("login.wrong_password", plugin)));
                 incrementTries(player, plugin);
             } else {
-                sender.sendMessage(getMessage("login.login_success", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("login.login_success", plugin)));
                 unlockPlayer(player);
                 addPlayer(player);
                 removePlayerTries(player, plugin);
                 logPlayer(player, plugin, false);
                 OldPlayerPosition.teleportPlayerToTheOldPos(player, plugin);
                 WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("login", player, null, plugin), plugin);
+                Check.SetLoggedPlayer(plugin, player);
+                player.updateInventory();
             }
         } 
 
@@ -113,22 +115,24 @@ public class Login implements CommandExecutor {
 
         
             if (!database.isPlayerPresentInDB(player)) {
-                sender.sendMessage(getMessage("errors.not_registered", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.not_registered", plugin)));
                 return true;
             }
 
             try {
                 if (!database.isPasswordCorrect(player, password)) {
-                    sender.sendMessage(getMessage("login.wrong_password", plugin));
+                    sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("login.wrong_password", plugin)));
                     incrementTries(player, plugin);
                 } else {
-                    sender.sendMessage(getMessage("login.login_success", plugin));
+                    sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("login.login_success", plugin)));
                     unlockPlayer(player);
                     addPlayer(player);
                     removePlayerTries(player, plugin);
                     logPlayer(player, plugin, false);
                     OldPlayerPosition.teleportPlayerToTheOldPos(player, plugin);
                     WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("login", player, null, plugin), plugin);
+                    Check.SetLoggedPlayer(plugin, player);
+                    player.updateInventory();
                 }
             } catch (Exception e) {}
         }

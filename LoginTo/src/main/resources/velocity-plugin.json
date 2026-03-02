@@ -1,7 +1,7 @@
 {
   "id": "loginto",
   "name": "LoginTo",
-  "version": "2.6",
+  "version": "2.7",
   "main": "net.loginto.velocity.LoginTo",
   "authors": ["Yager400"],
   "dependencies": []

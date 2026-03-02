@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import static net.loginto.bukkit.Configuration.Messages.*;
 import static net.loginto.bukkit.Configuration.Config.*;
 import static net.loginto.bukkit.Configuration.PlayersLogger.*;
 
@@ -27,10 +26,12 @@ import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.loginto.bukkit.Configuration.Messages;
 import net.loginto.bukkit.DataBases.DataBase;
 import net.loginto.bukkit.ExtraFeature.Utility;
 import net.loginto.bukkit.ExtraFeature.WebHooks;
 import net.loginto.bukkit.JSON.JsonMenager;
+import net.loginto.bukkit.Premium.Check;
 
 public class Register implements CommandExecutor  {
 
@@ -62,7 +63,7 @@ public class Register implements CommandExecutor  {
         
 
         if (!sender.hasPermission("loginto.register")) {
-            sender.sendMessage(getMessage("errors.no_permission", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.no_permission", plugin)));
             return true;
         }
 
@@ -74,12 +75,12 @@ public class Register implements CommandExecutor  {
         String repetePassword = args[1];
 
         if (args.length != 2) {
-            sender.sendMessage(getMessage("register.register_error", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.register_error", plugin)));
             return true;
         }
 
         if (!password.equals(repetePassword)) {
-            sender.sendMessage(getMessage("register.password_mismatch", plugin));
+            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.password_mismatch", plugin)));
             return true;
         }
 
@@ -97,7 +98,7 @@ public class Register implements CommandExecutor  {
             for (String c : ReqChar) {
                 if (!password.contains(c)) {
                     sender.sendMessage(
-                        getMessage("errors.register_character_error", plugin)
+                        Messages.PAPIFormat(player, Messages.getMessage("errors.register_character_error", plugin))
                         .replace(
                             "%characters%", 
                             getStringFromConfig("password-security.characters_needed", plugin)
@@ -108,6 +109,23 @@ public class Register implements CommandExecutor  {
             
         }
 
+        if (isFeatureEnabled("password-security.password_length.enabled", plugin)) {
+            int min = getIntFromConfig("password-security.password_length.min_length", plugin);
+            int max = getIntFromConfig("password-security.password_length.max_length", plugin);
+
+            if (password.length() < min || password.length() > max) {
+
+                player.sendMessage(Messages.PAPIFormat(
+                    player, 
+                    Messages.getMessage("errors.password_length", plugin)
+                        .replaceAll("%min_length%", String.valueOf(min))
+                        .replaceAll("%max_length%", String.valueOf(max))
+                ));
+
+                return true;
+            }
+        }
+
 
         
         //Using JSON
@@ -116,12 +134,12 @@ public class Register implements CommandExecutor  {
             JsonMenager file = new JsonMenager(plugin.getDataFolder(), "data.json");
 
             if (file.getString(player.getName() + ".password") != null) {
-                sender.sendMessage(getMessage("errors.already_registered", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.already_registered", plugin)));
                 return true;
             }
 
             if (!file.exists()) {
-                sender.sendMessage(getMessage("errors.unexpected_error", plugin));
+                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.unexpected_error", plugin)));
                 return true;
             }
 
@@ -133,7 +151,7 @@ public class Register implements CommandExecutor  {
         else  {
             try {
                 if (database.isPlayerPresentInDB(player)) {
-                    sender.sendMessage(getMessage("errors.already_registered", plugin));
+                    sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.already_registered", plugin)));
                     return true;
                 }
 
@@ -145,10 +163,12 @@ public class Register implements CommandExecutor  {
 
         addPlayer(player);
 
-        sender.sendMessage(getMessage("register.register_success", plugin));
+        sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.register_success", plugin)));
         unlockPlayer(player);
         logPlayer(player, plugin, false);
         WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("register", player, null, plugin), plugin);
+        Check.SetLoggedPlayer(plugin, player);
+        player.updateInventory();
 
         return true;
     }

@@ -1,10 +1,11 @@
-MessageVersion: '1.3' # Version of this configuration, do not change this
+MessageVersion: '1.4' # Version of this configuration, do not change this
 
 
 # Hi, welcome in the LoginTo personalization file
 # For colors use the § character, you can find some of them here https://htmlcolorcodes.com/minecraft-color-codes/
 # For example §2 is green, §r is for resetting the color, §l for bold exc...
 
+# Supports PlaceHolderAPI except for the commands messages for /delacc and /getlogs
 
 register:
 
@@ -109,6 +110,12 @@ errors:
 
     # When a player do /login but hes already logged in
     already_logged_in: "You are already logged in"
+
+    # When a player send a message, but they are not logged
+    onchat_before_login: "You can't use the chat now, login to be able to use it"
+
+    # When a player uses a password to long or to short (%min_length% = the minimum length of the password | %max_length% = the maximum length of the password)
+    password_length: "Your password must be %min_length% to %max_length% long"
 
     
 premium:

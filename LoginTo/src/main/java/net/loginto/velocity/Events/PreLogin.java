@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -19,18 +19,18 @@ import static net.loginto.velocity.Utility.FileMGR.YamlRead;
 import net.kyori.adventure.text.Component;
 import net.loginto.velocity.Utility.AntiSpam;
 import net.loginto.velocity.LoginTo;
-import net.loginto.velocity.Database.H2;
+import net.loginto.velocity.Database.Database;
 import net.loginto.velocity.Database.SQLite;
 
 
 public class PreLogin {
 
-    private final H2 h2;
+    private final Database database;
     private final SQLite sqlite;
     private final AntiSpam antispam;
 
-    public PreLogin(ProxyServer server, H2 h2, SQLite sqlite, LoginTo plugin) {
-        this.h2 = h2;
+    public PreLogin(ProxyServer server, Database database, SQLite sqlite, LoginTo plugin) {
+        this.database = database;
         this.sqlite = sqlite;
         this.antispam = new AntiSpam(server, plugin);
     }
@@ -67,23 +67,23 @@ public class PreLogin {
 
             
 
-            String AccStatus = h2.accStatus(event.getUsername());
+            String AccStatus = database.accStatus(event.getUsername());
 
             if (AccStatus.equals("premium")) {
                 // This is a player that have executed the /premium command, in any case we will use the online authentication
                 event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
-                h2.insertTempAuthPlayer(event.getUsername(), true);
+                database.insertTempAuthPlayer(event.getUsername(), true);
             } 
             else if (AccStatus.equals("cracked")) {
                 // This account is cracked and executed the /cracked command, but have joined before this premium name was registered by mojang
                 event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
-                h2.insertTempAuthPlayer(event.getUsername(), false);
+                database.insertTempAuthPlayer(event.getUsername(), false);
             } 
             else {
                 if (AccStatus.equals("notindb")) {
                     // This player never joined in this server, for not let him stealing this name, we will require the premium authentication
                     event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
-                    h2.insertTempAuthPlayer(event.getUsername(), true);
+                    database.insertTempAuthPlayer(event.getUsername(), true);
                 }
             }
 
@@ -91,7 +91,7 @@ public class PreLogin {
         } else {
             // 100% cracked player
             event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
-            h2.insertTempAuthPlayer(event.getUsername(), false);
+            database.insertTempAuthPlayer(event.getUsername(), false);
         }
 
         antispam.incrementConnection(ip);

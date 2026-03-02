@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -13,11 +13,12 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.loginto.bukkit.Configuration.Messages.getMessage;
 import static net.loginto.bukkit.Premium.Check.*;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import net.loginto.bukkit.Configuration.Messages;
 
 public class Cracked {
     
@@ -26,17 +27,17 @@ public class Cracked {
         if (!commandExecutedPlayerList.contains(player)) {
             
             if (IsPlayerInThePremiumDB(player, plugin)) {
-                player.sendMessage(getMessage("premium.cracked.already_cracked", plugin));
+                player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.cracked.already_cracked", plugin)));
                 return;
             }
             
             
             commandExecutedPlayerList.add(player);
 
-            player.sendMessage(getMessage("premium.cracked.cracked_warn", plugin));
+            player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.cracked.cracked_warn", plugin)));
         } else {
             sendCrackedPluginMessage(player, plugin);
-            player.sendMessage(getMessage("premium.cracked.cracked_done", plugin));
+            player.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("premium.cracked.cracked_done", plugin)));
             commandExecutedPlayerList.remove(player);
         }
     }

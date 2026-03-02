@@ -1,12 +1,12 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
 
-package net.loginto.velocity.Database;
+package net.loginto.bungeecord.Database.Data;
 
 import static net.loginto.velocity.Utility.FileMGR.YamlRead;
 
@@ -17,54 +17,52 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
-import org.h2.tools.Server;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.plugin.Plugin;
 
-import com.velocitypowered.api.proxy.ProxyServer;
-
-import net.loginto.velocity.LoginTo;
-
-public class H2 {
+public class MySql {
 
     private Statement stmt;
     private Connection conn;
     private final ProxyServer server;
-    private final LoginTo plugin;
+    private final Plugin plugin;
 
-    private Server tcpServer;
-
-    public H2(ProxyServer server, LoginTo plugin) {
+    public MySql(ProxyServer server, Plugin plugin) {
         this.server = server;
         this.plugin = plugin;
     }
 
     public void connect() {
         try {
-            
-            Class.forName("org.h2.Driver");
+            String host = YamlRead("database.database.host");
+            String port = YamlRead("database.database.port");
+            String database = YamlRead("database.database.name");
+            database = (database == null || database.trim().isEmpty()) ? "LoginTo_Sharing" : database;
+            String user = YamlRead("database.database.user");
+            String password = YamlRead("database.database.password");
 
-            // Embedded connection
-            Connection conn = DriverManager.getConnection(
-                "jdbc:h2:./plugins/loginto/LoginTo_Sharing",
-                "sa",
-                ""
-            );
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            String port = YamlRead("database.port");
+            String urlServer = "jdbc:mysql://" + host + ":" + port + "/?useSSL=false&serverTimezone=UTC";
+            try (Connection connServer = DriverManager.getConnection(urlServer, user, password);
+                Statement stmtServer = connServer.createStatement()) {
 
-            tcpServer = Server.createTcpServer("-tcpPort", port, "-tcpAllowOthers").start();
+                stmtServer.executeUpdate("create database if not exists " + database);
 
-            conn = DriverManager.getConnection(
-                "jdbc:h2:tcp://localhost:" + port + "/./plugins/loginto/LoginTo_Sharing",
-                "sa",
-                ""
-            );
+                stmtServer.close();
+            }
+
+            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&serverTimezone=UTC";
+            conn = DriverManager.getConnection(url, user, password);
 
             stmt = conn.createStatement();
 
             stmt.execute("create table if not exists AuthPlayers(username varchar(255), ispremium boolean)");
             stmt.execute("create table if not exists PlayersInfo(username varchar(255), ispremium boolean)");
+            stmt.execute("create table if not exists LoggedPlayers(username varchar(16))");
 
             stmt.execute("delete from AuthPlayers");
+            stmt.execute("delete from LoggedPlayers");
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -80,8 +78,12 @@ public class H2 {
             }
         }
 
-        if (tcpServer != null) {
-            tcpServer.stop();
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -92,13 +94,13 @@ public class H2 {
 
             stmt.execute("insert into AuthPlayers(username, ispremium) values ('" + username + "', " + ispremium + ")");
 
-            server.getScheduler().buildTask(plugin, () -> {
+            server.getScheduler().schedule(plugin, () -> {
                 try {
                     stmt.execute("delete from AuthPlayers where username = '" + username + "'");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-            }).delay(5, TimeUnit.SECONDS).schedule();
+            }, 5, TimeUnit.SECONDS);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -131,5 +133,23 @@ public class H2 {
             e.printStackTrace();
         }
         return "notindb";
+    }
+
+    public void removePlayerSession(String username) {
+        try {
+            stmt.execute("delete from LoggedPlayers where username = '" + username + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean isPlayerLogged(String username) {
+        try {
+            ResultSet result = stmt.executeQuery("select * from LoggedPlayers where username = '" + username + "'");
+            if (result.next()) return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

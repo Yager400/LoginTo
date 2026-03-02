@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -13,22 +13,21 @@ import java.util.logging.Logger;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import net.loginto.bungeecord.Database.Database;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.event.EventHandler;
 
 
-import net.loginto.bungeecord.Database.H2;
-
 public class PluginMessage implements Listener {
 
     private final Logger logger;
-    private final H2 h2;
+    private final Database database;
     public static String channel = "loginto:authchannel";
 
-    public PluginMessage(ProxyServer server, H2 h2, Logger logger) {
+    public PluginMessage(ProxyServer server, Database database, Logger logger) {
         this.logger = logger;
-        this.h2 = h2;
+        this.database = database;
 
         server.registerChannel(channel);
     }
@@ -47,13 +46,12 @@ public class PluginMessage implements Listener {
             switch (subChannel) {
                 case "AddPlayersInfo":
                     Boolean ispremium = Boolean.valueOf(in.readUTF());
-                    h2.removePlayersInfo(username);
-                    h2.insertPlayersInfo(username, ispremium);
+                    database.removePlayersInfo(username);
+                    database.insertPlayersInfo(username, ispremium);
                     break;
                 case "RemovePlayersInfo":
-                    h2.removePlayersInfo(username);
+                    database.removePlayersInfo(username);
                     break;
-                
                 
                 default:
                     logger.warning("Subchannel not found in the channel " + channel + " , please make sure that the request is ok");

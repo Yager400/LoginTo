@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -22,8 +22,13 @@ import java.nio.file.Files;
 import net.loginto.bukkit.ExtraFeature.Metrics;
 import net.loginto.bukkit.ExtraFeature.Metrics.SimplePie;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.retrooper.packetevents.PacketEvents;
+
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 
 public class Main extends JavaPlugin {
 
@@ -34,12 +39,23 @@ public class Main extends JavaPlugin {
 
         LibraryDownloader.Libs(this);
 
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+
     }
 
     @Override
     public void onEnable() {
 
         getLogger().warning("LoginTo started");
+
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            getLogger().warning("PlaceHolderAPI not found, the plugin will use only the built-in placeholders");
+        }
+
+
+        PacketEvents.getAPI().init();
 
         Metrics Metrics = new Metrics(this, 28083);
 
@@ -136,7 +152,7 @@ public class Main extends JavaPlugin {
         if (database != null) {
             database.close();
         }
-        
+        PacketEvents.getAPI().terminate();
     }
 
 }

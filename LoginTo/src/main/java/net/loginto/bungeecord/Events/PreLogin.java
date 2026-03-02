@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -19,17 +19,17 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.PreLoginEvent;
-import net.loginto.bungeecord.Database.H2;
+import net.loginto.bungeecord.Database.Database;
 import net.loginto.bungeecord.Database.SQLite;
 
 public class PreLogin implements Listener {
 
-    private final H2 h2;
+    private final Database database;
     private final SQLite sqlite;
     private final AntiSpam antispam;
 
-    public PreLogin(H2 h2, SQLite sqlite, ProxyServer server, LoginTo plugin) {
-        this.h2 = h2;
+    public PreLogin(Database database, SQLite sqlite, ProxyServer server, LoginTo plugin) {
+        this.database = database;
         this.sqlite = sqlite;
         this.antispam = new AntiSpam(server, plugin);
     }
@@ -66,26 +66,26 @@ public class PreLogin implements Listener {
 
         if (UserNamePremium) {
 
-            String AccStatus = h2.accStatus(username);
+            String AccStatus = database.accStatus(username);
 
             
 
             if (AccStatus.equals("premium")) {
                 event.setOnlineMode(true);
-                h2.insertTempAuthPlayer(username, true);
+                database.insertTempAuthPlayer(username, true);
             } 
             else if (AccStatus.equals("cracked")) {
                 event.setOnlineMode(false);
-                h2.insertTempAuthPlayer(username, false);
+                database.insertTempAuthPlayer(username, false);
             } 
             else if (AccStatus.equals("notindb")) {
                 event.setOnlineMode(true);
-                h2.insertTempAuthPlayer(username, true);
+                database.insertTempAuthPlayer(username, true);
             }
 
         } else {
             event.setOnlineMode(false);
-            h2.insertTempAuthPlayer(username, false);
+            database.insertTempAuthPlayer(username, false);
         }
 
         antispam.incrementConnection(ip);

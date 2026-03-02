@@ -1,4 +1,4 @@
-ConfigVersion: '1.5' # Version of this configuration, do not change this
+ConfigVersion: '1.6' # Version of this configuration, do not change this
           
 
 kick-rules:
@@ -47,6 +47,16 @@ password-security:
   # If required_character is true here you need to put the required characters
   characters_needed: ''
 
+  password_length:
+    # Chose to enable the feature or not
+    enabled: true
+
+    # The minimum length for the password
+    min_length: 8
+
+    # The maximum length for the password
+    max_length: 32
+
 
 permissions:
 
@@ -56,9 +66,6 @@ permissions:
   # Permission: if you want to use permission go to https://modrinth.com/plugin/loginto and read the description to find everything 
   # Make sure that 'op_required_delacc' is set to false to use permission
   permission: false
-
-  # Block commands when the player is authenticating
-  block_all_commands_when_player_is_authenticating: true
 
 
 player-effects:
@@ -86,10 +93,9 @@ discord-webhook:
   # Send a webhook in a discord server, you need to put your webhook's url
 
   # Use this webhookName_webhook_message to send a custom message
-  # Messages works with the discord markdown, and if you want variables in it, use those string
+  # Messages works with the discord markdown, and if you want variables in it, use the PlaceHolderAPI or those string
   # - %playerName% -> The name of the player who triggered the webhook
   # - %targetPlayer% -> If present, the target player for that action
-  # - 
 
   # When a player sing up
   register_webhook: ''
@@ -163,24 +169,30 @@ premium:
   # Should LoginTo let players AutoLogin into their account and let them use the /premium and /cracked command
   premium: false
 
+  # This is the type of database that will be used by the plugins for comunicating
+  # Options:
+  # mysql -> For MySQL
+  # h2 -> For H2 database
+  database-type: "h2"
+
   database:
-    # This will be the host of the proxy, so the host of the H2 database for sharing data
-    # The name for this database is saved on the proxy and will be 'LoginTo_Sharing'
-    #
-    # If you are in the same network as the proxy use a firewall on the bukkit server and the database
-    # If bukkit is not on the same machine as velocity, create a new user on the database and set a firewall that allows only the bukkit server ip address
+    # This will be the host of the proxy, so the host of the H2 or MySql database for sharing data
+    # The name param is only used for MySql, the default name for the H2 database will be 'LoginTo_Sharing'
     
     # The ip address of your database, if you are hosting it on the same machine as your server type "localhost" or "127.0.0.1"
     host: ""
 
-    # The port of your database, if this is 0, the default will be 9092
+    # The port of your database, if this is 0, the default will be 9092 or 3306 (depending on the database type)
     port: 0
 
     # The user for your database (the H2 default user is 'sa')
     user: "sa"
 
-    # The password for your database (the H2 default password is empty)
+    # The password for your database
     password: ""
+
+    # The name of your database (change this only if you are using MySql), if this is null, the name will be "LoginTo_Sharing"
+    name: ""
 
 
 logging:

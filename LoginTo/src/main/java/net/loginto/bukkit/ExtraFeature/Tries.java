@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -13,7 +13,8 @@ import java.util.HashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import static net.loginto.bukkit.Configuration.Messages.*;
+import net.loginto.bukkit.Configuration.Messages;
+
 import static net.loginto.bukkit.Configuration.Config.*;
 
 public class Tries {
@@ -25,7 +26,7 @@ public class Tries {
             
             if (isFeatureEnabled("kick-rules.kick_on_wrong_password", plugin)) {
                 if (tries.get(player) >= getIntFromConfig("kick-rules.tries", plugin)) {
-                    player.kickPlayer(getMessage("errors.onkick_for_failed_login", plugin));
+                    player.kickPlayer(Messages.PAPIFormat(player, Messages.getMessage("errors.onkick_for_failed_login", plugin)));
                 }
             }
         }

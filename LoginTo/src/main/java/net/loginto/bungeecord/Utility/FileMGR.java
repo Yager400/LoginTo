@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ public class FileMGR {
     public static void createBungeeConfigFile(Plugin plugin) {
         File file = new File("plugins/loginto/config.yml");
 
-        final String CONFIG_VER = "1.1";
+        final String CONFIG_VER = "1.2";
 
         if (file.exists() && !YamlRead("config-ver").equals(CONFIG_VER)) {
             file.renameTo(new File("plugins/loginto/config.yml.old"));

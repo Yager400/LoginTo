@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -47,7 +47,13 @@ public class LibraryDownloader {
             .build();
         libManager.loadLibrary(h2);
 
-
+        Library mysql = Library.builder()
+            .groupId("com.mysql")
+            .artifactId("mysql-connector-j")
+            .version("8.2.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(mysql);
 
     }
 }

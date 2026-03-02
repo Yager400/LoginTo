@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -17,10 +17,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import net.loginto.velocity.Database.H2;
+import net.loginto.velocity.Database.Database;
 import net.loginto.velocity.Database.SQLite;
-import net.loginto.velocity.Events.PluginMessage;
-import net.loginto.velocity.Events.PreLogin;
+import net.loginto.velocity.Events.*;
 import net.loginto.velocity.Utility.LibraryDownloader;
 
 import static net.loginto.velocity.Utility.FileMGR.createVeloConfigFile;
@@ -33,7 +32,7 @@ public class LoginTo {
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
-    private H2 h2;
+    private Database database;
     private SQLite sqlite;
 
     @Inject
@@ -53,20 +52,22 @@ public class LoginTo {
 
         createVeloConfigFile(this);
 
-        h2 = new H2(server, this);
-        h2.connect();
+        database = new Database(server, this, logger);
+        database.connect();
 
         sqlite = new SQLite();
         sqlite.connect();
 
-        server.getEventManager().register(this, new PreLogin(server, h2, sqlite, this));
-        server.getEventManager().register(this, new PluginMessage(server, h2, logger));
+        server.getEventManager().register(this, new PreLogin(server, database, sqlite, this));
+        server.getEventManager().register(this, new PluginMessage(server, database, logger));
+        server.getEventManager().register(this, new CommandEvent(database));
+        server.getEventManager().register(this, new DisconnectEv(database));
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
-        if (h2 != null) {
-            h2.close();
+        if (database != null) {
+            database.close();
         }
         if (sqlite != null) {
             sqlite.close();

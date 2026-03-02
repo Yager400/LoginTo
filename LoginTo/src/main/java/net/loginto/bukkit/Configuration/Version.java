@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -16,9 +16,9 @@ import org.bukkit.plugin.Plugin;
 
 public class Version {
 
-    public static String ConfigVersion = "1.5";
+    public static String ConfigVersion = "1.6";
     //TODO
-    public static String MessageVersion = "1.3";
+    public static String MessageVersion = "1.4";
 
     public static void checkFilesVersion(Plugin plugin) {
 

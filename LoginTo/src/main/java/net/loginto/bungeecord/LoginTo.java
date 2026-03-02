@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2025 Yager400
+Copyright (C) 2026 Yager400
 
 This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
@@ -11,18 +11,16 @@ import java.util.logging.Logger;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
-
-import net.loginto.bungeecord.Database.H2;
+import net.loginto.bungeecord.Database.Database;
 import net.loginto.bungeecord.Database.SQLite;
-import net.loginto.bungeecord.Events.PluginMessage;
-import net.loginto.bungeecord.Events.PreLogin;
+import net.loginto.bungeecord.Events.*;
 import net.loginto.bungeecord.Utility.LibraryDownloader;
 
 import static net.loginto.bungeecord.Utility.FileMGR.createBungeeConfigFile;
 
 public class LoginTo extends Plugin {
 
-    private H2 h2;
+    private Database database;
     private SQLite sqlite;
 
     @Override
@@ -37,20 +35,22 @@ public class LoginTo extends Plugin {
 
         createBungeeConfigFile(this);
 
-        h2 = new H2(server, this);
-        h2.connect();
+        database = new Database(server, this, logger);
+        database.connect();
 
         sqlite = new SQLite();
         sqlite.connect();
 
-        server.getPluginManager().registerListener(this, new PreLogin(h2, sqlite, server, this));
-        server.getPluginManager().registerListener(this, new PluginMessage(server, h2, logger));
+        server.getPluginManager().registerListener(this, new PreLogin(database, sqlite, server, this));
+        server.getPluginManager().registerListener(this, new PluginMessage(server, database, logger));
+        server.getPluginManager().registerListener(this, new CommandEvent(database));
+        server.getPluginManager().registerListener(this, new DisconnectEvent(database));
     }
 
     @Override
     public void onDisable() {
-        if (h2 != null) {
-            h2.close();
+        if (database != null) {
+            database.close();
         }
         if (sqlite != null) {
             sqlite.close();
