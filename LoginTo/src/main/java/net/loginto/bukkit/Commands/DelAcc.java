@@ -58,6 +58,11 @@ public class DelAcc implements CommandExecutor  {
             return true;
         }
 
+        if (args.length != 2) {
+            sender.sendMessage(getMessage("delacc.delacc_wrong_syntax", plugin));
+            return true;
+        }
+
         @SuppressWarnings("deprecation")
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
@@ -65,12 +70,7 @@ public class DelAcc implements CommandExecutor  {
             sender.sendMessage(getMessage("errors.player_doesnt_exist", plugin));
             return true;
         }
-
-        if (args.length != 2) {
-            sender.sendMessage(getMessage("delacc.delacc_wrong_syntax", plugin));
-            return true;
-        }
-
+        
         if (!args[1].equals("confirm")) {
             sender.sendMessage(getMessage("delacc.delacc_not_confirmed", plugin));
             return true;

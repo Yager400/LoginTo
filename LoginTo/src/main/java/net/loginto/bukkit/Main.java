@@ -9,11 +9,12 @@ See the LICENSE file for details.
 package net.loginto.bukkit;
 
 import net.loginto.bukkit.Commands.*;
+import net.loginto.bukkit.Configuration.YMLVersion;
 import net.loginto.bukkit.DataBases.DataBase;
 
 import static net.loginto.bukkit.ExtraFeature.Utility.checkForUpdates;
 import static net.loginto.bukkit.Configuration.Config.*;
-import static net.loginto.bukkit.Configuration.Version.checkFilesVersion;
+//import static net.loginto.bukkit.Configuration.Version.checkFilesVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,7 +111,24 @@ public class Main extends JavaPlugin {
 
         createBasicFile(this);
 
-        checkFilesVersion(this);
+        //checkFilesVersion(this);
+        try {
+            YMLVersion.builder()
+                .plugin(this)
+                .version("1.6")
+                .resource("config.yml")
+                .versionKey("ConfigVersion")
+                .build();
+            YMLVersion.builder()
+                .plugin(this)
+                .version("1.4")
+                .resource("messages.yml")
+                .versionKey("MessageVersion")
+                .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         
         getLogger().warning("LoginTo ended loading");
     }

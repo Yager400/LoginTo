@@ -23,38 +23,27 @@
 
 ## **News**
 
-**Version 2.7**<br>
+**Version 2.8**<br>
 ___
 
-Made the player not able to use the chat before the login
-
-___
-
-Added maximum and minimum length for the password
+Fixed the /register and /delacc error log spam
 
 ___
 
-Made the player not able to see the inventory before the registration/login
+Readded the yml file auto-update using a new api
 
 ___
 
-Added the packetevents plugin library (the plugin is not needed the plugin, loginto will still work )
+Fixed the proxy class conflict bug
 
 ___
 
-Added the MySQL database type for the premium data sharing between plugins, so now it can work good on pderodactyl
+Added some listeners and packets regarding the inventory
 
 ___
 
-Added sessions tracker for the proxy, now if the player stays on the network, in any case he won't need to re-login every time he changes server
-
-___
-
-Fixed the bug where a player can use the proxy commands before the login process
-
-___
-
-Added the PlaceHolderAPI support for messages (is softdepended so if you don't want to install it, the plugin will still work)
+*Next version*: the next version will be the 3.0 so a lot of things will change and this update will take some time.
+If you find any bugs in the version 2.8, i will be happy if you report it on github or discord, thanks.
 
 ___
 

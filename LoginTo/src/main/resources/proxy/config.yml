@@ -12,6 +12,7 @@ loginto-premium-auth: 'true'
 database: 
   
   # This is the type of database that will be used by the plugins for comunicating
+  # Note: use h2 if you can't use a mysql database or if you have a single machine running the network. But if you can use mysql, it's racomanded to do it
   # Options:
   # mysql -> For MySQL (ONLY CONNECTION, you will need an external mysql database for this option)
   # h2 -> For H2 database

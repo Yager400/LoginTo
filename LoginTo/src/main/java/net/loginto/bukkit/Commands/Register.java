@@ -67,17 +67,14 @@ public class Register implements CommandExecutor  {
             return true;
         }
 
-
-        
-
-        String password = args[0];
-
-        String repetePassword = args[1];
-
         if (args.length != 2) {
             sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.register_error", plugin)));
             return true;
         }
+        
+        String password = args[0];
+
+        String repetePassword = args[1];
 
         if (!password.equals(repetePassword)) {
             sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.password_mismatch", plugin)));

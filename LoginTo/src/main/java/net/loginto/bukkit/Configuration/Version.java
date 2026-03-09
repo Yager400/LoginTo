@@ -13,14 +13,14 @@ import java.io.File;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-
+@Deprecated
 public class Version {
 
     public static String ConfigVersion = "1.6";
     //TODO
     public static String MessageVersion = "1.4";
-
-    public static void checkFilesVersion(Plugin plugin) {
+    @Deprecated
+    public static void _checkFilesVersion(Plugin plugin) {
 
         File configFile = new File(plugin.getDataFolder(), "config.yml");
         File messageFile = new File(plugin.getDataFolder(), "messages.yml");

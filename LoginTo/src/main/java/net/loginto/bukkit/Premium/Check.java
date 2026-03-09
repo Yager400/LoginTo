@@ -213,7 +213,8 @@ public class Check {
     }
 
     static class MYSQLDB {
-        protected static Connection connect(Plugin plugin) {
+        @SuppressWarnings("null")
+		protected static Connection connect(Plugin plugin) {
 
             Connection conn = null;
             

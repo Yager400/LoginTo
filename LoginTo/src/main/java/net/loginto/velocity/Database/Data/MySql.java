@@ -42,9 +42,9 @@ public class MySql {
             String user = YamlRead("database.database.user");
             String password = YamlRead("database.database.password");
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("net.loginto.libs.mysql.cj.jdbc.Driver");
 
-            String urlServer = "jdbc:mysql://" + host + ":" + port + "/?useSSL=false&serverTimezone=UTC";
+            String urlServer = "jdbc:mysql://" + host + ":" + port + "/?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
             try (Connection connServer = DriverManager.getConnection(urlServer, user, password);
                 Statement stmtServer = connServer.createStatement()) {
 

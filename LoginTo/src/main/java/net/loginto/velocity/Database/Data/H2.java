@@ -10,6 +10,7 @@ package net.loginto.velocity.Database.Data;
 
 import static net.loginto.velocity.Utility.FileMGR.YamlRead;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,7 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
-import org.h2.tools.Server;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 
@@ -30,7 +30,7 @@ public class H2 {
     private final ProxyServer server;
     private final LoginTo plugin;
 
-    private Server tcpServer;
+    private Object tcpServer;
 
     public H2(ProxyServer server, LoginTo plugin) {
         this.server = server;
@@ -40,21 +40,22 @@ public class H2 {
     public void connect() {
         try {
             
-            Class.forName("org.h2.Driver");
-
-            // Embedded connection
-            Connection conn = DriverManager.getConnection(
-                "jdbc:h2:./plugins/loginto/LoginTo_Sharing",
-                "sa",
-                ""
-            );
+            Class.forName("net.loginto.libs.h2.Driver");
 
             String port = YamlRead("database.database.port");
 
-            tcpServer = Server.createTcpServer("-tcpPort", port, "-tcpAllowOthers").start();
+            Class<?> serverClass = Class.forName("net.loginto.libs.h2.tools.Server");
+            try {
+                //Create h2 tcp server
+                tcpServer = serverClass
+                        .getMethod("createTcpServer", String[].class)
+                        .invoke(null, (Object) new String[]{"-tcpPort", port, "-tcpAllowOthers", "-ifNotExists"});
+                //Start h2 tcp server
+                serverClass.getMethod("start").invoke(tcpServer);
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | IllegalAccessException e) { e.printStackTrace(); }
 
             conn = DriverManager.getConnection(
-                "jdbc:h2:tcp://localhost:" + port + "/./plugins/loginto/LoginTo_Sharing",
+                "jdbc:h2:tcp://localhost:" + port + "/./plugins/loginto/LoginTo_Sharing;IFEXISTS=FALSE",
                 "sa",
                 ""
             );
@@ -83,7 +84,9 @@ public class H2 {
         }
 
         if (tcpServer != null) {
-            tcpServer.stop();
+            try {
+                tcpServer.getClass().getMethod("stop").invoke(tcpServer);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) { e.printStackTrace(); }
         }
 
         if (stmt != null) {

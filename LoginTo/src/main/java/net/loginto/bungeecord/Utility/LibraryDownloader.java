@@ -20,7 +20,7 @@ public class LibraryDownloader {
         Library sqlite = Library.builder()
             .groupId("org.xerial")
             .artifactId("sqlite-jdbc")
-            .version("3.51.0.0")
+            .version("3.41.2.1")
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(sqlite);
@@ -30,6 +30,7 @@ public class LibraryDownloader {
             .artifactId("h2")
             .version("2.4.240")
             .repository("https://repo1.maven.org/maven2/")
+            .relocate("org.h2", "net.loginto.libs.h2")
             .build();
         libManager.loadLibrary(h2);
 
@@ -38,6 +39,7 @@ public class LibraryDownloader {
             .artifactId("mysql-connector-j")
             .version("8.2.0")
             .repository("https://repo1.maven.org/maven2/")
+            .relocate("com.mysql.cj", "net.loginto.libs.mysql")
             .build();
         libManager.loadLibrary(mysql);
 

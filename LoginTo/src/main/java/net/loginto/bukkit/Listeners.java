@@ -30,8 +30,15 @@ public class Listeners {
         instance.getServer().getPluginManager().registerEvents(new onCommandEvent(instance), instance);
         instance.getServer().getPluginManager().registerEvents(new InventoryOpen(), instance);
         instance.getServer().getPluginManager().registerEvents(new PlayerDropItem(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnInventoryClick(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnInventoryDrag(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnPlayerInteract(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnItemHeldListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnProjectileLaunch(), instance);
+        instance.getServer().getPluginManager().registerEvents(new OnVehicleEnter(), instance);
 
         EventManager events = PacketEvents.getAPI().getEventManager();
         events.registerListener(new OnPacketSend(), PacketListenerPriority.HIGHEST);
+        events.registerListener(new OnPacketReceived(), PacketListenerPriority.HIGHEST);
     }
 }

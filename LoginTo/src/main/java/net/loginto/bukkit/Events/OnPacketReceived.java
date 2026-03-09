@@ -10,24 +10,22 @@ package net.loginto.bukkit.Events;
 import static net.loginto.bukkit.Configuration.LoggedPlayers.isPlayerLogged;
 
 import com.github.retrooper.packetevents.event.PacketListener;
-import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 
-
-public class OnPacketSend implements PacketListener {
+public class OnPacketReceived implements PacketListener {
     
     @Override
-    public void onPacketSend(PacketSendEvent event) {
+    public void onPacketReceive(PacketReceiveEvent event) {
+        if (
+            event.getPacketType() == PacketType.Play.Client.CLICK_WINDOW ||
+            event.getPacketType() == PacketType.Play.Client.HELD_ITEM_CHANGE
+            ) {
 
-        if (event.getPacketType() == PacketType.Play.Server.SET_SLOT ||
-            event.getPacketType() == PacketType.Play.Server.OPEN_WINDOW ||
-            event.getPacketType() == PacketType.Play.Server.WINDOW_ITEMS ||
-            event.getPacketType() == PacketType.Play.Server.CLOSE_WINDOW) {
-            
             if (isPlayerLogged(event.getPlayer())) return;
 
             event.setCancelled(true);
-
         }
     }
+
 }
