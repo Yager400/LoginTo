@@ -1,6 +1,6 @@
 name: LoginTo
-version: '2.8'
-main: net.loginto.bukkit.Main
+version: '3.0'
+main: net.loginto.bukkit.LoginTo
 api-version: '1.8'
 api: spigot
 authors: [ Yager400 ]
@@ -8,8 +8,10 @@ softdepend: [PlaceholderAPI]
 commands:
   register:
     usage: /register <password> <confirm_password>
+    aliases: [r, reg]
   login:
     usage: /login <password>
+    aliases: [l]
   delacc:
     usage: /delacc <user> <confirm>
   changepassword:

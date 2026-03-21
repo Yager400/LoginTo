@@ -15,6 +15,7 @@ import net.loginto.bungeecord.Database.Database;
 import net.loginto.bungeecord.Database.SQLite;
 import net.loginto.bungeecord.Events.*;
 import net.loginto.bungeecord.Utility.LibraryDownloader;
+import net.loginto.bungeecord.Utility.Metrics;
 
 import static net.loginto.bungeecord.Utility.FileMGR.createBungeeConfigFile;
 
@@ -26,10 +27,11 @@ public class LoginTo extends Plugin {
     @Override
     public void onEnable() {
 
+        @SuppressWarnings("unused")
+        Metrics metric = new Metrics(this, 30332);
+
         Logger logger = getLogger();
         ProxyServer server = getProxy();
-
-        logger.warning("Hello, thanks for using the LoginTo Premium feature, this version is still in BETA and i will really appreciate if you report any bug here, thank you\n https://github.com/Yager400/LoginTo/issues");
 
         LibraryDownloader.Libs(this);
 
@@ -42,7 +44,6 @@ public class LoginTo extends Plugin {
         sqlite.connect();
 
         server.getPluginManager().registerListener(this, new PreLogin(database, sqlite, server, this));
-        server.getPluginManager().registerListener(this, new PluginMessage(server, database, logger));
         server.getPluginManager().registerListener(this, new CommandEvent(database));
         server.getPluginManager().registerListener(this, new DisconnectEvent(database));
     }

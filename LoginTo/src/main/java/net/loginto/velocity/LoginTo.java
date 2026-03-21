@@ -21,6 +21,7 @@ import net.loginto.velocity.Database.Database;
 import net.loginto.velocity.Database.SQLite;
 import net.loginto.velocity.Events.*;
 import net.loginto.velocity.Utility.LibraryDownloader;
+import net.loginto.velocity.Utility.Metrics;
 
 import static net.loginto.velocity.Utility.FileMGR.createVeloConfigFile;
 
@@ -34,21 +35,22 @@ public class LoginTo {
     private final Path dataDirectory;
     private Database database;
     private SQLite sqlite;
+    private Metrics.Factory makeFactory;
 
     @Inject
-    public LoginTo(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
+    public LoginTo(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory makeFactory) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
-        
+        this.makeFactory = makeFactory;
     }
 
     @Subscribe
     public void onProxyInit(ProxyInitializeEvent event) {
-
-        logger.warn("Hello, thanks for using the LoginTo Premium feature, this version is still in BETA and i will really appreciate if you report any bug here, thank you\n https://github.com/Yager400/LoginTo/issues");
-
         LibraryDownloader.Libs(this, logger, dataDirectory, server);
+
+        @SuppressWarnings("unused")
+        Metrics metric = makeFactory.make(this, 30331);
 
         createVeloConfigFile(this);
 
@@ -59,7 +61,6 @@ public class LoginTo {
         sqlite.connect();
 
         server.getEventManager().register(this, new PreLogin(server, database, sqlite, this));
-        server.getEventManager().register(this, new PluginMessage(server, database, logger));
         server.getEventManager().register(this, new CommandEvent(database));
         server.getEventManager().register(this, new DisconnectEv(database));
     }

@@ -5,54 +5,34 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-
 package net.loginto.bukkit.Commands;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import static net.loginto.bukkit.Configuration.Config.*;
-import static net.loginto.bukkit.Configuration.PlayersLogger.*;
-
-
-
-import static net.loginto.bukkit.Configuration.LoggedPlayers.*;
-
-import static net.loginto.bukkit.Configuration.SetPlayerStatus.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.loginto.bukkit.Configuration.Messages;
-import net.loginto.bukkit.DataBases.DataBase;
-import net.loginto.bukkit.ExtraFeature.Utility;
-import net.loginto.bukkit.ExtraFeature.WebHooks;
-import net.loginto.bukkit.JSON.JsonMenager;
-import net.loginto.bukkit.Premium.Check;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-public class Register implements CommandExecutor  {
+import net.loginto.bukkit.PlayerUtils.PlayerStatus;
+import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Utils.LoginToFiles;
 
+public class register implements CommandExecutor, TabCompleter {
+        
+    private final Plugin plugin;
+    private final Database database;
 
-
-    private final JavaPlugin plugin;
-
-    private final DataBase database;
-
-    public Register(JavaPlugin plugin, DataBase database) {
+    public register(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
 
-
-
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        
 
         if (!(sender instanceof Player)) {
             sender.sendMessage("Not a player");
@@ -60,45 +40,41 @@ public class Register implements CommandExecutor  {
         }
 
         Player player = (Player) sender;
-        
 
         if (!sender.hasPermission("loginto.register")) {
-            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.no_permission", plugin)));
+            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
             return true;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.register_error", plugin)));
+            sender.sendMessage(LoginToFiles.Messages.getMessage("register.error.register-usage", player, plugin));
             return true;
         }
-        
+
         String password = args[0];
 
         String repetePassword = args[1];
 
         if (!password.equals(repetePassword)) {
-            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.password_mismatch", plugin)));
+            sender.sendMessage(LoginToFiles.Messages.getMessage("register.error.password-mismatch", player, plugin));
             return true;
         }
 
-
-
-
-        if (isFeatureEnabled("password-security.required_character", plugin)) {
+        if ((Boolean) LoginToFiles.Config.get("password-requirements.require-special-chars", plugin)) {
 
             final List<String> ReqChar = new ArrayList<>();
 
-            for (char c : getStringFromConfig("password-security.characters_needed", plugin).toCharArray()) {
+            for (char c : ((String) LoginToFiles.Config.get("password-requirements.required-char-list", plugin)).toCharArray()) {
                 ReqChar.add(String.valueOf(c));
             }
 
             for (String c : ReqChar) {
                 if (!password.contains(c)) {
                     sender.sendMessage(
-                        Messages.PAPIFormat(player, Messages.getMessage("errors.register_character_error", plugin))
+                        LoginToFiles.Messages.getMessage("register.error.register-character-error", player, plugin)
                         .replace(
                             "%characters%", 
-                            getStringFromConfig("password-security.characters_needed", plugin)
+                            (String) LoginToFiles.Config.get("password-requirements.required-char-list", plugin)
                         ));
                     return true;
                 }
@@ -106,67 +82,56 @@ public class Register implements CommandExecutor  {
             
         }
 
-        if (isFeatureEnabled("password-security.password_length.enabled", plugin)) {
-            int min = getIntFromConfig("password-security.password_length.min_length", plugin);
-            int max = getIntFromConfig("password-security.password_length.max_length", plugin);
+        if ((Boolean) LoginToFiles.Config.get("password-requirements.length-check.enabled", plugin)) {
+            int min = (int) LoginToFiles.Config.get("password-requirements.length-check.min-length", plugin);
+            int max = (int) LoginToFiles.Config.get("password-requirements.length-check.max-length", plugin);
 
             if (password.length() < min || password.length() > max) {
 
-                player.sendMessage(Messages.PAPIFormat(
-                    player, 
-                    Messages.getMessage("errors.password_length", plugin)
+                player.sendMessage(LoginToFiles.Messages.getMessage("register.error.password-length", player, plugin)
                         .replaceAll("%min_length%", String.valueOf(min))
                         .replaceAll("%max_length%", String.valueOf(max))
-                ));
+                    );
 
                 return true;
             }
         }
 
+        if (database.isPlayerPresentInDB(player)) {
+            sender.sendMessage(LoginToFiles.Messages.getMessage("register.error.already-registered", player, plugin));
+            return true;
+        }
 
+
+    
+        try {
+            database.insertPlayer(player, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        sender.sendMessage(LoginToFiles.Messages.getMessage("register.register-success", player, plugin));
         
-        //Using JSON
-        if (database == null) {
-
-            JsonMenager file = new JsonMenager(plugin.getDataFolder(), "data.json");
-
-            if (file.getString(player.getName() + ".password") != null) {
-                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.already_registered", plugin)));
-                return true;
-            }
-
-            if (!file.exists()) {
-                sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.unexpected_error", plugin)));
-                return true;
-            }
-
-            file.set(player.getName() + ".password", password);
-            file.save();
-        }
-
-        //Using DB
-        else  {
-            try {
-                if (database.isPlayerPresentInDB(player)) {
-                    sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.already_registered", plugin)));
-                    return true;
-                }
-
-
-            
-                database.insertPlayer(player, password);
-            } catch (Exception e) {}
-        }
-
-        addPlayer(player);
-
-        sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("register.register_success", plugin)));
-        unlockPlayer(player);
-        logPlayer(player, plugin, false);
-        WebHooks.send_register_webhook(Utility.getFormattedWebhookMessage("register", player, null, plugin), plugin);
-        Check.SetLoggedPlayer(plugin, player);
-        player.updateInventory();
+        PlayerStatus.setPlayerAsLogged(player, plugin, false);
+        
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (args.length == 1) {
+            List<String> list = new ArrayList<>();
+            list.add("<password>");
+            return list;
+        }
+        if (args.length == 2) {
+            List<String> list = new ArrayList<>();
+            list.add("<confirmPassword>");
+            return list;
+        }
+
+        return null;
     }
 }

@@ -1,199 +1,88 @@
-ConfigVersion: '1.6' # Version of this configuration, do not change this
-          
+ConfigVersion: "1.7" # DO NOT CHANGE THIS
+# -------------------------------------------------------------------------------------------------- #
+#                                                                                                    #
+#                                       LoginTo Configuration                                        #
+#                                                                                                    #
+# -------------------------------------------------------------------------------------------------- #
 
-kick-rules:
+
+auth-security:
+
+  # Kick the player if they provide an incorrect password during /login?
+  kick-on-invalid-password: true
+  # Maximum login attempts before getting kicked
+  max-login-attempts: 3
+
+  # Kick players who stay unauthenticated for too long?
+  kick-on-auth-timeout: true
+  # Seconds allowed to authenticate before the kick occurs
+  auth-timeout-seconds: 10
+
+password-requirements:
+  # Require specific special characters in the password during registration?
+  require-special-chars: false
+  # List the characters required if the setting above is true
+  required-char-list: ''
+
+  # Define password length constraints
+  length-check:
+    enabled: true
+    min-length: 8
+    max-length: 32
+
+
+# World and teleportation
+spawn-settings:
+  # Enable automatic teleportation to a specific location on join?
+  teleport-on-join: false
   
-  # When a player change password kick him from the server?
-  kick_on_password_change: true
-
-  # Should LoginTo kick a player if he didn't write the correct password on /login <password> ?
-  kick_on_wrong_password: true
-  tries: 3
-
-  # Should LoginTo kick a player if he stays too long in the authentication process?
-  kick_on_too_many_second_passed: true
-  seconds_before_kick: 20
-
-world_settings:
-
-  # Enable or disable automatic teleport when a player joins the world
-  teleport_on_join_enabled: false
+  # Target dimension for the teleport (e.g., world, world_nether, world_the_end)
+  target-dimension: 'world'
   
-  # Dimension where the player will be teleported
-  # Standard options:
-  # - world = The OverWorld 
-  # - world_nether = The Nether 
-  # - world_the_end = The End
-  #
-  # You can even put the world folder name if you have a custom world
-  teleport_dimension: 'world'
-  
-  # Target coordinates for teleport
-  teleport_coordinates:
+  # Exact coordinates for the teleportation point
+  spawn-coordinates:
     x: 0
     y: -64
     z: 0
     
-  # Teleport the player back to their last location from before they logged out
-  teleport_to_previous_location: true
+  # Return the player to their last known location after a successful login?
+  restore-previous-location: true
 
 
+# Storage
+storage:
 
-password-security:
-
-  # If a player need to register, it's password need's to have certain characters
-  required_character: false
-
-  # If required_character is true here you need to put the required characters
-  characters_needed: ''
-
-  password_length:
-    # Chose to enable the feature or not
-    enabled: true
-
-    # The minimum length for the password
-    min_length: 8
-
-    # The maximum length for the password
-    max_length: 32
-
-
-permissions:
-
-  # If this setting is on true, LoginTo will require to be an operator (op), if you want to use LuckPerms or any other permission plugin turn this on false
-  op_required_delacc: true
-
-  # Permission: if you want to use permission go to https://modrinth.com/plugin/loginto and read the description to find everything 
-  # Make sure that 'op_required_delacc' is set to false to use permission
-  permission: false
-
-
-player-effects:
-  
-  # When a user join he will be immune by any damage, then when he sing up this protection will be removed
-  godmode: true
-
-  # When a player need's to sing up/sing in give the blindness effect?
-  blindness: true
-
-
-proxy-integration:
-  # !!!WARNING!!!
-  # This feature got removed due to a bug, but this might return
-
-  # Change server when someone login in the server
-  # To use it just put on true the features and write your server name
-
-  #go_to_server: false
-
-  #server_name: ''
-
-
-discord-webhook:
-  # Send a webhook in a discord server, you need to put your webhook's url
-
-  # Use this webhookName_webhook_message to send a custom message
-  # Messages works with the discord markdown, and if you want variables in it, use the PlaceHolderAPI or those string
-  # - %playerName% -> The name of the player who triggered the webhook
-  # - %targetPlayer% -> If present, the target player for that action
-
-  # When a player sing up
-  register_webhook: ''
-  register_webhook_message: "**%playerName%** completed the registration"
-
-  # When a player sing in
-  login_webhook: ''
-  login_webhook_message: "**%playerName%** completed the login"
-  
-  # When an admin delete a user account
-  delacc_webhook: ''
-  delacc_webhook_message: "**%playerName%** deleted **%targetPlayer%**'s account"
-
-  # When someone changes their password
-  changepassword_webhook: ''
-  changepassword_webhook_message: "**%playerName%** changed his password"
-
-
-utility:
-  # This setting will enable the update checker of LoginTo, when a new version will be uploaded you will recive a message in the console when starting the server
-  update-checker: true
-
-
-support:
-  # If you want to support me please leave this on, otherways no problem, thank you anyways
-  # This setting will remove the 'Service offered by LoginTo on Modrinth' watermark
-  loginto-watermark: true
-
-
-data:
-  # How do you want to save the player's login information? (this setting will need a server reboot)
-  # json -> the classic way LoginTo uses to save player data
-  # sqlite -> use SQLite to save player data; faster than JSON and more secure
-  # mysql -> use MySQL to save player data; a classic networked database
-  # postgre -> use PostgreSQL to save player data; faster with large amounts of data
-  # h2 -> use H2 database, a fast java database that is veri similar to sqlite
-  data-saving-type: "json"
-
-
-database:
-  # If you are saving the datas with the option "json" do not touch this part, istead if you are using sqlite/h2 just compile the name param
-  # If you are having problems please report those to my github project -> https://github.com/Yager400/LoginTo/issues
-
-  # The ip address of your database, if you are hosting it on the same machine as your server type "localhost" or "127.0.0.1"
-  host: ""
-
-  # The port of your database, the default MySQL port is "3306" while the default PostgreSQL port is "5432"
-  port: 0
-
-  # The name of your database, to create this go to your dbms and type this "create database <your_db_name>;" and run (if the database doesn't exist LoginTo will try to create it but probably it wont work)
-  name: ""
-
-  # The username to access your database
-  user: ""
-
-  # The password to access your database
-  password: ""
-
-
-premium:
-  # Modern premium feature
-  # WARNING: In this version (2.4) this feature is still in beta, it works but remind this
-  # Also the feature is disabled because not everyone has a proxy
-
-  # What you will need for this to work?
-  # A velocity/bungeecord proxy
-  # The proxy needs to be in offline-mode
-  # The server needs to be in offline-mode (for the proxy)
-  # Your server needs to be eable to send request to mojang.com for the authentication (if you have a firewall consider this)
-
-  # Should LoginTo let players AutoLogin into their account and let them use the /premium and /cracked command
-  premium: false
-
-  # This is the type of database that will be used by the plugins for comunicating
-  # Options:
-  # mysql -> For MySQL
-  # h2 -> For H2 database
-  database-type: "h2"
+  # Storage Methods: sqlite, mysql, postgre, h2
+  # Changing this requires a full server reboot
+  storage-type: "sqlite"
 
   database:
-    # This will be the host of the proxy, so the host of the H2 or MySql database for sharing data
-    # The name param is only used for MySql, the default name for the H2 database will be 'LoginTo_Sharing'
-    
-    # The ip address of your database, if you are hosting it on the same machine as your server type "localhost" or "127.0.0.1"
-    host: ""
-
-    # The port of your database, if this is 0, the default will be 9092 or 3306 (depending on the database type)
-    port: 0
-
-    # The user for your database (the H2 default user is 'sa')
-    user: "sa"
-
-    # The password for your database
+    # Connection details for the database (for sqlite or h2, you will need to change only the name)
+    host: "localhost"
+    port: 3306
+    name: "LoginTo_DB"
+    user: ""
     password: ""
 
-    # The name of your database (change this only if you are using MySql), if this is null, the name will be "LoginTo_Sharing"
-    name: ""
 
+# Premium system
+premium:
+  # Enables AutoLogin, /premium, /cracked commands and make unusable the proxy command unless the user is logged.
+  # Requires a Proxy (Velocity/Bungee) and offline-mode setup
+  enable-premium-features: false
+
+  storage:
+    # Database type for cross-server communication (mysql or h2)
+    database-type: "h2"
+
+    database:
+      host: "localhost"
+      # If the port is 0, it will be the database's default port (3306 for mysql and 9092 for h2)
+      port: 0
+      user: "sa"
+      password: ""
+      # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
+      database-name: "LoginTo_Sharing"
 
 logging:
   # This feature is for logging all the players that joins in the server
@@ -204,6 +93,16 @@ logging:
   # You can change the time (ss:mm:hh) and not using the space, but if you use the /getlogs command with the time selector, the date must remain "dd/MM/yyyy"
   date-format: "HH:mm:ss dd/MM/yyyy"
 
-  
 
-    
+
+plugin-utility:
+  # Check for new updates on startup and notify the console?
+  enable-update-checker: true
+  
+  # Show the 'Service offered by LoginTo' watermark?, if you want to support me, consider leaving this on
+  show-watermark: true
+
+
+
+
+  

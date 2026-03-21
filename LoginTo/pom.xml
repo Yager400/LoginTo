@@ -188,6 +188,13 @@
         <artifactId>jar-relocator</artifactId>
         <version>1.7</version>
     </dependency>
+
+    <!--BCrypt-->
+    <dependency>
+        <groupId>org.mindrot</groupId>
+        <artifactId>jbcrypt</artifactId>
+        <version>0.4</version>
+    </dependency>
     
   </dependencies>
 

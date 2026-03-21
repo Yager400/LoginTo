@@ -39,7 +39,7 @@ public class LibraryDownloader {
             .artifactId("mysql-connector-j")
             .version("8.2.0")
             .repository("https://repo1.maven.org/maven2/")
-            .relocate("com.mysql.cj", "net.loginto.libs.mysql")
+            .relocate("com.mysql", "net.loginto.libs.mysql")
             .build();
         libManager.loadLibrary(mysql);
 

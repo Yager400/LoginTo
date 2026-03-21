@@ -5,62 +5,112 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-
 package net.loginto.bukkit.Commands;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import static net.loginto.bukkit.Configuration.Config.isFeatureEnabled;
-import net.loginto.bukkit.Configuration.Messages;
-import static net.loginto.bukkit.Premium.Premium.executePremiumCommand;
+import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 
-public class Premium implements CommandExecutor {
-
+public class premium implements CommandExecutor, TabCompleter {
+        
     private final Plugin plugin;
+    @SuppressWarnings("unused")
+    private final Database database;
+    private List<Player> playerList = new ArrayList<>();
 
-    public Premium(Plugin plugin) {
+    public premium(Plugin plugin, Database database) {
         this.plugin = plugin;
+        this.database = database;
     }
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (!(sender instanceof Player) && args.length != 1) {
-            sender.sendMessage("Console can't became premium, select a player like this '/premium <player>'");
+        
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Not a player");
             return true;
         }
 
         Player player = (Player) sender;
 
-        if (!sender.hasPermission("loginto.premium.me")) {
-            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.no_permission", plugin)));
-            return false;
+        if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) {
+            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", player, plugin));
+            return true;
         }
 
-        if (isFeatureEnabled("premium.premium", plugin)) {
-            if (args.length == 0) {
-                executePremiumCommand((Player) sender, plugin);
-            }
-            else {
-                Player target = Bukkit.getPlayerExact(args[0]);
+        if (!player.hasPermission("loginto.premium.me")) {
+            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+            return true;
+        }
 
-                if (target == null) {
-                    sender.sendMessage("No player named: " + args[0]);
-                } else {
-                    if (sender.hasPermission("loginto.premium.other")) {
-                        executePremiumCommand(target, plugin);
-                    }
-                }
+        if (args.length >= 1) {
+            if (!player.hasPermission("loginto.premium.others")) {
+                sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+                return true;
             }
+
+            Player target = Bukkit.getPlayer(args[0]);
+
+            if (!target.isOnline()) {
+                sender.sendMessage("This player isn't online");
+                return true;
+            }
+
+            if (PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(target, plugin)) {
+                sender.sendMessage("Player already premium");
+                return true;
+            }
+
+            PremiumUtils.PlayersInfo.sendPremiumPluginMessage(target, plugin);
+
+            sender.sendMessage("§2This player is now premium");
+
         } else {
-            sender.sendMessage(Messages.PAPIFormat(player, Messages.getMessage("errors.feature_not_enabled", plugin)));
-        }
+            if (PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(player, plugin)) {
+                sender.sendMessage(LoginToFiles.Messages.getMessage("premium.error.already-premium", player, plugin));
+                return true;
+            }
+
+            if (!playerList.contains(player)) {
+                playerList.add(player);
+                sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-warn", player, plugin));
+                return true;
+            } else {
+                playerList.remove(player);
+            }
+
+            PremiumUtils.PlayersInfo.sendPremiumPluginMessage(player, plugin);
+
+            sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-done", player, plugin));
+
+        }   
+
+
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+
+        if (args.length == 1) {
+            List<String> list = new ArrayList<>();
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                list.add(p.getName());
+            }
+            return list;
+        }
+
+        return null;
+    }
 }
