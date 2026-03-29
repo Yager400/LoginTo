@@ -9,6 +9,7 @@ package net.loginto.bukkit.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -23,12 +24,12 @@ import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 
-public class delacc implements CommandExecutor, TabCompleter {
+public class DelAcc implements CommandExecutor, TabCompleter {
         
     private final Plugin plugin;
     private final Database database;
 
-    public delacc(Plugin plugin, Database database) {
+    public DelAcc(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -62,8 +63,10 @@ public class delacc implements CommandExecutor, TabCompleter {
             target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage("delacc.admin-deleted-account", player, plugin));
         }
 
-        if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) {
-            PremiumUtils.PlayersInfo.sendRemovePremiumPlayerMessage(target, plugin);
+        if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            CompletableFuture.runAsync(() -> {
+                PremiumUtils.PlayersInfo.sendRemovePremiumRequest(target, plugin);
+            });
         }
 
         sender.sendMessage(LoginToFiles.Messages.getMessage("delacc.account-deleted", player, plugin));

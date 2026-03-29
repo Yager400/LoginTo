@@ -15,6 +15,7 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.loginto.bukkit.Commands.*;
 import net.loginto.bukkit.Events.Listener;
 import net.loginto.bukkit.Events.Listeners.CancelledEvents;
+import net.loginto.bukkit.Events.Listeners.logAnotherLocEvents;
 import net.loginto.bukkit.Events.Listeners.onJoinEvent;
 import net.loginto.bukkit.Events.Listeners.onPreCommandProcessEvent;
 import net.loginto.bukkit.Events.Listeners.onQuitEvent;
@@ -26,7 +27,9 @@ import net.loginto.bukkit.Storage.Databases.SQLite;
 import net.loginto.bukkit.Utils.LibraryDownloader;
 import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.Metrics;
+import net.loginto.bukkit.Utils.Update;
 import net.loginto.bukkit.Utils.Metrics.SimplePie;
+import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 import net.loginto.bukkit.Utils.YMLVersion;
 
 public class LoginTo extends JavaPlugin {
@@ -49,7 +52,6 @@ public class LoginTo extends JavaPlugin {
         PacketEvents.getAPI().init();
 
         //Metrics
-        @SuppressWarnings("unused")
         Metrics metrics = new Metrics(this, 28083);
         //----
         
@@ -60,16 +62,17 @@ public class LoginTo extends JavaPlugin {
         //-----
 
         //Updating yaml files
+        //TODO
         try {
             YMLVersion.builder()
                 .plugin(this)
-                .version("1.7")
+                .version("1.8")
                 .resource("config.yml")
                 .versionKey("ConfigVersion")
                 .build();
             YMLVersion.builder()
                 .plugin(this)
-                .version("1.5")
+                .version("1.6")
                 .resource("messages.yml")
                 .versionKey("MessageVersion")
                 .build();
@@ -79,7 +82,7 @@ public class LoginTo extends JavaPlugin {
         //-----
 
         //Initializing databases
-        String databaseType = (String) LoginToFiles.Config.get("storage.storage-type", this);
+        String databaseType = LoginToFiles.Config.getString("storage.storage-type", this);
         database = null;
         switch (databaseType) {
             case "sqlite": 
@@ -114,6 +117,11 @@ public class LoginTo extends JavaPlugin {
                 }));
                 break;
         }
+        //Connecting premium database
+        if (LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", this)) {
+            PremiumUtils.connectAndGetSource(this);
+        }
+
         //-----
 
         //Registering listener
@@ -122,32 +130,40 @@ public class LoginTo extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new onJoinEvent(this, database), this);
         getServer().getPluginManager().registerEvents(new onPreCommandProcessEvent(this), this);
         getServer().getPluginManager().registerEvents(new onQuitEvent(this), this);
+        getServer().getPluginManager().registerEvents(new logAnotherLocEvents(this), this);
 
         Listener.implementPacketEventListener();
         //-----
 
         //Add commands
-        getCommand("register").setExecutor(new register(this, database));
-        getCommand("register").setTabCompleter(new register(this, database));
+        getCommand("register").setExecutor(new Register(this, database));
+        getCommand("register").setTabCompleter(new Register(this, database));
         
-        getCommand("login").setExecutor(new login(this, database));
-        getCommand("login").setTabCompleter(new login(this, database));
+        getCommand("login").setExecutor(new Login(this, database));
+        getCommand("login").setTabCompleter(new Login(this, database));
         
-        getCommand("delacc").setExecutor(new delacc(this, database));
-        getCommand("delacc").setTabCompleter(new delacc(this, database));
+        getCommand("delacc").setExecutor(new DelAcc(this, database));
+        getCommand("delacc").setTabCompleter(new DelAcc(this, database));
         
-        getCommand("changepassword").setExecutor(new changepassword(this, database));
-        getCommand("changepassword").setTabCompleter(new changepassword(this, database));
+        getCommand("changepassword").setExecutor(new ChangePassword(this, database));
+        getCommand("changepassword").setTabCompleter(new ChangePassword(this, database));
         
-        getCommand("premium").setExecutor(new premium(this, database));
-        getCommand("premium").setTabCompleter(new premium(this, database));
+        getCommand("premium").setExecutor(new Premium(this, database));
+        getCommand("premium").setTabCompleter(new Premium(this, database));
         
-        getCommand("cracked").setExecutor(new cracked(this, database));
+        getCommand("cracked").setExecutor(new Cracked(this, database));
 
         getCommand("getlogs").setExecutor(new getlogs(this));
         getCommand("getlogs").setTabCompleter(new getlogs(this));
         //-----
 
+        //Register channel
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        //------
+
+        //Updated
+        Update.checkForUpdates(this);
+        //-----
 
         getLogger().warning("LoginTo loaded!");
 

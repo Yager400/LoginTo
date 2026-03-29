@@ -1,4 +1,4 @@
-MessageVersion: "1.5" # DO NOT CHANGE THIS
+MessageVersion: "1.6" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Messages Config                                      #
@@ -168,6 +168,9 @@ errors:
 
     # When a player joins and doesn't complete the authentication in time
     onkick-for-long-waiting: "Authentication timed out. Please rejoin and try again."
+
+    # Kick message when someone joins the server but another player with the same name is already online. (This message uses PAPI for the player already in the server, not for the joining player)
+    onkick-for-joining-with-same-name: "Another player with your name is already on this server"
 
 
 

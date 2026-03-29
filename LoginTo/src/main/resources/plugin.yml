@@ -1,5 +1,5 @@
 name: LoginTo
-version: '3.0'
+version: '3.1'
 main: net.loginto.bukkit.LoginTo
 api-version: '1.8'
 api: spigot

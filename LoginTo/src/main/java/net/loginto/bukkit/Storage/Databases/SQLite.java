@@ -57,7 +57,7 @@ public class SQLite implements Database {
 
 
     private void connectSQLite() throws ClassNotFoundException {
-        String DBName = (String) LoginToFiles.Config.get("storage.database.name", plugin);
+        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
         File dbFile = new File(plugin.getDataFolder(), DBName + ".db");
         String url = "jdbc:sqlite:" + dbFile.getAbsolutePath().replace("\\", "/");

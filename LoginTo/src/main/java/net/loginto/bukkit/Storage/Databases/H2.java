@@ -54,7 +54,7 @@ public class H2 implements Database {
     }
 
     private void connectH2() throws ClassNotFoundException {
-        String DBName = (String) LoginToFiles.Config.get("storage.database.name", plugin);
+        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
         File dbFile = new File(plugin.getDataFolder(), DBName);
         String url = "jdbc:h2:" + dbFile.getAbsolutePath().replace("\\", "/");

@@ -9,6 +9,7 @@ package net.loginto.bukkit.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -22,14 +23,14 @@ import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 
-public class premium implements CommandExecutor, TabCompleter {
+public class Premium implements CommandExecutor, TabCompleter {
         
     private final Plugin plugin;
     @SuppressWarnings("unused")
     private final Database database;
     private List<Player> playerList = new ArrayList<>();
 
-    public premium(Plugin plugin, Database database) {
+    public Premium(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -44,7 +45,7 @@ public class premium implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
             sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", player, plugin));
             return true;
         }
@@ -67,32 +68,56 @@ public class premium implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            if (PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(target, plugin)) {
-                sender.sendMessage("Player already premium");
-                return true;
-            }
-
-            PremiumUtils.PlayersInfo.sendPremiumPluginMessage(target, plugin);
-
-            sender.sendMessage("§2This player is now premium");
+            CompletableFuture.supplyAsync(() -> {
+                return PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(target, plugin);
+            }).thenAccept(isPremiumAlready -> {
+                if (isPremiumAlready) {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        sender.sendMessage("Player already premium");
+                    });
+                } else {
+                    PremiumUtils.PlayersInfo.sendPremiumRequest(target, plugin);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        sender.sendMessage("§2This player is now premium");
+                    });
+                }
+            });
 
         } else {
-            if (PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(player, plugin)) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("premium.error.already-premium", player, plugin));
-                return true;
-            }
 
-            if (!playerList.contains(player)) {
-                playerList.add(player);
-                sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-warn", player, plugin));
-                return true;
-            } else {
-                playerList.remove(player);
-            }
+            CompletableFuture.supplyAsync(() -> {
+                return PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(player, plugin);
+            }).thenAccept(isPremiumAlready -> {
+                boolean skip = false;
 
-            PremiumUtils.PlayersInfo.sendPremiumPluginMessage(player, plugin);
+                if (isPremiumAlready) {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        sender.sendMessage(LoginToFiles.Messages.getMessage("premium.error.already-premium", player, plugin));
+                    });
+                }
+                else {
+                    
+                    if (!playerList.contains(player)) {
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            playerList.add(player);
+                            sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-warn", player, plugin));
+                        });
+                        skip = true;
+                    } else {
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            playerList.remove(player);
+                        });
+                    }
 
-            sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-done", player, plugin));
+                }
+            
+                if (!skip) {
+                    PremiumUtils.PlayersInfo.sendPremiumRequest(player, plugin);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-done", player, plugin));
+                    });
+                }
+            });
 
         }   
 

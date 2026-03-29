@@ -9,7 +9,9 @@ package net.loginto.bukkit.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,14 +22,14 @@ import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 
-public class cracked implements CommandExecutor {
+public class Cracked implements CommandExecutor {
         
     private final Plugin plugin;
     @SuppressWarnings("unused")
     private final Database database;
     private List<Player> playerList = new ArrayList<>();
 
-    public cracked(Plugin plugin, Database database) {
+    public Cracked(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -41,7 +43,7 @@ public class cracked implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
             sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", player, plugin));
             return true;
         }
@@ -50,23 +52,40 @@ public class cracked implements CommandExecutor {
             sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
             return true;
         }
+        
+        CompletableFuture.supplyAsync(() -> {
+            return PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(player, plugin);
+        }).thenAccept(isPremiumAlready -> {
+            boolean skip = false;
 
-        if (PremiumUtils.PlayerPremium.IsPlayerInThePremiumDB(player, plugin)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.error.already-cracked", player, plugin));
-            return true;
-        }
+            if (isPremiumAlready) {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.error.already-cracked", player, plugin));
+                });
+            }
+            else {
+                
+                if (!playerList.contains(player)) {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        playerList.add(player);
+                        sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.cracked-warn", player, plugin));
+                    });
+                    skip = true;
+                } else {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        playerList.remove(player);
+                    });
+                }
 
-        if (!playerList.contains(player)) {
-            playerList.add(player);
-            sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.cracked-warn", player, plugin));
-            return true;
-        } else {
-            playerList.remove(player);
-        }
-
-        PremiumUtils.PlayersInfo.sendCrackedPluginMessage(player, plugin);
-
-        sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.cracked-done", player, plugin));
+            }
+        
+            if (!skip) {
+                PremiumUtils.PlayersInfo.sendCrackedRequest(player, plugin);
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    sender.sendMessage(LoginToFiles.Messages.getMessage("cracked.cracked-done", player, plugin));
+                });
+            }
+        });
 
 
         return true;

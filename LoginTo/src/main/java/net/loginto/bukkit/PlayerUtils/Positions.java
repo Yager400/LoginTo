@@ -22,7 +22,7 @@ public class Positions {
 
         JsonManager oldPos = new JsonManager(plugin.getDataFolder(), "oldPosition.json");
 
-        if (!(Boolean) LoginToFiles.Config.get("spawn-settings.teleport-on-join", plugin)) return;
+        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) return;
 
         if (oldPos.getString(player.getName() + ".world") != null) return;
 
@@ -40,8 +40,8 @@ public class Positions {
         JsonManager oldPos = new JsonManager(plugin.getDataFolder(), "oldPosition.json");
 
         
-        if (!(Boolean) LoginToFiles.Config.get("spawn-settings.teleport-on-join", plugin)) return;
-        if (!(Boolean) LoginToFiles.Config.get("spawn-settings.restore-previous-location", plugin)) return;
+        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) return;
+        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.restore-previous-location", plugin)) return;
         
         if (oldPos.getString(player.getName() + ".world") == null) return;
 

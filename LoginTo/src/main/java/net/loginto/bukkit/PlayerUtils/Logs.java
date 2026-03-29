@@ -25,7 +25,7 @@ public class Logs {
 
     public static void logPlayer(OfflinePlayer player, Plugin plugin, boolean loggedAsPremium) {
 
-        if (!(Boolean) LoginToFiles.Config.get("logging.logging", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled("logging.logging", plugin)) {
             return;
         }
 
@@ -39,7 +39,7 @@ public class Logs {
             YamlConfiguration log = YamlConfiguration.loadConfiguration(logFile);
 
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern((String) LoginToFiles.Config.get("logging.date-format", plugin));
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(LoginToFiles.Config.getString("logging.date-format", plugin));
 
             if (!log.contains(player.getName())) {
                 log.set(player.getName() + ".times-joined", 1);

@@ -31,13 +31,15 @@ public class onQuitEvent implements Listener {
     
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+
+        plugin.reloadConfig();
         
         if (Sessions.isPlayerLogged(event.getPlayer())) {
             Sessions.removePlayer(event.getPlayer());;
         }
         Tries.resetTries(event.getPlayer());
 
-        if ((Boolean) LoginToFiles.Config.get("spawn-settings.teleport-on-join", plugin)) {
+        if (LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) {
             Player player = event.getPlayer();
             Location playerLocation = player.getLocation();
 
@@ -50,10 +52,10 @@ public class onQuitEvent implements Listener {
                 plugin
             );
 
-            World world = Bukkit.getWorld((String) LoginToFiles.Config.get("spawn-settings.target-dimension", plugin));
-            double x = (int) LoginToFiles.Config.get("spawn-settings.spawn-coordinates.x", plugin);
-            double y = (int) LoginToFiles.Config.get("spawn-settings.spawn-coordinates.y", plugin);
-            double z = (int) LoginToFiles.Config.get("spawn-settings.spawn-coordinates.z", plugin);
+            World world = Bukkit.getWorld(LoginToFiles.Config.getString("spawn-settings.target-dimension", plugin));
+            double x = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.x", plugin);
+            double y = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.y", plugin);
+            double z = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.z", plugin);
 
             Location location = new Location(world, x, y, z);
 

@@ -17,6 +17,8 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 
@@ -39,18 +41,18 @@ public class Sessions {
     public static class Proxy {
 
         public static boolean isPlayerLoggedN(Player player, Plugin plugin) {
-            if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) return false;
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return false;
 
-            Connection connection = PremiumUtils.connect(plugin);
+            HikariDataSource src = PremiumUtils.connectAndGetSource(plugin);
 
-            if (connection == null) {
-                plugin.getLogger().severe("Connection null");
+            if (src == null) {
+                plugin.getLogger().severe("Source null");
                 return false;
             }
 
             String sql = "select * from LoggedPlayers where username = ?";
 
-            try (Connection conn = connection;
+            try (Connection conn = src.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
                 ps.setString(1, player.getName());
@@ -67,18 +69,18 @@ public class Sessions {
         }
 
         public static void addPlayerN(Player player, Plugin plugin) {
-            if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) return;
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return;
 
-            Connection connection = PremiumUtils.connect(plugin);
+            HikariDataSource src = PremiumUtils.connectAndGetSource(plugin);
 
-            if (connection == null) {
-                plugin.getLogger().severe("Connection null");
+            if (src == null) {
+                plugin.getLogger().severe("Source null");
                 return;
             }
 
             String sql = "insert into LoggedPlayers(username) values (?)";
 
-            try (Connection conn = connection;
+            try (Connection conn = src.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
                 ps.setString(1, player.getName());

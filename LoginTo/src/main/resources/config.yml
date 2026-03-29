@@ -1,4 +1,4 @@
-ConfigVersion: "1.7" # DO NOT CHANGE THIS
+ConfigVersion: "1.8" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Configuration                                        #
@@ -49,6 +49,31 @@ spawn-settings:
   restore-previous-location: true
 
 
+# Integrations and webhooks
+integrations:
+
+  proxy:
+    # Specify the server where players should be sent after logging into your network (e.g., 'lobby-1'). 
+    # If you are not using a proxy or wish to disable this feature, leave this field empty.
+    server-post-login: ""
+
+  discord:
+    # Webhook URLs and custom messages (Supports Discord Markdown & PAPI)
+    # Variables: %playerName%, %targetPlayer%
+    
+    register-webhook-url: ''
+    register-message: "**%playerName%** completed the registration"
+
+    login-webhook-url: ''
+    login-message: "**%playerName%** completed the login"
+    
+    delete-account-webhook-url: ''
+    delete-account-message: "**%playerName%** deleted **%targetPlayer%**'s account"
+
+    password-change-webhook-url: ''
+    password-change-message: "**%playerName%** changed his password"
+
+
 # Storage
 storage:
 
@@ -68,11 +93,12 @@ storage:
 # Premium system
 premium:
   # Enables AutoLogin, /premium, /cracked commands and make unusable the proxy command unless the user is logged.
-  # Requires a Proxy (Velocity/Bungee) and offline-mode setup
+  # Requires a Proxy (Velocity/Bungee) with the plugin installed, and if you are running the proxy and the server on 
+   # two different machines or you are running in a dedicated host that uses pderodactyl, use mysql
   enable-premium-features: false
 
   storage:
-    # Database type for cross-server communication (mysql or h2)
+    # Database type for cross-server communication (mysql or h2), it's raccomanded mysql if you can
     database-type: "h2"
 
     database:

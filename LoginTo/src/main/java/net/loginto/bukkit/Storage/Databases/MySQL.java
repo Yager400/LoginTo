@@ -60,16 +60,16 @@ public class MySQL implements Database {
 
     private void connectMySQL() throws Exception {
         
-        String host = (String) LoginToFiles.Config.get("storage.database.host", plugin);
+        String host = LoginToFiles.Config.getString("storage.database.host", plugin);
         host = (host != null) ? host : "127.0.0.1";
-        int port = (int) LoginToFiles.Config.get("storage.database.port", plugin);
-        String DBName = (String) LoginToFiles.Config.get("storage.database.name", plugin);
+        int port = LoginToFiles.Config.getInt("storage.database.port", plugin);
+        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
 
         String urlNoDB = "jdbc:mysql://" + host + ":" + port + "/";
         String url = urlNoDB + DBName;
-        String user = (String) LoginToFiles.Config.get("storage.database.user", plugin);
-        String password = (String) LoginToFiles.Config.get("storage.database.password", plugin);
+        String user = LoginToFiles.Config.getString("storage.database.user", plugin);
+        String password = LoginToFiles.Config.getString("storage.database.password", plugin);
         
         plugin.getLogger().info("Connecting to: " + url);
         

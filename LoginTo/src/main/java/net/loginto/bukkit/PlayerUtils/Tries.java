@@ -40,7 +40,7 @@ public class Tries {
     public static boolean triesEnded(Player player, Plugin plugin) {
         int triesPlayer = tries.getOrDefault(player.getUniqueId(), 0);
 
-        if ((int) LoginToFiles.Config.get("auth-security.max-login-attempts", plugin) <= triesPlayer) return true;
+        if (LoginToFiles.Config.getInt("auth-security.max-login-attempts", plugin) <= triesPlayer) return true;
         else return false;
     }
 }

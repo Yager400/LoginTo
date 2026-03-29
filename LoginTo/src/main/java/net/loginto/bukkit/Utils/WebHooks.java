@@ -11,18 +11,22 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 
 public class WebHooks {
 
-    public static void send_register_webhook(String infoToView, Plugin plugin) {
-        String webhookUrl = (String) LoginToFiles.Config.get("integrations.discord.register-webhook-url", plugin);
+    public static void register(Plugin plugin, Player player) {
+        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+            .replaceAll("%playerName%", player.getName());
+
+        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.register-webhook-url", plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
         
-            Boolean success = send_webhook(webhookUrl, message);
+            Boolean success = webhook(webhookUrl, message);
             if (!success) {
                 plugin.getLogger().warning("register webhook request error, check the url");
             }
@@ -30,13 +34,16 @@ public class WebHooks {
         
     }
 
-    public static void send_login_webhook(String infoToView, Plugin plugin) {
-        String webhookUrl = (String) LoginToFiles.Config.get("integrations.discord.login-webhook-url", plugin);
+    public static void login(Plugin plugin, Player player) {
+        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+            .replaceAll("%playerName%", player.getName());
+
+        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.login-webhook-url", plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
         
-            Boolean success = send_webhook(webhookUrl, message);
+            Boolean success = webhook(webhookUrl, message);
             if (!success) {
                 plugin.getLogger().warning("login webhook request error, check the url");
             }
@@ -44,13 +51,17 @@ public class WebHooks {
         
     }
 
-    public static void send_delacc_webhook(String infoToView, Plugin plugin) {
-        String webhookUrl = (String) LoginToFiles.Config.get("integrations.discord.delete-account-webhook-url", plugin);
+    public static void delacc(Plugin plugin, Player player, Player target) {
+        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+            .replaceAll("%playerName%", player.getName())
+            .replaceAll("%targetPlayer%", target.getName());
+
+        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.delete-account-webhook-url", plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
                 
-            Boolean success = send_webhook(webhookUrl, message);
+            Boolean success = webhook(webhookUrl, message);
             if (!success) {
                 plugin.getLogger().warning("delacc webhook request error, check the url");
             }
@@ -59,13 +70,16 @@ public class WebHooks {
         
     }
 
-    public static void send_changepassword_webhook(String infoToView, Plugin plugin) {
-        String webhookUrl = (String) LoginToFiles.Config.get("integrations.discord.password-change-webhook-url", plugin);
+    public static void changepassword(Plugin plugin, Player player) {
+        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+            .replaceAll("%playerName%", player.getName());
+
+        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.password-change-webhook-url", plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \""+ infoToView +"\"}";
 
-            Boolean success = send_webhook(webhookUrl, message);
+            Boolean success = webhook(webhookUrl, message);
             if (!success) {
                 plugin.getLogger().warning("changepassword webhook request error, check the url");
             }
@@ -73,7 +87,7 @@ public class WebHooks {
         
     }
 
-    public static Boolean send_webhook(String webhookUrl, String message) {
+    private static Boolean webhook(String webhookUrl, String message) {
         try {
             URL url = new URL(webhookUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

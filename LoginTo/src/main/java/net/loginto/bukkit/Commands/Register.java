@@ -21,12 +21,12 @@ import net.loginto.bukkit.PlayerUtils.PlayerStatus;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 
-public class register implements CommandExecutor, TabCompleter {
+public class Register implements CommandExecutor, TabCompleter {
         
     private final Plugin plugin;
     private final Database database;
 
-    public register(Plugin plugin, Database database) {
+    public Register(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -60,11 +60,11 @@ public class register implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if ((Boolean) LoginToFiles.Config.get("password-requirements.require-special-chars", plugin)) {
+        if (LoginToFiles.Config.isFeatureEnabled("password-requirements.require-special-chars", plugin)) {
 
             final List<String> ReqChar = new ArrayList<>();
 
-            for (char c : ((String) LoginToFiles.Config.get("password-requirements.required-char-list", plugin)).toCharArray()) {
+            for (char c : (LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)).toCharArray()) {
                 ReqChar.add(String.valueOf(c));
             }
 
@@ -74,7 +74,7 @@ public class register implements CommandExecutor, TabCompleter {
                         LoginToFiles.Messages.getMessage("register.error.register-character-error", player, plugin)
                         .replace(
                             "%characters%", 
-                            (String) LoginToFiles.Config.get("password-requirements.required-char-list", plugin)
+                            LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)
                         ));
                     return true;
                 }
@@ -82,9 +82,9 @@ public class register implements CommandExecutor, TabCompleter {
             
         }
 
-        if ((Boolean) LoginToFiles.Config.get("password-requirements.length-check.enabled", plugin)) {
-            int min = (int) LoginToFiles.Config.get("password-requirements.length-check.min-length", plugin);
-            int max = (int) LoginToFiles.Config.get("password-requirements.length-check.max-length", plugin);
+        if (LoginToFiles.Config.isFeatureEnabled("password-requirements.length-check.enabled", plugin)) {
+            int min = LoginToFiles.Config.getInt("password-requirements.length-check.min-length", plugin);
+            int max = LoginToFiles.Config.getInt("password-requirements.length-check.max-length", plugin);
 
             if (password.length() < min || password.length() > max) {
 
@@ -112,7 +112,7 @@ public class register implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(LoginToFiles.Messages.getMessage("register.register-success", player, plugin));
         
-        PlayerStatus.setPlayerAsLogged(player, plugin, false);
+        PlayerStatus.setPlayerAsLogged(player, plugin, false, false);
         
 
         return true;

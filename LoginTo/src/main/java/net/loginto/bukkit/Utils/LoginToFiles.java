@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,12 +35,31 @@ public class LoginToFiles {
         }
     }
     public static class Config {
+
+        //YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml")).get(path);
+
         public static Object get(String path, Plugin plugin) {
-            return plugin.getConfig().get(path);
+            return plugin.getConfig().get(path, null);
         }
 
         public static Boolean isFeatureEnabled(String path, Plugin plugin) {
-            return plugin.getConfig().getBoolean(path);
+            return plugin.getConfig().getBoolean(path, false);
+        }
+
+        public static int getInt(String path, Plugin plugin) {
+            return plugin.getConfig().getInt(path, 0);
+        }
+        
+        public static String getString(String path, Plugin plugin) {
+            return plugin.getConfig().getString(path, null);
+        }
+
+        public static Double getDouble(String path, Plugin plugin) {
+            return plugin.getConfig().getDouble(path, 0);
+        }
+
+        public static List<?> getList(String path, Plugin plugin) {
+            return plugin.getConfig().getList(path, null);
         }
     }
 

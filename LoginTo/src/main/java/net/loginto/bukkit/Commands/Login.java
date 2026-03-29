@@ -18,18 +18,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import net.loginto.bukkit.PlayerUtils.PlayerStatus;
-import net.loginto.bukkit.PlayerUtils.Positions;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 import net.loginto.bukkit.PlayerUtils.Tries;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 
-public class login implements CommandExecutor, TabCompleter {
+public class Login implements CommandExecutor, TabCompleter {
         
     private final Plugin plugin;
     private final Database database;
 
-    public login(Plugin plugin, Database database) {
+    public Login(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -80,10 +79,7 @@ public class login implements CommandExecutor, TabCompleter {
                 }
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage("login.login-success", player, plugin));
-                PlayerStatus.setPlayerAsLogged(player, plugin, false);
-                if ((Boolean) LoginToFiles.Config.get("spawn-settings.teleport-on-join", plugin) && (Boolean) LoginToFiles.Config.get("spawn-settings.restore-previous-location", plugin)) {
-                    Positions.teleportPlayerToTheOldPos(player, plugin);
-                }
+                PlayerStatus.setPlayerAsLogged(player, plugin, false, true);
             }
         } catch (Exception e) {
             e.printStackTrace();

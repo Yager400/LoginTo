@@ -37,7 +37,7 @@ public class getlogs implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (!(Boolean) LoginToFiles.Config.get("logging.logging", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled("logging.logging", plugin)) {
             sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", null, plugin));
             return false;
         }

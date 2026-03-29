@@ -27,9 +27,6 @@
                     <configuration>
                         <createDependencyReducedPom>false</createDependencyReducedPom>
                         <minimizeJar>true</minimizeJar>
-
-                        <relocations>
-                        </relocations>
                     </configuration>
                 </execution>
             </executions>

@@ -8,32 +8,35 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Utils.Premium;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import net.loginto.bukkit.Utils.LoginToFiles;
 
 public class PremiumUtils {
 
+    private static HikariDataSource source;
+
     public static class PlayerPremium {
         public static boolean IsPlayerInThePremiumDB(Player player, Plugin plugin) {
 
-            Connection connection = connect(plugin);
+            HikariDataSource src = connectAndGetSource(plugin);
 
-            if (connection == null) {
-                plugin.getLogger().severe("Connection null");
+            if (src == null) {
+                plugin.getLogger().severe("Source null");
                 return false;
             }
 
             String sql = "select 1 from PlayersInfo where username = ?";
 
-            try (Connection conn = connection;
+            try (Connection conn = src.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)) {
 
                 ps.setString(1, player.getName());
@@ -51,27 +54,16 @@ public class PremiumUtils {
 
         public static boolean CheckIfAPlayerCanAutoLogin(Player player, Plugin plugin) {
 
-            Connection connection = connect(plugin);
+            HikariDataSource src = connectAndGetSource(plugin);
 
-            if (connection == null) {
-                plugin.getLogger().severe("Connection null");
+            if (src == null) {
+                plugin.getLogger().severe("Source null");
                 return false;
             }
 
             String user = player.getName();
 
-            try (Connection conn = connection) {
-
-                String sqlInfo = "select ispremium from PlayersInfo where username = ?";
-                try (PreparedStatement ps = conn.prepareStatement(sqlInfo)) {
-                    ps.setString(1, user);
-
-                    try (ResultSet rs = ps.executeQuery()) {
-                        if (!rs.next() || !rs.getBoolean("ispremium")) {
-                            return false;
-                        }
-                    }
-                }
+            try (Connection conn = src.getConnection()) {
 
                 String sqlAuth = "select ispremium from authplayers where username = ?";
                 try (PreparedStatement ps = conn.prepareStatement(sqlAuth)) {
@@ -85,6 +77,17 @@ public class PremiumUtils {
                     }
                 }
 
+                String sqlInfo = "select ispremium from PlayersInfo where username = ?";
+                try (PreparedStatement ps = conn.prepareStatement(sqlInfo)) {
+                    ps.setString(1, user);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        if (!rs.next() || !rs.getBoolean("ispremium")) {
+                            return false;
+                        }
+                    }
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -94,13 +97,11 @@ public class PremiumUtils {
     }
 
     public static class PlayersInfo {
-        public static void sendPremiumPluginMessage(OfflinePlayer player, Plugin plugin) {
+        public static void sendPremiumRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) return;
-            
-            Connection conn = connect(plugin);
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return;
 
-            try (Connection connection = conn) {
+            try (Connection connection = connectAndGetSource(plugin).getConnection()) {
                 connection.createStatement().execute("delete from PlayersInfo where username = '" + player.getName() + "'");
                 connection.createStatement().execute("insert into PlayersInfo(username, ispremium) values ('" + player.getName() + "', " + true + ")");
             } catch (Exception e) {
@@ -108,13 +109,11 @@ public class PremiumUtils {
             }
             
         }
-        public static void sendCrackedPluginMessage(OfflinePlayer player, Plugin plugin) {
+        public static void sendCrackedRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) return;
-
-            Connection conn = connect(plugin);
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return;
             
-            try (Connection connection = conn) {
+            try (Connection connection = connectAndGetSource(plugin).getConnection()) {
                 ResultSet set = connection.createStatement().executeQuery("select 1 from PlayersInfo where username = '" + player.getName() + "'");
                 if (set.next()) {
                     if (set.getBoolean("ispremium")) return;
@@ -125,13 +124,11 @@ public class PremiumUtils {
             }
 
         }
-        public static void sendRemovePremiumPlayerMessage(OfflinePlayer player, Plugin plugin) {
+        public static void sendRemovePremiumRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!(Boolean) LoginToFiles.Config.get("premium.enable-premium-features", plugin)) return;
-
-            Connection conn = connect(plugin);
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return;
             
-            try (Connection connection = conn) {
+            try (Connection connection = connectAndGetSource(plugin).getConnection()) {
                 connection.createStatement().execute("delete from PlayersInfo where username = '" + player.getName() + "'");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -141,110 +138,89 @@ public class PremiumUtils {
     }
     
 
-    public static Connection connect(Plugin plugin) {
+    public static HikariDataSource connectAndGetSource(Plugin plugin) {
 
-        Connection conn = null;
-
-        switch ((String) LoginToFiles.Config.get("premium.storage.database-type", plugin)) {
-            case "h2":
-                conn = PremiumUtils.H2DB.connect(plugin);
-                break;
-        
-            case "mysql":
-                conn = PremiumUtils.MYSQLDB.connect(plugin);
-                break;
+        if (source == null) {
+            switch (LoginToFiles.Config.getString("premium.storage.database-type", plugin)) {
+                case "h2":
+                    source = new HikariDataSource(PremiumUtils.H2DB.connect(plugin));
+                    break;
             
-            default:
-                plugin.getLogger().severe("Invalid premium database type, change the database type in the config.yml");
-                conn = null;
-                break;
+                case "mysql":
+                    source = new HikariDataSource(PremiumUtils.MYSQLDB.connect(plugin));
+                    break;
+                
+                default:
+                    plugin.getLogger().severe("Invalid premium database type, change the database type in the config.yml");
+                    source = null;
+                    break;
+            }
         }
 
-        return conn;
+        return source;
+    }
+
+    public static void close() {
+        if (source != null) {
+            source.close();
+        }
     }
     
-
-
-
-    
     static class H2DB {
-        protected static Connection connect(Plugin plugin) {
+        protected static HikariConfig connect(Plugin plugin) {
 
-            Connection conn = null;
-            
-            String host = (String) LoginToFiles.Config.get("premium.storage.database.host", plugin);
+            String host = LoginToFiles.Config.getString("premium.storage.database.host", plugin);
             host = (host != null) ? host : "127.0.0.1";
 
-            int port = (int) LoginToFiles.Config.get("premium.storage.database.port", plugin);
+            int port = LoginToFiles.Config.getInt("premium.storage.database.port", plugin);
             port = (port != 0) ? port : 9092;
 
             String url = "jdbc:h2:tcp://" + host + ":" + port + "/./plugins/loginto/LoginTo_Sharing";
-            String user = (String) LoginToFiles.Config.get("premium.storage.database.user", plugin);
-            String password = (String) LoginToFiles.Config.get("premium.storage.database.password", plugin);
-            
-            try {
-                try {
-                    Class.forName("org.h2.Driver");
-                    conn = DriverManager.getConnection(url, user, password);
-                } catch (SQLException e) {
-                    //e.printStackTrace();
-                    plugin.getLogger().severe("H2 premium db error code: " + e.getErrorCode());
-                    if (e.getErrorCode() == 1049) {
-                        try {
-                            Class.forName("org.h2.Driver");
-                            conn = DriverManager.getConnection(url, user, password);
-                        } catch (SQLException ex3) {}
-                    } else {
-                        plugin.getLogger().warning("Connection error: " + e.getMessage());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String user = LoginToFiles.Config.getString("premium.storage.database.user", plugin);
+            String password = LoginToFiles.Config.getString("premium.storage.database.password", plugin);
 
-            if (conn == null) {
-                plugin.getLogger().severe("Could not connect to H2. If you are running the plugin in a standalode bukkit server (not in a proxy), do not use the premium feature. If you are running this plugin in a bukkit server inside a network, check the config.yml file for the database connection.");
-                return null;
-            }
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername(user);
+            config.setPassword(password);
+            config.setDriverClassName("org.h2.Driver");
+            config.setPoolName("H2-Hikari");
 
-            return conn;
+            return config;
         }
     }
 
     static class MYSQLDB {
         @SuppressWarnings("null")
-		protected static Connection connect(Plugin plugin) {
+		protected static HikariConfig connect(Plugin plugin) {
 
-            Connection conn = null;
-            
-            String host = (String) LoginToFiles.Config.get("premium.storage.database.host", plugin);
+            String host = LoginToFiles.Config.getString("premium.storage.database.host", plugin);
             host = (host != null) ? host : "127.0.0.1";
 
-            int port = (int) LoginToFiles.Config.get("premium.storage.database.port", plugin);
+            int port = LoginToFiles.Config.getInt("premium.storage.database.port", plugin);
             port = (port != 0) ? port : 3306;
 
-            String name = (String) LoginToFiles.Config.get("premium.storage.database.database-name", plugin);
+            String name = LoginToFiles.Config.getString("premium.storage.database.database-name", plugin);
             name = (name != null || name.trim().isEmpty()) ? "LoginTo_Sharing" : name;
 
             String url = "jdbc:mysql://" + host + ":" + port + "/" + name + "?useSSL=false&serverTimezone=UTC";
-            String user = (String) LoginToFiles.Config.get("premium.storage.database.user", plugin);
-            String password = (String) LoginToFiles.Config.get("premium.storage.database.password", plugin);
-            
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                conn = DriverManager.getConnection(url, user, password);
-            } catch (SQLException e) {
-                plugin.getLogger().severe("MySQL connection error: " + e.getMessage());
-            } catch (ClassNotFoundException e) {
-                plugin.getLogger().severe("MySQL JDBC Driver not found.");
-            }
+            String user = LoginToFiles.Config.getString("premium.storage.database.user", plugin);
+            String password = LoginToFiles.Config.getString("premium.storage.database.password", plugin);
 
-            if (conn == null) {
-                plugin.getLogger().severe("Could not connect to MySQL. If you are running the plugin in a standalode bukkit server (not in a proxy), do not use the premium feature. If you are running this plugin in a bukkit server inside a network, check the config.yml file for the database connection.");
-                return null;
-            }
 
-            return conn;
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(url);
+            config.setUsername(user);
+            config.setPassword(password);
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setConnectionTimeout(5000);
+            config.setIdleTimeout(600000);
+            config.setMaxLifetime(1800000);
+            config.setPoolName("MySQL-Hikari");
+
+            return config;
         }
     }
 }

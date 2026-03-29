@@ -20,12 +20,12 @@ import org.bukkit.plugin.Plugin;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.LoginToFiles;
 
-public class changepassword implements CommandExecutor, TabCompleter {
+public class ChangePassword implements CommandExecutor, TabCompleter {
 
     private final Plugin plugin;
     private final Database database;
         
-    public changepassword(Plugin plugin, Database database) {
+    public ChangePassword(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
     }
@@ -53,6 +53,43 @@ public class changepassword implements CommandExecutor, TabCompleter {
 
         String oldPassword = args[0];
         String newPassword = args[1];
+        
+        if (LoginToFiles.Config.isFeatureEnabled("password-requirements.require-special-chars", plugin)) {
+
+            final List<String> ReqChar = new ArrayList<>();
+
+            for (char c : (LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)).toCharArray()) {
+                ReqChar.add(String.valueOf(c));
+            }
+
+            for (String c : ReqChar) {
+                if (!newPassword.contains(c)) {
+                    sender.sendMessage(
+                        LoginToFiles.Messages.getMessage("register.error.register-character-error", player, plugin)
+                        .replace(
+                            "%characters%", 
+                            LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)
+                        ));
+                    return true;
+                }
+            }
+            
+        }
+
+        if (LoginToFiles.Config.isFeatureEnabled("password-requirements.length-check.enabled", plugin)) {
+            int min = LoginToFiles.Config.getInt("password-requirements.length-check.min-length", plugin);
+            int max = LoginToFiles.Config.getInt("password-requirements.length-check.max-length", plugin);
+
+            if (newPassword.length() < min || newPassword.length() > max) {
+
+                player.sendMessage(LoginToFiles.Messages.getMessage("register.error.password-length", player, plugin)
+                        .replaceAll("%min_length%", String.valueOf(min))
+                        .replaceAll("%max_length%", String.valueOf(max))
+                    );
+
+                return true;
+            }
+        }
 
         try {
             if (!database.isPasswordCorrect(player, oldPassword)) {
