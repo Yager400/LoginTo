@@ -133,6 +133,7 @@ public class LoginTo extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new logAnotherLocEvents(this), this);
 
         Listener.implementPacketEventListener();
+
         //-----
 
         //Add commands

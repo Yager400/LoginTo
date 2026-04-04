@@ -10,7 +10,9 @@ package net.loginto.bukkit.Utils;
 import com.google.gson.*;
 import java.io.*;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class JsonManager {
     private File file;
@@ -96,7 +98,11 @@ public class JsonManager {
     }
 
     public Set<String> getAllKeys() {
-        return new LinkedHashSet<>(jsonObject.keySet());
+        return new LinkedHashSet<>(
+            jsonObject.entrySet().stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(LinkedHashSet::new))
+        );
     }
 
     /*

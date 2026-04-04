@@ -14,60 +14,10 @@ import java.security.NoSuchAlgorithmException;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class Hash {
-    
-    public static String sha1(String text) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            byte[] hashBytes = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hex = new StringBuilder();
-            for (byte b : hashBytes) {
-                hex.append(String.format("%02x", b));
-            }
-            return hex.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-        
-        
-    }
 
     public static String sha256(String text) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hex = new StringBuilder();
-            for (byte b : hashBytes) {
-                hex.append(String.format("%02x", b));
-            }
-            return hex.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String sha512(String text) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            byte[] hashBytes = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hex = new StringBuilder();
-            for (byte b : hashBytes) {
-                hex.append(String.format("%02x", b));
-            }
-            return hex.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String md5(String text) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] hashBytes = digest.digest(text.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder hex = new StringBuilder();

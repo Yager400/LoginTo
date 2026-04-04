@@ -27,6 +27,8 @@ public class PremiumUtils {
     public static class PlayerPremium {
         public static boolean IsPlayerInThePremiumDB(Player player, Plugin plugin) {
 
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return false;
+
             HikariDataSource src = connectAndGetSource(plugin);
 
             if (src == null) {
@@ -53,6 +55,8 @@ public class PremiumUtils {
         }
 
         public static boolean CheckIfAPlayerCanAutoLogin(Player player, Plugin plugin) {
+
+            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) return false;
 
             HikariDataSource src = connectAndGetSource(plugin);
 
