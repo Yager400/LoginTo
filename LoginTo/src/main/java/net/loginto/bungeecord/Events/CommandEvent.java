@@ -27,7 +27,12 @@ public class CommandEvent implements Listener {
     public void onChat(ChatEvent event) {
         if (!event.getMessage().startsWith("/")) return;
 
-        if (event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register")) return;
+        if (
+            event.getMessage().startsWith("/login") || 
+            event.getMessage().startsWith("/l") ||
+            event.getMessage().startsWith("/register") ||
+            event.getMessage().startsWith("/r")
+        ) return;
 
         if (event.getSender() instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) event.getSender();

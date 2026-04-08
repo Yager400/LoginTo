@@ -89,11 +89,27 @@ public class LibraryDownloader {
             .build();
         libManager.loadLibrary(kyoriKEY);
 
+        Library kyoriExamination = Library.builder()
+            .groupId("net.kyori")
+            .artifactId("examination-api")
+            .version("1.3.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(kyoriExamination);
+
+        Library kyoriExaminationString = Library.builder()
+            .groupId("net.kyori")
+            .artifactId("examination-string")
+            .version("1.3.0")
+            .repository("https://repo1.maven.org/maven2/")
+            .build();
+        libManager.loadLibrary(kyoriExaminationString);
+
         //PacketEvents
         Library packeteventsAPI = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-api")
-            .version("2.11.2")
+            .version("2.12.0")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packeteventsAPI);
@@ -101,7 +117,7 @@ public class LibraryDownloader {
         Library packetEventsNettyCommon = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-netty-common")
-            .version("2.11.2")
+            .version("2.12.0")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packetEventsNettyCommon);
@@ -109,7 +125,7 @@ public class LibraryDownloader {
         Library packetevents = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-spigot")
-            .version("2.11.2")
+            .version("2.12.0")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packetevents);

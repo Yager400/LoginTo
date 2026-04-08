@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -143,6 +144,12 @@ public class CancelledEvents implements Listener {
         }
     }
 
-    
+    @EventHandler
+    public void onPlayerHit(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player player)) return;
+        if (!Sessions.isPlayerLogged(player)) {
+            event.setCancelled(true);
+        }
+    }
 
 }

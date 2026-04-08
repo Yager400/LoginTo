@@ -28,10 +28,19 @@ public class onPreCommandProcessEvent implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
-        String command = event.getMessage().split(" ")[0].substring(1);
+        String message = event.getMessage().trim();
+
+        if (!message.startsWith("/")) return;
+
+        String command = message.substring(1).split(" ")[0];
 
         if (!Sessions.isPlayerLogged(player)) {
-            if (!command.equals("login") && !command.equals("register")) {
+            if (
+                !command.equals("login") && 
+                !command.equals("l") && 
+                !command.equals("register") &&
+                !command.equals("r")
+            ) {
                 event.setCancelled(true);
                 player.sendMessage(LoginToFiles.Messages.getMessage("errors.activity-before-login.oncommand-when-not-authenticated", player, plugin));
             }

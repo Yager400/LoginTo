@@ -25,7 +25,12 @@ public class CommandEvent {
     @Subscribe
     public void onCommand(CommandExecuteEvent event) {
 
-        if (event.getCommand().startsWith("login") || event.getCommand().startsWith("register")) return;
+        if (
+            event.getCommand().startsWith("login") || 
+            event.getCommand().startsWith("l") ||
+            event.getCommand().startsWith("register") || 
+            event.getCommand().startsWith("r")
+        ) return;
 
         if (event.getCommandSource() instanceof Player) {
             Player player = (Player) event.getCommandSource();

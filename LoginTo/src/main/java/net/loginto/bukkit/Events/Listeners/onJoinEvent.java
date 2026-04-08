@@ -73,6 +73,7 @@ public class onJoinEvent implements Listener {
                     PlayerStatus.setPlayerAsLogged(event.getPlayer(), plugin, true, true);
                 } else {
                     event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage("login.login-prompt", event.getPlayer(), plugin));
+                    JoinUtil.startCounter(event, plugin, isLogged);
                     Tries.insertPlayerWithZeroTries(event.getPlayer());
                 }
             });

@@ -1,10 +1,10 @@
 name: LoginTo
-version: '3.2'
+version: '3.3'
 main: net.loginto.bukkit.LoginTo
 api-version: '1.16.5'
 api: spigot
 authors: [ Yager400 ]
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, PacketEvents]
 commands:
   register:
     usage: /register <password> <confirm_password>

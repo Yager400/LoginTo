@@ -36,7 +36,7 @@ public class Update {
                 }
 
             } catch (Exception e) {
-                
+                plugin.getLogger().severe("Unable to check for updates!");
             }
 
         }, 0, 72000L);
