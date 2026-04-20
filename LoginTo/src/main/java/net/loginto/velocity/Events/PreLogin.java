@@ -62,10 +62,7 @@ public class PreLogin {
 
         boolean UserNamePremium = isUserNamePremium(event.getUsername(), sqlite);
         
-
         if (UserNamePremium) {
-
-            
 
             String AccStatus = database.accStatus(event.getUsername());
 
@@ -87,7 +84,6 @@ public class PreLogin {
                 }
             }
 
-            
         } else {
             // 100% cracked player
             event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());

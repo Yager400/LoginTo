@@ -41,7 +41,7 @@ public class onJoinEvent implements Listener {
         plugin.reloadConfig();
 
         String watermark = (LoginToFiles.Config.isFeatureEnabled("plugin-utility.show-watermark", plugin)) ? " - Service offered by LoginTo on Modrinth" : "";
-        
+
         CompletableFuture.supplyAsync(() -> {
 
             return !database.isPlayerPresentInDB(event.getPlayer());
@@ -109,7 +109,7 @@ public class onJoinEvent implements Listener {
                             event.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage("errors.login-fail.onkick-for-long-waiting", event.getPlayer(), plugin));
                         }
                     }
-                }.runTaskLater(plugin,LoginToFiles.Config.getInt("auth-security.auth-timeout-seconds", plugin) * 20L);
+                }.runTaskLater(plugin, LoginToFiles.Config.getInt("auth-security.auth-timeout-seconds", plugin) * 20L);
                 
             }
         }

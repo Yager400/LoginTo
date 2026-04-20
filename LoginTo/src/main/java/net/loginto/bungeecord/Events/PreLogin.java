@@ -34,9 +34,9 @@ public class PreLogin implements Listener {
         this.antispam = new AntiSpam(server, plugin);
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onPreLogin(PreLoginEvent preLoginEvent) {
-
 
         PendingConnection event = preLoginEvent.getConnection();
 
@@ -67,8 +67,6 @@ public class PreLogin implements Listener {
         if (UserNamePremium) {
 
             String AccStatus = database.accStatus(username);
-
-            
 
             if (AccStatus.equals("premium")) {
                 event.setOnlineMode(true);

@@ -35,11 +35,14 @@ public class onPreCommandProcessEvent implements Listener {
         String command = message.substring(1).split(" ")[0];
 
         if (!Sessions.isPlayerLogged(player)) {
+
+            for (Object allowedCommand : plugin.getConfig().getList("commands-settings.pre-login-allowed-commands")) {
+                if (command.equals(String.valueOf(allowedCommand))) return;
+            }
+
             if (
-                !command.equals("login") && 
-                !command.equals("l") && 
-                !command.equals("register") &&
-                !command.equals("r")
+                !command.equals("login") &&
+                !command.equals("register")
             ) {
                 event.setCancelled(true);
                 player.sendMessage(LoginToFiles.Messages.getMessage("errors.activity-before-login.oncommand-when-not-authenticated", player, plugin));

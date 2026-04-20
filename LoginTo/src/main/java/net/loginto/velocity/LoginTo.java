@@ -64,6 +64,7 @@ public class LoginTo {
         server.getEventManager().register(this, new CommandEvent(database));
         server.getEventManager().register(this, new DisconnectEv(database));
         server.getEventManager().register(this, new onPluginMessage(database));
+        server.getEventManager().register(this, new Login(server));
     }
 
     @Subscribe

@@ -87,6 +87,7 @@ public class WebHooks {
         
     }
 
+    @SuppressWarnings("deprecation")
     private static Boolean webhook(String webhookUrl, String message) {
         try {
             URL url = new URL(webhookUrl);

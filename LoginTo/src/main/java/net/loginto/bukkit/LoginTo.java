@@ -38,6 +38,10 @@ public class LoginTo extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        //Save files
+        LoginToFiles.saveFiles(this);
+        //-----
+
         LibraryDownloader.Libs(this);
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
@@ -54,19 +58,13 @@ public class LoginTo extends JavaPlugin {
         //Metrics
         Metrics metrics = new Metrics(this, 28083);
         //----
-        
-        
-
-        //Saving default files
-        LoginToFiles.saveFiles(this);
-        //-----
 
         //Updating yaml files
         //TODO
         try {
             YMLVersion.builder()
                 .plugin(this)
-                .version("1.8")
+                .version("1.9")
                 .resource("config.yml")
                 .versionKey("ConfigVersion")
                 .build();
@@ -139,23 +137,30 @@ public class LoginTo extends JavaPlugin {
         //Add commands
         getCommand("register").setExecutor(new Register(this, database));
         getCommand("register").setTabCompleter(new Register(this, database));
+        getCommand("register").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.register"));
         
         getCommand("login").setExecutor(new Login(this, database));
         getCommand("login").setTabCompleter(new Login(this, database));
+        getCommand("login").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.login"));
         
         getCommand("delacc").setExecutor(new DelAcc(this, database));
         getCommand("delacc").setTabCompleter(new DelAcc(this, database));
+        getCommand("delacc").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.delacc"));
         
         getCommand("changepassword").setExecutor(new ChangePassword(this, database));
         getCommand("changepassword").setTabCompleter(new ChangePassword(this, database));
+        getCommand("changepassword").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.changepassword"));
         
         getCommand("premium").setExecutor(new Premium(this, database));
         getCommand("premium").setTabCompleter(new Premium(this, database));
+        getCommand("premium").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.premium"));
         
         getCommand("cracked").setExecutor(new Cracked(this, database));
+        getCommand("cracked").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.cracked"));
 
         getCommand("getlogs").setExecutor(new getlogs(this));
         getCommand("getlogs").setTabCompleter(new getlogs(this));
+        getCommand("getlogs").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.getlogs"));
         //-----
 
         //Register channel

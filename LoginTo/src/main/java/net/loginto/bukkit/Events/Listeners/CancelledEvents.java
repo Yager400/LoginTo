@@ -136,6 +136,7 @@ public class CancelledEvents implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerPickup(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();

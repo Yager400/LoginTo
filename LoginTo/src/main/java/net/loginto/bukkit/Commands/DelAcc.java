@@ -34,6 +34,7 @@ public class DelAcc implements CommandExecutor, TabCompleter {
         this.database = database;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 

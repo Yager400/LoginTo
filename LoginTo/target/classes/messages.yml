@@ -1,0 +1,177 @@
+MessageVersion: "1.6" # DO NOT CHANGE THIS
+# -------------------------------------------------------------------------------------------------- #
+#                                                                                                    #
+#                                       LoginTo Messages Config                                      #
+#                                                                                                    #
+# -------------------------------------------------------------------------------------------------- #
+
+register:
+  # Messages sent during the registration process
+
+  error:  
+
+    # When a player use the /register command, but they are already registered
+    already-registered: "You are already registered!"
+
+    # When a player types a password, but it doesn't contains the required characters
+    register-character-error: "Your password must contain these characters: %characters%"
+
+    # When the password is too long or too short
+    password-length: "Your password must be between %min_length% and %max_length% characters long"
+
+    # When a player use the /register command, but the first password is not equal to the second
+    password-mismatch: "The passwords do not match!"
+
+    # When a player types wrong the command
+    register-usage: "Error: Use /register <password> <confirm_password>"
+
+  
+  # Prompt when a player joins the server and need to make an account
+  register-prompt: "Welcome! Use /register <password> <confirm_password> to register."
+
+  # Prompt when a player joins the server and need to make an account + the password must contain those character
+  register-prompt-characters: "Welcome! Use /register <password> <confirm_password> to register. Make sure to include one of these characters: %characters%"
+
+  # When a player succesfully sing in
+  register-success: "Registration completed, have fun in the server"
+
+
+login:
+  # Messages sent during the login process
+
+  error:
+
+    # when a player use the /login command, but they are not registered
+    not-registered: "You are not registered yet!"
+
+    # When a player use the /login command, but they are not registered
+    already-logged-in: "You are already logged in."
+
+    # When a player types wrong the command
+    login-usage: "Error: Use /login <password>"
+
+    # When the password is wrong
+    wrong-password: "Incorrect password"
+
+  
+  # When a player joins the server after the registration, this message will appear
+  login-prompt: "Please use /login <password> to authenticate."
+
+  # When a player successfully sing up
+  login-success: "Login successful! Welcome back."
+
+
+delacc:
+
+  # Messages for the account deletion command
+  error:
+
+    # The target player doesn't exists
+    player-doesnt-exist: "That player does not exist."
+
+    # When the admin doesn't confirm the command execution
+    delacc-not-confirmed: "Error: Please type 'confirm' after the player name."
+
+    # When the admin types wrong the command
+    delacc-usage: "Usage: /delacc <username> <confirm>"
+
+
+  # When an admin successfully deletes an account (Admin pov)
+  account-deleted: "Account deleted successfully."
+
+  # When the player's account gets deleted (User pov)
+  admin-deleted-account: "Your account was deleted by an administrator. Please rejoin to create a new one."
+
+
+changepassword:
+
+  # Messages for changing the account password
+  error:
+
+    # When the player types wrong the command
+    changepassword-usage: "Usage: /changepassword <old_password> <new_password>"
+    
+    # When the player uses the command, but the old password for the account is not correct
+    old-password-wrong: "The old password is incorrect. If you forgot it, please contact an admin."
+
+  
+  # When the password changes successfully and the player gets disconnected
+  password-changed: "Your password has been changed. Please rejoin and log in again."
+
+
+cracked:
+
+  # Messages for the cracked status command
+
+  error:
+
+    # When the player execute the /cracked command, but they are already a cracked/premium user
+    already-cracked: "You are already marked as a cracked or premium user."
+
+  # Warning that will popup when this command is executed
+  cracked-warn: "§l§6WARNING:§c You are using the cracked command. This means you will join this network as a cracked user. This protects your account from premium users trying to claim your name.\nType §2/cracked§c to confirm."
+  
+  # When the cracked command is executed successfuly
+  cracked-done: "You are now a cracked user."
+
+premium:
+
+  # Messages for the premium status command
+
+  error:
+
+    # When the player execute the /premium command, but they are already a premium user
+    already-premium: "You are already a premium user."
+
+  # Warning that will popup when this command is executed
+  premium-warn: "§l§6WARNING:§c If you have a cracked account and switch to premium, you might lose access to your current progress if the names don't match perfectly.\nType §2/premium§c to confirm."
+  
+  # When the premium command is executed successfuly
+  premium-done: "You are now a premium user."
+
+loginto-command:
+
+  # System and console messages
+
+  error: 
+
+    # When the player use the /loginto command for something, but that option is console-only
+    player-execute-console-command: "This command can only be executed from the console."
+
+errors:
+
+  # Errors that aren't related to commands or are general errors
+
+  # Used for error that aren't related to any event or command
+  general:
+
+    # When a player executes a command, but they don't have enought permission for that
+    no-permission: "You do not have permission to execute this command."
+
+    # When a player uses a feature, but it is not enabled
+    feature-not-enabled: "This feature is currently disabled."
+    
+  # Errors for activity before login or registration
+  activity-before-login:
+
+    # When a player executes a command when they are not logged in
+    oncommand-when-not-authenticated: "Please authenticate yourself before using commands."
+
+    # When a player chat when the are not logged in
+    chatting-before-login: "You must log in before you can chat."
+  
+  # Errors related to failed authentication
+  login-fail:
+
+    # When a player tries the login too many times
+    onkick-for-failed-login: "Too many failed login attempts. Please rejoin and try again."
+
+    # When a player joins and doesn't complete the authentication in time
+    onkick-for-long-waiting: "Authentication timed out. Please rejoin and try again."
+
+    # Kick message when someone joins the server but another player with the same name is already online. (This message uses PAPI for the player already in the server, not for the joining player)
+    onkick-for-joining-with-same-name: "Another player with your name is already on this server"
+
+
+
+    

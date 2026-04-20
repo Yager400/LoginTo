@@ -27,7 +27,9 @@ public class LibraryDownloader {
             .build();
         libManager.loadLibrary(hikari);
 
-        downloadPacketEventsDependency(libManager);
+        if (LoginToFiles.Config.isFeatureEnabled("plugin-utility.use-built-in-packetevents-api", plugin)) {
+            downloadPacketEventsDependency(libManager);
+        }
 
         Library sqlite = Library.builder()
             .groupId("org.xerial")
@@ -68,7 +70,7 @@ public class LibraryDownloader {
         Library kyoriAPI = Library.builder()
             .groupId("net.kyori")
             .artifactId("adventure-api")
-            .version("4.25.0")
+            .version("4.26.1")
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(kyoriAPI);
@@ -76,7 +78,7 @@ public class LibraryDownloader {
         Library kyoriNBT = Library.builder()
             .groupId("net.kyori")
             .artifactId("adventure-nbt")
-            .version("4.25.0")
+            .version("4.26.1")
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(kyoriNBT);
@@ -84,7 +86,7 @@ public class LibraryDownloader {
         Library kyoriKEY = Library.builder()
             .groupId("net.kyori")
             .artifactId("adventure-key")
-            .version("4.25.0")
+            .version("4.26.1")
             .repository("https://repo1.maven.org/maven2/")
             .build();
         libManager.loadLibrary(kyoriKEY);
@@ -109,7 +111,7 @@ public class LibraryDownloader {
         Library packeteventsAPI = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-api")
-            .version("2.12.0")
+            .version("2.12.1")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packeteventsAPI);
@@ -117,7 +119,7 @@ public class LibraryDownloader {
         Library packetEventsNettyCommon = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-netty-common")
-            .version("2.12.0")
+            .version("2.12.1")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packetEventsNettyCommon);
@@ -125,7 +127,7 @@ public class LibraryDownloader {
         Library packetevents = Library.builder()
             .groupId("com.github.retrooper")
             .artifactId("packetevents-spigot")
-            .version("2.12.0")
+            .version("2.12.1")
             .repository("https://repo.codemc.io/repository/maven-releases/")
             .build();
         libManager.loadLibrary(packetevents);

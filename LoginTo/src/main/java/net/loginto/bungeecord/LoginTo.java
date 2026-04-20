@@ -46,7 +46,9 @@ public class LoginTo extends Plugin {
         server.getPluginManager().registerListener(this, new PreLogin(database, sqlite, server, this));
         server.getPluginManager().registerListener(this, new CommandEvent(database));
         server.getPluginManager().registerListener(this, new DisconnectEvent(database));
-        server.getPluginManager().registerListener(this, new onPluginMessage(database));
+        server.getPluginManager().registerListener(this, new onPluginMessage(database, server));
+
+        server.registerChannel("minecraft:brand");
     }
 
     @Override

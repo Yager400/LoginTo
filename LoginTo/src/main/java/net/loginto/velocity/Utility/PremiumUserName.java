@@ -26,6 +26,7 @@ public class PremiumUserName {
 
 
         try {
+            @SuppressWarnings("deprecation")
             URL url = new URL(apiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");

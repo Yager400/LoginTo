@@ -23,13 +23,19 @@ For version 3.x, updates will primarily focus on stability improvements and perf
   <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">Configuration</summary>
 
   ```Yaml 
-    ConfigVersion: "1.7" # DO NOT CHANGE THIS
+    ConfigVersion: "1.9" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Configuration                                        #
 #                                                                                                    #
 # -------------------------------------------------------------------------------------------------- #
 
+
+commands-settings:
+  # Put here the plugin that will be allowed before the login end (the commands /login and /register will be always present, the aliases like /l and /r will not)
+  pre-login-allowed-commands:
+    - "l"
+    - "r"
 
 auth-security:
 
@@ -41,7 +47,7 @@ auth-security:
   # Kick players who stay unauthenticated for too long?
   kick-on-auth-timeout: true
   # Seconds allowed to authenticate before the kick occurs
-  auth-timeout-seconds: 20
+  auth-timeout-seconds: 10
 
 password-requirements:
   # Require specific special characters in the password during registration?
@@ -74,6 +80,31 @@ spawn-settings:
   restore-previous-location: true
 
 
+# Integrations and webhooks
+integrations:
+
+  proxy:
+    # Specify the server where players should be sent after logging into your network (e.g., 'lobby-1'). 
+    # If you are not using a proxy or wish to disable this feature, leave this field empty.
+    server-post-login: ""
+
+  discord:
+    # Webhook URLs and custom messages (Supports Discord Markdown & PAPI)
+    # Variables: %playerName%, %targetPlayer%
+    
+    register-webhook-url: ''
+    register-message: "**%playerName%** completed the registration"
+
+    login-webhook-url: ''
+    login-message: "**%playerName%** completed the login"
+    
+    delete-account-webhook-url: ''
+    delete-account-message: "**%playerName%** deleted **%targetPlayer%**'s account"
+
+    password-change-webhook-url: ''
+    password-change-message: "**%playerName%** changed his password"
+
+
 # Storage
 storage:
 
@@ -93,11 +124,12 @@ storage:
 # Premium system
 premium:
   # Enables AutoLogin, /premium, /cracked commands and make unusable the proxy command unless the user is logged.
-  # Requires a Proxy (Velocity/Bungee) and offline-mode setup
+  # Requires a Proxy (Velocity/Bungee) with the plugin installed, and if you are running the proxy and the server on 
+   # two different machines or you are running in a dedicated host that uses pderodactyl, use mysql
   enable-premium-features: false
 
   storage:
-    # Database type for cross-server communication (mysql or h2)
+    # Database type for cross-server communication (mysql or h2), it's raccomanded mysql if you can
     database-type: "h2"
 
     database:
@@ -109,13 +141,29 @@ premium:
       # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
       database-name: "LoginTo_Sharing"
 
+logging:
+  # This feature is for logging all the players that joins in the server
+  logging: true
+
+  # The time format for showing the current date
+  # Do not use the space " " for the time, you can do this "hh-mm-ss dd-MM-yyyy", but not "hh mm ss dd MM yyyy", if you want, tell your staff to use only /getlogs <user> without the day
+  # You can change the time (ss:mm:hh) and not using the space, but if you use the /getlogs command with the time selector, the date must remain "dd/MM/yyyy"
+  date-format: "HH:mm:ss dd/MM/yyyy"
+
+
 
 plugin-utility:
   # Check for new updates on startup and notify the console?
   enable-update-checker: true
   
-  # Show the 'Service offered by LoginTo' watermark?
+  # Show the 'Service offered by LoginTo' watermark?, if you want to support me, consider leaving this on
   show-watermark: true
+
+  # If set to false, the plugin will require PacketEvents to be installed as a separate plugin on the server.
+  # If set to true, the plugin will use the built-in PacketEvents API.
+  # Disclaimer: If possible, I recommend setting this to 'false' and installing the PacketEvents plugin. 
+  # Doing so will help prevent any compatibility issues regarding PacketEvents within this plugin.
+  use-built-in-packetevents-api: true
 ```
 </details>
 
@@ -123,7 +171,7 @@ plugin-utility:
   <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">Messages</summary>
   
 ```Yaml 
-    MessageVersion: "1.5" # DO NOT CHANGE THIS
+    MessageVersion: "1.6" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Messages Config                                      #
@@ -293,6 +341,9 @@ errors:
 
     # When a player joins and doesn't complete the authentication in time
     onkick-for-long-waiting: "Authentication timed out. Please rejoin and try again."
+
+    # Kick message when someone joins the server but another player with the same name is already online. (This message uses PAPI for the player already in the server, not for the joining player)
+    onkick-for-joining-with-same-name: "Another player with your name is already on this server"
 ```
 </details>
 

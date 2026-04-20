@@ -23,6 +23,6 @@ public class DisconnectEvent implements Listener {
 
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent event) {
-        database.removePlayersInfo(event.getPlayer().getName());
+        database.removePlayerSession(event.getPlayer().getName());
     }
 }

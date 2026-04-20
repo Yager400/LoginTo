@@ -29,6 +29,7 @@ public class getlogs implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 

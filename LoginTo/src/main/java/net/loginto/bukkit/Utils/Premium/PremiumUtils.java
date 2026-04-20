@@ -195,7 +195,6 @@ public class PremiumUtils {
     }
 
     static class MYSQLDB {
-        @SuppressWarnings("null")
 		protected static HikariConfig connect(Plugin plugin) {
 
             String host = LoginToFiles.Config.getString("premium.storage.database.host", plugin);
@@ -205,7 +204,12 @@ public class PremiumUtils {
             port = (port != 0) ? port : 3306;
 
             String name = LoginToFiles.Config.getString("premium.storage.database.database-name", plugin);
-            name = (name != null || name.trim().isEmpty()) ? "LoginTo_Sharing" : name;
+            name = (name != null) ? name : "LoginTo_Sharing";
+            /*
+            if (name == null || name.trim().isEmpty()) {
+                name = "LoginTo_Sharing";
+            }
+                 */
 
             String url = "jdbc:mysql://" + host + ":" + port + "/" + name + "?useSSL=false&serverTimezone=UTC";
             String user = LoginToFiles.Config.getString("premium.storage.database.user", plugin);
