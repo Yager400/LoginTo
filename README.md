@@ -23,147 +23,169 @@ For version 3.x, updates will primarily focus on stability improvements and perf
   <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">Configuration</summary>
 
   ```Yaml 
-    ConfigVersion: "1.9" # DO NOT CHANGE THIS
-# -------------------------------------------------------------------------------------------------- #
-#                                                                                                    #
-#                                       LoginTo Configuration                                        #
-#                                                                                                    #
-# -------------------------------------------------------------------------------------------------- #
+    ConfigVersion: "1.10" # DO NOT CHANGE THIS
+    # -------------------------------------------------------------------------------------------------- #
+    #                                                                                                    #
+    #                                       LoginTo Configuration                                        #
+    #                                                                                                    #
+    # -------------------------------------------------------------------------------------------------- #
 
 
-commands-settings:
-  # Put here the plugin that will be allowed before the login end (the commands /login and /register will be always present, the aliases like /l and /r will not)
-  pre-login-allowed-commands:
-    - "l"
-    - "r"
+    commands-settings:
+      # Enter here the commands that will be allowed before logging in (the /login, /register, and /changepassword commands will always be active; aliases like /l and /r must be added below)
+      pre-login-allowed-commands:
+        - "l"
+        - "r"
 
-auth-security:
+    auth-security:
 
-  # Kick the player if they provide an incorrect password during /login?
-  kick-on-invalid-password: true
-  # Maximum login attempts before getting kicked
-  max-login-attempts: 3
+      # Kick the player if they enter an incorrect password during /login?
+      kick-on-invalid-password: true
+      # Maximum login attempts allowed before getting kicked
+      max-login-attempts: 3
 
-  # Kick players who stay unauthenticated for too long?
-  kick-on-auth-timeout: true
-  # Seconds allowed to authenticate before the kick occurs
-  auth-timeout-seconds: 10
+      # Kick players who remain unauthenticated for too long?
+      kick-on-auth-timeout: true
+      # Seconds allowed to authenticate before the kick occurs
+      auth-timeout-seconds: 10
 
-password-requirements:
-  # Require specific special characters in the password during registration?
-  require-special-chars: false
-  # List the characters required if the setting above is true
-  required-char-list: ''
+    password-requirements:
+      # Require specific special characters in the password during registration?
+      require-special-chars: false
+      # List the required characters if the setting above is set to true
+      required-char-list: ''
 
-  # Define password length constraints
-  length-check:
-    enabled: true
-    min-length: 8
-    max-length: 32
+      # Define password length constraints
+      length-check:
+        enabled: true
+        min-length: 8
+        max-length: 32
 
+      # Settings for too common passwords
+      banned-password:
+        # Decline any loginto action if the password is too simple
+        decline-on-common-password: true
 
-# World and teleportation
-spawn-settings:
-  # Enable automatic teleportation to a specific location on join?
-  teleport-on-join: false
-  
-  # Target dimension for the teleport (e.g., world, world_nether, world_the_end)
-  target-dimension: 'world'
-  
-  # Exact coordinates for the teleportation point
-  spawn-coordinates:
-    x: 0
-    y: -64
-    z: 0
-    
-  # Return the player to their last known location after a successful login?
-  restore-previous-location: true
+                # Use the RockYou password list (if this is enabled, the plugin will download the txt file from this link: https://weakpass.com/download/90/rockyou.txt.gz)
+        # That file uncompressed will be around 130MB
+        use-rockyou: true
 
+                # If you want to add some banned password, put them here
+        # The placeholder '%username%' is to define the player name
+        banned-password:
+          - "%username%"
 
-# Integrations and webhooks
-integrations:
+    otp-config:
 
-  proxy:
-    # Specify the server where players should be sent after logging into your network (e.g., 'lobby-1'). 
-    # If you are not using a proxy or wish to disable this feature, leave this field empty.
-    server-post-login: ""
-
-  discord:
-    # Webhook URLs and custom messages (Supports Discord Markdown & PAPI)
-    # Variables: %playerName%, %targetPlayer%
-    
-    register-webhook-url: ''
-    register-message: "**%playerName%** completed the registration"
-
-    login-webhook-url: ''
-    login-message: "**%playerName%** completed the login"
-    
-    delete-account-webhook-url: ''
-    delete-account-message: "**%playerName%** deleted **%targetPlayer%**'s account"
-
-    password-change-webhook-url: ''
-    password-change-message: "**%playerName%** changed his password"
+      # Set here the server name that the player will see in the authentication app for the code.
+      # Note: This is not the Bungee/Velocity server name, but the public server name (e.g., Hypixel or Mineman).
+      # Use only URL-friendly characters
+      server-name: "MyServer"
 
 
-# Storage
-storage:
+    # World and teleportation
+    spawn-settings:
+      # Enable automatic teleportation to a specific location upon joining?
+      teleport-on-join: false
 
-  # Storage Methods: sqlite, mysql, postgre, h2
-  # Changing this requires a full server reboot
-  storage-type: "sqlite"
+      # Target dimension for the teleport (e.g., world, world_nether, world_the_end)
+      target-dimension: 'world'
 
-  database:
-    # Connection details for the database (for sqlite or h2, you will need to change only the name)
-    host: "localhost"
-    port: 3306
-    name: "LoginTo_DB"
-    user: ""
-    password: ""
+      # Exact coordinates for the teleportation point
+      spawn-coordinates:
+        x: 0
+        y: -64
+        z: 0
 
-
-# Premium system
-premium:
-  # Enables AutoLogin, /premium, /cracked commands and make unusable the proxy command unless the user is logged.
-  # Requires a Proxy (Velocity/Bungee) with the plugin installed, and if you are running the proxy and the server on 
-   # two different machines or you are running in a dedicated host that uses pderodactyl, use mysql
-  enable-premium-features: false
-
-  storage:
-    # Database type for cross-server communication (mysql or h2), it's raccomanded mysql if you can
-    database-type: "h2"
-
-    database:
-      host: "localhost"
-      # If the port is 0, it will be the database's default port (3306 for mysql and 9092 for h2)
-      port: 0
-      user: "sa"
-      password: ""
-      # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
-      database-name: "LoginTo_Sharing"
-
-logging:
-  # This feature is for logging all the players that joins in the server
-  logging: true
-
-  # The time format for showing the current date
-  # Do not use the space " " for the time, you can do this "hh-mm-ss dd-MM-yyyy", but not "hh mm ss dd MM yyyy", if you want, tell your staff to use only /getlogs <user> without the day
-  # You can change the time (ss:mm:hh) and not using the space, but if you use the /getlogs command with the time selector, the date must remain "dd/MM/yyyy"
-  date-format: "HH:mm:ss dd/MM/yyyy"
+      # Return the player to their last known location after a successful login?
+      restore-previous-location: true
 
 
+    # Integrations and webhooks
+    integrations:
 
-plugin-utility:
-  # Check for new updates on startup and notify the console?
-  enable-update-checker: true
-  
-  # Show the 'Service offered by LoginTo' watermark?, if you want to support me, consider leaving this on
-  show-watermark: true
+      proxy:
+        # Specify the server where players should be sent after logging into your network (e.g., 'lobby-1'). 
+        # If you are not using a proxy or wish to disable this feature, leave this field empty.
+        server-post-login: ""
 
-  # If set to false, the plugin will require PacketEvents to be installed as a separate plugin on the server.
-  # If set to true, the plugin will use the built-in PacketEvents API.
-  # Disclaimer: If possible, I recommend setting this to 'false' and installing the PacketEvents plugin. 
-  # Doing so will help prevent any compatibility issues regarding PacketEvents within this plugin.
-  use-built-in-packetevents-api: true
+      discord:
+        # Webhook URLs and custom messages (Supports Discord Markdown & PAPI)
+        # Available variables: %playerName%, %targetPlayer%
+
+        register-webhook-url: ''
+        register-message: "**%playerName%** has completed the registration"
+
+        login-webhook-url: ''
+        login-message: "**%playerName%** has logged in"
+
+        unregister-webhook-url: ''
+        unregister-message: "**%playerName%** has deleted **%targetPlayer%**'s account"
+
+        password-change-webhook-url: ''
+        password-change-message: "**%playerName%** has changed their password"
+
+
+    # Storage
+    storage:
+
+      # Supported storage methods: sqlite, mysql, postgre, h2
+      # Changing this option requires a full server reboot
+      storage-type: "sqlite"
+
+      database:
+        # Connection details for the database (for sqlite or h2, you will only need to change the name)
+        host: "localhost"
+        port: 3306
+        name: "LoginTo_DB"
+        user: ""
+        password: ""
+
+
+    # Premium system (Original accounts)
+    premium:
+      # Enables AutoLogin, /premium, and /cracked commands, and makes proxy commands unusable until the user is logged in.
+      # Requires a Proxy (Velocity/Bungee) with the plugin installed. If you are running the proxy and the server on 
+      # two different machines or using a dedicated host with Pterodactyl, you must use MySQL.
+      enable-premium-features: false
+
+      storage:
+        # Database type for cross-server communication (mysql or h2). MySQL is highly recommended if available.
+        database-type: "h2"
+
+      database:
+        host: "localhost"
+        # If the port is set to 0, it will use the database's default port (3306 for MySQL and 9092 for H2)
+        port: 0
+        user: "sa"
+        password: ""
+        # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
+        database-name: "LoginTo_Sharing"
+
+    logging:
+      # This feature logs all players who join the server
+      logging: true
+
+      # The date and time format for displaying logs
+      # DO NOT use spaces " " within the time format. You can use "HH:mm:ss-dd/MM/yyyy", but NOT "HH mm ss dd MM yyyy".
+      # If you wish to use spaces, instruct your staff to use only the /getlogs <user> command without specifying the day.
+      # Note: If you use the /getlogs command with the time selector, the date format must strictly remain "dd/MM/yyyy".
+      date-format: "HH:mm:ss dd/MM/yyyy"
+
+
+
+    plugin-utility:
+      # Check for new updates on startup and notify the console?
+      enable-update-checker: true
+
+      # Show the 'Service offered by LoginTo' watermark? If you want to support my work, please consider leaving this enabled.
+      show-watermark: true
+
+      # If set to false, the plugin will require PacketEvents to be installed as a separate plugin on the server.
+      # If set to true, the plugin will use the built-in PacketEvents API.
+      # Disclaimer: If possible, I recommend setting this to 'false' and installing the dedicated PacketEvents plugin. 
+      # Doing so helps prevent any internal compatibility issues regarding PacketEvents within this plugin.
+      use-built-in-packetevents-api: true
 ```
 </details>
 
@@ -171,179 +193,198 @@ plugin-utility:
   <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">Messages</summary>
   
 ```Yaml 
-    MessageVersion: "1.6" # DO NOT CHANGE THIS
-# -------------------------------------------------------------------------------------------------- #
-#                                                                                                    #
-#                                       LoginTo Messages Config                                      #
-#                                                                                                    #
-# -------------------------------------------------------------------------------------------------- #
+    MessageVersion: "1.7" # DO NOT CHANGE THIS
+    # -------------------------------------------------------------------------------------------------- #
+    #                                                                                                    #
+    #                                       LoginTo Messages Config                                      #
+    #                                                                                                    #
+    # -------------------------------------------------------------------------------------------------- #
 
-register:
-  # Messages sent during the registration process
+    # These messages support PlaceholderAPI (if installed) and MiniMessage format.
 
-  error:  
+    register:
+      # Messages sent during the registration process
 
-    # When a player use the /register command, but they are already registered
-    already-registered: "You are already registered!"
+      error:
 
-    # When a player types a password, but it doesn't contains the required characters
-    register-character-error: "Your password must contain these characters: %characters%"
+        # Sent when a player uses the /register command but is already registered
+        already-registered: "<red>You are already registered!"
 
-    # When the password is too long or too short
-    password-length: "Your password must be between %min_length% and %max_length% characters long"
+        # Sent when the chosen password does not contain the required special characters
+        register-character-error: "<red>Your password must contain these characters: %characters%"
 
-    # When a player use the /register command, but the first password is not equal to the second
-    password-mismatch: "The passwords do not match!"
+        # Sent when the password length does not meet the requirements
+        password-length: "<red>Your password must be between %min_length% and %max_length% characters long."
 
-    # When a player types wrong the command
-    register-usage: "Error: Use /register <password> <confirm_password>"
+        # Sent when the confirmation password does not match the first password entered
+        password-mismatch: "<red>The passwords do not match!"
 
-  
-  # Prompt when a player joins the server and need to make an account
-  register-prompt: "Welcome! Use /register <password> <confirm_password> to register."
+        # Sent when the command syntax is incorrect
+        register-usage: "<red>Error: Use /register <password> <confirm_password>"
 
-  # Prompt when a player joins the server and need to make an account + the password must contain those character
-  register-prompt-characters: "Welcome! Use /register <password> <confirm_password> to register. Make sure to include one of these characters: %characters%"
-
-  # When a player succesfully sing in
-  register-success: "Registration completed, have fun in the server"
+        password-too-simple: "<red>This password is too simple, chose another one"
 
 
-login:
-  # Messages sent during the login process
+      # Prompt shown to unregistered players when they join the server
+      register-prompt: "<dark_aqua>Welcome! Use /register <password> <confirm_password> to register."
 
-  error:
+      # Prompt shown to unregistered players when specific characters are required in the password
+      register-prompt-characters: "<dark_aqua>Welcome! Use /register <password> <confirm_password> to register. Make sure to include one of these characters: %characters%"
 
-    # when a player use the /login command, but they are not registered
-    not-registered: "You are not registered yet!"
-
-    # When a player use the /login command, but they are not registered
-    already-logged-in: "You are already logged in."
-
-    # When a player types wrong the command
-    login-usage: "Error: Use /login <password>"
-
-    # When the password is wrong
-    wrong-password: "Incorrect password"
-
-  
-  # When a player joins the server after the registration, this message will appear
-  login-prompt: "Please use /login <password> to authenticate."
-
-  # When a player successfully sing up
-  login-success: "Login successful! Welcome back."
+      # Sent when a player successfully registers their account
+      register-success: "<green>Registration completed successfully! Have fun on the server."
 
 
-delacc:
+    login:
+      # Messages sent during the login process
 
-  # Messages for the account deletion command
-  error:
+      error:
 
-    # The target player doesn't exists
-    player-doesnt-exist: "That player does not exist."
+        # Sent when a player tries to log in but does not have an account yet
+        not-registered: "<red>You are not registered yet!"
 
-    # When the admin doesn't confirm the command execution
-    delacc-not-confirmed: "Error: Please type 'confirm' after the player name."
+        # Sent when a player tries to log in but is already authenticated
+        already-logged-in: "<red>You are already logged in."
 
-    # When the admin types wrong the command
-    delacc-usage: "Usage: /delacc <username> <confirm>"
+        # Sent when the command syntax is incorrect
+        login-usage: "<red>Error: Use /login <password>"
 
-
-  # When an admin successfully deletes an account (Admin pov)
-  account-deleted: "Account deleted successfully."
-
-  # When the player's account gets deleted (User pov)
-  admin-deleted-account: "Your account was deleted by an administrator. Please rejoin to create a new one."
+        # Sent when the player enters an incorrect password
+        wrong-password: "<red>Incorrect password."
 
 
-changepassword:
+      # Prompt shown to registered players when they join the server
+      login-prompt: "<dark_aqua>Please use /login <password> to authenticate."
 
-  # Messages for changing the account password
-  error:
-
-    # When the player types wrong the command
-    changepassword-usage: "Usage: /changepassword <old_password> <new_password>"
-    
-    # When the player uses the command, but the old password for the account is not correct
-    old-password-wrong: "The old password is incorrect. If you forgot it, please contact an admin."
-
-  
-  # When the password changes successfully and the player gets disconnected
-  password-changed: "Your password has been changed. Please rejoin and log in again."
+      # Sent when a player successfully logs in
+      login-success: "<green>Login successful! Welcome back."
 
 
-cracked:
+    unregister:
+      # Messages for the account deletion command (/delacc)
 
-  # Messages for the cracked status command
+      error:
 
-  error:
+        # Sent when the specified player cannot be found in the system
+        player-doesnt-exist: "<red>That player does not exist."
 
-    # When the player execute the /cracked command, but they are already a cracked/premium user
-    already-cracked: "You are already marked as a cracked or premium user."
+        # Sent when the administrator fails to type 'confirm' at the end of the command
+        unregister-not-confirmed: "<red>Error: Please type 'confirm' after the player name."
 
-  # Warning that will popup when this command is executed
-  cracked-warn: "§l§6WARNING:§c You are using the cracked command. This means you will join this network as a cracked user. This protects your account from premium users trying to claim your name.\nType §2/cracked§c to confirm."
-  
-  # When the cracked command is executed successfuly
-  cracked-done: "You are now a cracked user."
+        # Sent when the command syntax is incorrect
+        unregister-usage: "<red>Usage: /delacc <username> <confirm>"
 
-premium:
 
-  # Messages for the premium status command
+      # Sent to the administrator after successfully deleting an account
+      account-unregistered: "<green>Account unregistered successfully."
 
-  error:
+      # Sent to the player when their account is deleted by an admin
+      admin-unregistered-account: "<red>Your account was deleted by an administrator. Please rejoin to create a new one."
 
-    # When the player execute the /premium command, but they are already a premium user
-    already-premium: "You are already a premium user."
 
-  # Warning that will popup when this command is executed
-  premium-warn: "§l§6WARNING:§c If you have a cracked account and switch to premium, you might lose access to your current progress if the names don't match perfectly.\nType §2/premium§c to confirm."
-  
-  # When the premium command is executed successfuly
-  premium-done: "You are now a premium user."
+    # Password length and complexity rules are shared with the register command and are only listed there.
+    changepassword:
+      # Messages for changing the account password
 
-loginto-command:
+      error:
 
-  # System and console messages
+        # Sent when the command syntax is incorrect
+        changepassword-usage: "<red>Usage: /changepassword <newPassword> <OTPCode>"
 
-  error: 
+        # Sent when the provided OTP (Two-Factor) code is incorrect
+        otp-code-wrong: "<red>The OTP code is incorrect."
 
-    # When the player use the /loginto command for something, but that option is console-only
-    player-execute-console-command: "This command can only be executed from the console."
+        # Sent when the player tries to change their password but hasn't set up OTP yet
+        no-otp-code: "<red>You do not have an OTP code set up. Generate one using /otp"
 
-errors:
+        # Send when a player tries to join in someone's qrcode world
+        qrcode-world-access-denied: "<red>You can't access other players qrcode world"
 
-  # Errors that aren't related to commands or are general errors
+      # Sent when the password is successfully updated, forcing a reconnect for security
+      password-changed: "<green>Your password has been changed. Please rejoin and log in again."
 
-  # Used for error that aren't related to any event or command
-  general:
 
-    # When a player executes a command, but they don't have enought permission for that
-    no-permission: "You do not have permission to execute this command."
+    cracked:
+      # Messages for the cracked status command
 
-    # When a player uses a feature, but it is not enabled
-    feature-not-enabled: "This feature is currently disabled."
-    
-  # Errors for activity before login or registration
-  activity-before-login:
+      error:
 
-    # When a player executes a command when they are not logged in
-    oncommand-when-not-authenticated: "Please authenticate yourself before using commands."
+        # Sent when the player is already marked as a cracked user
+        already-cracked: "<red>You are already marked as a cracked user."
 
-    # When a player chat when the are not logged in
-    chatting-before-login: "You must log in before you can chat."
-  
-  # Errors related to failed authentication
-  login-fail:
+      # Warning displayed when a player executes the /cracked command
+      cracked-warn: "<bold><gold>WARNING:</gold></bold><red> You are about to toggle your account to cracked. This protects your name from premium users trying to claim your account.\nType <green>/cracked</green> again to confirm."
 
-    # When a player tries the login too many times
-    onkick-for-failed-login: "Too many failed login attempts. Please rejoin and try again."
+      # Sent when the cracked status is successfully applied
+      cracked-done: "<green>Your account status has been set to cracked."
 
-    # When a player joins and doesn't complete the authentication in time
-    onkick-for-long-waiting: "Authentication timed out. Please rejoin and try again."
 
-    # Kick message when someone joins the server but another player with the same name is already online. (This message uses PAPI for the player already in the server, not for the joining player)
-    onkick-for-joining-with-same-name: "Another player with your name is already on this server"
+    premium:
+      # Messages for the premium status command
+
+      error:
+
+        # Sent when the player is already marked as a premium user
+        already-premium: "<red>You are already a premium user."
+
+      # Warning displayed when a player executes the /premium command
+      premium-warn: "<bold><gold>WARNING:</gold></bold><red> If you switch to premium status, you might lose access to your current progress if your Minecraft account names do not match perfectly.\nType <green>/premium</green> again to confirm."
+
+      # Sent when the premium status is successfully applied
+      premium-done: "<green>Your account status has been set to premium."
+
+
+    otp:
+      # Messages for the One-Time Password / 2FA setup command
+
+      error:
+
+        # Sent when a player tries to generate a new OTP secret when they already have one configured
+        otp-already-created: "<red>You cannot recreate your OTP code. Please contact an administrator to unregister your account if needed."
+
+        # Sent when an unregistered player tries to use the OTP command
+        otp-request-without-account: "<red>You must register an account before setting up OTP."
+
+      # Safety warning shown before displaying the sensitive 2FA setup data
+      otp-allert: "<bold><gold>WARNING:</gold></bold><red> This feature allows you to change your password without logging in. Ensure you are not sharing your screen with anyone. You will receive a QR code to scan with an authenticator app (e.g., Google Authenticator).\nIf it is safe to proceed, type <green>/otp</green> again to generate your code."
+
+      otp-world:
+        # Message displayed alongside the maps/QR code in-game
+        otp-periodic-message: "<bold><gold>WARNING:</gold></bold><red> Scan this QR code with your authenticator app. Once done, you may safely leave and rejoin the server."
+
+
+    errors:
+      # General errors and restriction messages
+
+      # Errors unrelated to specific authentication events
+      general:
+
+        # Sent when a player lacks the required permission node for a command
+        no-permission: "<red>You do not have permission to execute this command."
+
+        # Sent when a feature is disabled in the main configuration file
+        feature-not-enabled: "<red>This feature is currently disabled."
+
+      # Restrictions applied before full authentication
+      activity-before-login:
+
+        # Sent when an unauthenticated player tries to run a restricted command
+        oncommand-when-not-authenticated: "<red>Please authenticate yourself before using commands."
+
+        # Sent when an unauthenticated player tries to type in chat
+        chatting-before-login: "<red>You must log in before you can use the chat."
+
+      # Kick messages related to authentication failures
+      login-fail:
+
+        # Kick message sent when exceeding the maximum login attempts
+        onkick-for-failed-login: "<red>Too many failed login attempts. Please rejoin and try again."
+
+        # Kick message sent when the authentication timer expires
+        onkick-for-long-waiting: "<red>Authentication timed out. Please rejoin and try again."
+
+        # Kick message sent when a player attempts to join while their username is already online
+        onkick-for-joining-with-same-name: "<red>Another player with your name is already online on this server."
 ```
 </details>
 
@@ -383,6 +424,10 @@ errors:
 
   <pre>/getlogs &lt;player> [date: dd/MM/yyyy]</pre>
   <p>Displays login and registration logs for a player.</p>
+  <hr>
+
+  <pre>/otp</pre>
+  <p>Enable the OTP code command.</p>
 
   </div>
 </details>
@@ -432,6 +477,16 @@ errors:
   <pre>loginto.getlogs</pre>
   <p>Allows viewing login and registration logs with <code>/getlogs</code>.<br>
   <strong>Default:</strong> OP</p>
+
+  <hr>
+  <pre>loginto.flag-banned-client</pre>
+  <p>For the players with this permission, they will receive a message with the specific client of a player (if that client is flagged).<br>
+  <strong>Proxy permission</strong></p>
+
+  <hr>
+  <pre>loginto.otp</pre>
+  <p>Allows players to use the <code>/otp</code> command.<br>
+  <strong>Default:</strong> Everyone</p>
 
   </div>
 </details>

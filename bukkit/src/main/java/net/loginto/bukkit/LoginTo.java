@@ -1,0 +1,176 @@
+/*
+Copyright (C) 2026 Yager400
+
+This file is part of this project, released under the terms of
+the GNU General Public License v3.0.
+See the LICENSE file for details.
+ */
+package net.loginto.bukkit;
+
+import com.github.retrooper.packetevents.PacketEvents;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import net.loginto.bukkit.Commands.*;
+import net.loginto.bukkit.Events.Listener;
+import net.loginto.bukkit.Events.Listeners.*;
+import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Storage.Databases.H2;
+import net.loginto.bukkit.Storage.Databases.MySQL;
+import net.loginto.bukkit.Storage.Databases.PostgreSQL;
+import net.loginto.bukkit.Storage.Databases.SQLite;
+import net.loginto.bukkit.Utils.*;
+import net.loginto.bukkit.Utils.Metrics.SimplePie;
+import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class LoginTo extends JavaPlugin {
+
+    private Database database;
+
+    @Override
+    public void onLoad() {
+        //Save files
+        LoginToFiles.saveFiles(this);
+        //-----
+
+        LibraryDownloader.Libs(this);
+
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+    }
+
+    @Override
+    public void onEnable() {
+
+        getLogger().warning("LoginTo started loading...");
+
+        PacketEvents.getAPI().init();
+
+        //Metrics
+        Metrics metrics = new Metrics(this, 28083);
+        //----
+
+        //Updating yaml files
+        //TODO
+        try {
+            YMLVersion.builder()
+                    .plugin(this)
+                    .version("1.10")
+                    .resource("config.yml")
+                    .versionKey("ConfigVersion")
+                    .build();
+            YMLVersion.builder()
+                    .plugin(this)
+                    .version("1.7")
+                    .resource("messages.yml")
+                    .versionKey("MessageVersion")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //-----
+
+        //Initializing databases
+        String databaseType = LoginToFiles.Config.getString("storage.storage-type", this);
+        database = null;
+        switch (databaseType) {
+            case "sqlite":
+                database = new SQLite(this);
+                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                    return "sqlite";
+                }));
+                break;
+            case "mysql":
+                database = new MySQL(this);
+                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                    return "mysql";
+                }));
+                break;
+            case "postgresql":
+                database = new PostgreSQL(this);
+                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                    return "postgresql";
+                }));
+                break;
+            case "h2":
+                database = new H2(this);
+                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                    return "h2";
+                }));
+                break;
+            default:
+                getLogger().severe("Database type '" + databaseType + "' is not valid, using sqlite");
+                database = new SQLite(this);
+                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
+                    return "sqlite";
+                }));
+                break;
+        }
+        //Connecting premium database
+        if (LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", this)) {
+            PremiumUtils.connectAndGetSource(this);
+        }
+
+        //-----
+
+        //Registering listener
+        getServer().getPluginManager().registerEvents(new CancelledEvents(this), this);
+
+        getServer().getPluginManager().registerEvents(new onJoinEvent(this, database), this);
+        getServer().getPluginManager().registerEvents(new onPreCommandProcessEvent(this), this);
+        getServer().getPluginManager().registerEvents(new onQuitEvent(this), this);
+        getServer().getPluginManager().registerEvents(new logAnotherLocEvents(this), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerChangeWorld(this), this);
+
+        Listener.implementPacketEventListener();
+
+        //-----
+
+        //Add commands
+        getCommand("register").setExecutor(new Register(this, database));
+        getCommand("register").setTabCompleter(new Register(this, database));
+        getCommand("register").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.register"));
+
+        getCommand("login").setExecutor(new Login(this, database));
+        getCommand("login").setTabCompleter(new Login(this, database));
+        getCommand("login").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.login"));
+
+        getCommand("unregister").setExecutor(new UnRegister(this, database));
+        getCommand("unregister").setTabCompleter(new UnRegister(this, database));
+        getCommand("unregister").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.unregister"));
+
+        getCommand("changepassword").setExecutor(new ChangePassword(this, database));
+        getCommand("changepassword").setTabCompleter(new ChangePassword(this, database));
+        getCommand("changepassword").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.changepassword"));
+
+        getCommand("premium").setExecutor(new Premium(this, database));
+        getCommand("premium").setTabCompleter(new Premium(this, database));
+        getCommand("premium").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.premium"));
+
+        getCommand("cracked").setExecutor(new Cracked(this, database));
+        getCommand("cracked").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.cracked"));
+
+        getCommand("getlogs").setExecutor(new getlogs(this));
+        getCommand("getlogs").setTabCompleter(new getlogs(this));
+        getCommand("getlogs").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.getlogs"));
+
+        getCommand("otp").setExecutor(new OTP(this, database));
+        //-----
+
+        //Register channel
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        //------
+
+        //Updated
+        Update.checkForUpdates(this);
+        //-----
+
+        getLogger().warning("LoginTo loaded!");
+
+    }
+
+    @Override
+    public void onDisable() {
+        database.close();
+        PacketEvents.getAPI().terminate();
+    }
+}

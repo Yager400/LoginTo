@@ -1,0 +1,194 @@
+MessageVersion: "1.7" # DO NOT CHANGE THIS
+# -------------------------------------------------------------------------------------------------- #
+#                                                                                                    #
+#                                       LoginTo Messages Config                                      #
+#                                                                                                    #
+# -------------------------------------------------------------------------------------------------- #
+
+# These messages support PlaceholderAPI (if installed) and MiniMessage format.
+
+register:
+  # Messages sent during the registration process
+
+  error:  
+
+    # Sent when a player uses the /register command but is already registered
+    already-registered: "<red>You are already registered!"
+
+    # Sent when the chosen password does not contain the required special characters
+    register-character-error: "<red>Your password must contain these characters: %characters%"
+
+    # Sent when the password length does not meet the requirements
+    password-length: "<red>Your password must be between %min_length% and %max_length% characters long."
+
+    # Sent when the confirmation password does not match the first password entered
+    password-mismatch: "<red>The passwords do not match!"
+
+    # Sent when the command syntax is incorrect
+    register-usage: "<red>Error: Use /register <password> <confirm_password>"
+
+    password-too-simple: "<red>This password is too simple, chose another one"
+
+  
+  # Prompt shown to unregistered players when they join the server
+  register-prompt: "<dark_aqua>Welcome! Use /register <password> <confirm_password> to register."
+
+  # Prompt shown to unregistered players when specific characters are required in the password
+  register-prompt-characters: "<dark_aqua>Welcome! Use /register <password> <confirm_password> to register. Make sure to include one of these characters: %characters%"
+
+  # Sent when a player successfully registers their account
+  register-success: "<green>Registration completed successfully! Have fun on the server."
+
+
+login:
+  # Messages sent during the login process
+
+  error:
+
+    # Sent when a player tries to log in but does not have an account yet
+    not-registered: "<red>You are not registered yet!"
+
+    # Sent when a player tries to log in but is already authenticated
+    already-logged-in: "<red>You are already logged in."
+
+    # Sent when the command syntax is incorrect
+    login-usage: "<red>Error: Use /login <password>"
+
+    # Sent when the player enters an incorrect password
+    wrong-password: "<red>Incorrect password."
+
+  
+  # Prompt shown to registered players when they join the server
+  login-prompt: "<dark_aqua>Please use /login <password> to authenticate."
+
+  # Sent when a player successfully logs in
+  login-success: "<green>Login successful! Welcome back."
+
+
+unregister:
+  # Messages for the account deletion command (/delacc)
+
+  error:
+
+    # Sent when the specified player cannot be found in the system
+    player-doesnt-exist: "<red>That player does not exist."
+
+    # Sent when the administrator fails to type 'confirm' at the end of the command
+    unregister-not-confirmed: "<red>Error: Please type 'confirm' after the player name."
+
+    # Sent when the command syntax is incorrect
+    unregister-usage: "<red>Usage: /delacc <username> <confirm>"
+
+
+  # Sent to the administrator after successfully deleting an account
+  account-unregistered: "<green>Account unregistered successfully."
+
+  # Sent to the player when their account is deleted by an admin
+  admin-unregistered-account: "<red>Your account was deleted by an administrator. Please rejoin to create a new one."
+
+
+# Password length and complexity rules are shared with the register command and are only listed there.
+changepassword:
+  # Messages for changing the account password
+
+  error:
+
+    # Sent when the command syntax is incorrect
+    changepassword-usage: "<red>Usage: /changepassword <newPassword> <OTPCode>"
+    
+    # Sent when the provided OTP (Two-Factor) code is incorrect
+    otp-code-wrong: "<red>The OTP code is incorrect."
+
+    # Sent when the player tries to change their password but hasn't set up OTP yet
+    no-otp-code: "<red>You do not have an OTP code set up. Generate one using /otp"
+
+    # Send when a player tries to join in someone's qrcode world
+    qrcode-world-access-denied: "<red>You can't access other players qrcode world"
+  
+  # Sent when the password is successfully updated, forcing a reconnect for security
+  password-changed: "<green>Your password has been changed. Please rejoin and log in again."
+
+
+cracked:
+  # Messages for the cracked status command
+
+  error:
+
+    # Sent when the player is already marked as a cracked user
+    already-cracked: "<red>You are already marked as a cracked user."
+
+  # Warning displayed when a player executes the /cracked command
+  cracked-warn: "<bold><gold>WARNING:</gold></bold><red> You are about to toggle your account to cracked. This protects your name from premium users trying to claim your account.\nType <green>/cracked</green> again to confirm."
+  
+  # Sent when the cracked status is successfully applied
+  cracked-done: "<green>Your account status has been set to cracked."
+
+
+premium:
+  # Messages for the premium status command
+
+  error:
+
+    # Sent when the player is already marked as a premium user
+    already-premium: "<red>You are already a premium user."
+
+  # Warning displayed when a player executes the /premium command
+  premium-warn: "<bold><gold>WARNING:</gold></bold><red> If you switch to premium status, you might lose access to your current progress if your Minecraft account names do not match perfectly.\nType <green>/premium</green> again to confirm."
+  
+  # Sent when the premium status is successfully applied
+  premium-done: "<green>Your account status has been set to premium."
+
+
+otp:
+  # Messages for the One-Time Password / 2FA setup command
+
+  error:
+
+    # Sent when a player tries to generate a new OTP secret when they already have one configured
+    otp-already-created: "<red>You cannot recreate your OTP code. Please contact an administrator to unregister your account if needed."
+
+    # Sent when an unregistered player tries to use the OTP command
+    otp-request-without-account: "<red>You must register an account before setting up OTP."
+
+  # Safety warning shown before displaying the sensitive 2FA setup data
+  otp-allert: "<bold><gold>WARNING:</gold></bold><red> This feature allows you to change your password without logging in. Ensure you are not sharing your screen with anyone. You will receive a QR code to scan with an authenticator app (e.g., Google Authenticator).\nIf it is safe to proceed, type <green>/otp</green> again to generate your code."
+
+  otp-world:
+    # Message displayed alongside the maps/QR code in-game
+    otp-periodic-message: "<bold><gold>WARNING:</gold></bold><red> Scan this QR code with your authenticator app. Once done, you may safely leave and rejoin the server."
+
+
+errors:
+  # General errors and restriction messages
+
+  # Errors unrelated to specific authentication events
+  general:
+
+    # Sent when a player lacks the required permission node for a command
+    no-permission: "<red>You do not have permission to execute this command."
+
+    # Sent when a feature is disabled in the main configuration file
+    feature-not-enabled: "<red>This feature is currently disabled."
+    
+  # Restrictions applied before full authentication
+  activity-before-login:
+
+    # Sent when an unauthenticated player tries to run a restricted command
+    oncommand-when-not-authenticated: "<red>Please authenticate yourself before using commands."
+
+    # Sent when an unauthenticated player tries to type in chat
+    chatting-before-login: "<red>You must log in before you can use the chat."
+  
+  # Kick messages related to authentication failures
+  login-fail:
+
+    # Kick message sent when exceeding the maximum login attempts
+    onkick-for-failed-login: "<red>Too many failed login attempts. Please rejoin and try again."
+
+    # Kick message sent when the authentication timer expires
+    onkick-for-long-waiting: "<red>Authentication timed out. Please rejoin and try again."
+
+    # Kick message sent when a player attempts to join while their username is already online
+    onkick-for-joining-with-same-name: "<red>Another player with your name is already online on this server."
+
+

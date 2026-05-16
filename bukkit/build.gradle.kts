@@ -1,0 +1,15 @@
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:${rootProject.extra["spigotVersion"]}")
+    compileOnly("com.github.retrooper:packetevents-spigot:${rootProject.extra["packetEventsVersion"]}")
+    compileOnly("me.clip:placeholderapi:${rootProject.extra["placeholderApiVersion"]}")
+    compileOnly("com.zaxxer:HikariCP:${rootProject.extra["hikariVersion"]}")
+    compileOnly("net.kyori:adventure-api:${rootProject.extra["adventureVersion"]}")
+    compileOnly("net.kyori:adventure-text-minimessage:${rootProject.extra["adventureVersion"]}")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:${rootProject.extra["adventureVersion"]}")
+    compileOnly("com.google.zxing:core:${rootProject.extra["zxingVersion"]}")
+    compileOnly("org.xerial:sqlite-jdbc:${rootProject.extra["sqliteVersion"]}")
+    compileOnly("com.mysql:mysql-connector-j:${rootProject.extra["mysqlVersion"]}")
+    compileOnly("org.postgresql:postgresql:${rootProject.extra["postgresVersion"]}")
+    compileOnly("com.h2database:h2:${rootProject.extra["h2Version"]}")
+    compileOnly("com.warrenstrange:googleauth:${rootProject.extra["googleauthVersion"]}")
+}
