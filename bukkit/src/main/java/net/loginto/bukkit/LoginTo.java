@@ -12,14 +12,20 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import net.loginto.bukkit.Commands.*;
 import net.loginto.bukkit.Events.Listener;
 import net.loginto.bukkit.Events.Listeners.*;
+import net.loginto.bukkit.PlayerUtils.PeriodicMessages;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Storage.Databases.H2;
 import net.loginto.bukkit.Storage.Databases.MySQL;
 import net.loginto.bukkit.Storage.Databases.PostgreSQL;
 import net.loginto.bukkit.Storage.Databases.SQLite;
-import net.loginto.bukkit.Utils.*;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
+import net.loginto.bukkit.Utils.LibraryDownloader;
+import net.loginto.bukkit.Utils.Metrics;
 import net.loginto.bukkit.Utils.Metrics.SimplePie;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.YMLVersion;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LoginTo extends JavaPlugin {
@@ -54,15 +60,15 @@ public class LoginTo extends JavaPlugin {
         try {
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.10")
+                    .version("1.11")
                     .resource("config.yml")
-                    .versionKey("ConfigVersion")
+                    .versionKey(ConfigKeys.CONFIG_VERSION.path())
                     .build();
             YMLVersion.builder()
                     .plugin(this)
                     .version("1.7")
                     .resource("messages.yml")
-                    .versionKey("MessageVersion")
+                    .versionKey(MessageKeys.MESSAGE_VERSION.path())
                     .build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +76,7 @@ public class LoginTo extends JavaPlugin {
         //-----
 
         //Initializing databases
-        String databaseType = LoginToFiles.Config.getString("storage.storage-type", this);
+        String databaseType = LoginToFiles.Config.getString(ConfigKeys.STORAGE_STORAGE_TYPE.path(), this);
         database = null;
         switch (databaseType) {
             case "sqlite":
@@ -106,7 +112,7 @@ public class LoginTo extends JavaPlugin {
                 break;
         }
         //Connecting premium database
-        if (LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", this)) {
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), this)) {
             PremiumUtils.connectAndGetSource(this);
         }
 
@@ -160,8 +166,11 @@ public class LoginTo extends JavaPlugin {
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         //------
 
-        //Updated
-        Update.checkForUpdates(this);
+        //Periodic messages
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_ENABLE_UPDATE_CHECKER.path(), this)) {
+            PeriodicMessages.checkForUpdates(this);
+        }
+        PeriodicMessages.otpPeriodicMessage(this);
         //-----
 
         getLogger().warning("LoginTo loaded!");

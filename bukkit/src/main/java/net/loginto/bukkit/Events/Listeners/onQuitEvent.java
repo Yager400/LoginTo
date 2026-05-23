@@ -10,7 +10,8 @@ package net.loginto.bukkit.Events.Listeners;
 import net.loginto.bukkit.PlayerUtils.Positions;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 import net.loginto.bukkit.PlayerUtils.Tries;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -63,7 +64,7 @@ public class onQuitEvent implements Listener {
             deleteFolder(worldFolder);
         }
 
-        if (LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) {
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_TELEPORT_ON_JOIN.path(), plugin)) {
             Location playerLocation = player.getLocation();
 
             Positions.setPlayerPosition(
@@ -75,10 +76,10 @@ public class onQuitEvent implements Listener {
                     plugin
             );
 
-            World world = Bukkit.getWorld(LoginToFiles.Config.getString("spawn-settings.target-dimension", plugin));
-            double x = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.x", plugin);
-            double y = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.y", plugin);
-            double z = LoginToFiles.Config.getDouble("spawn-settings.spawn-coordinates.z", plugin);
+            World world = Bukkit.getWorld(LoginToFiles.Config.getString(ConfigKeys.SPAWN_SETTINGS_TARGET_DIMENSION.path(), plugin));
+            double x = LoginToFiles.Config.getDouble(ConfigKeys.SPAWN_SETTINGS_SPAWN_COORDINATES_X.path(), plugin);
+            double y = LoginToFiles.Config.getDouble(ConfigKeys.SPAWN_SETTINGS_SPAWN_COORDINATES_Y.path(), plugin);
+            double z = LoginToFiles.Config.getDouble(ConfigKeys.SPAWN_SETTINGS_SPAWN_COORDINATES_Z.path(), plugin);
 
             Location location = new Location(world, x, y, z);
 

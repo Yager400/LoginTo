@@ -11,8 +11,9 @@ package net.loginto.bukkit.Storage.Databases;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.JsonToSqlite;
-import net.loginto.bukkit.Utils.LoginToFiles;
 import net.loginto.bukkit.Utils.SecurityUtils;
 import org.bukkit.plugin.Plugin;
 import org.mindrot.jbcrypt.BCrypt;
@@ -54,7 +55,7 @@ public class SQLite implements Database {
 
 
     private void connectSQLite() throws ClassNotFoundException {
-        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
+        String DBName = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_NAME.path(), plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
         File dbFile = new File(plugin.getDataFolder(), DBName + ".db");
         String url = "jdbc:sqlite:" + dbFile.getAbsolutePath().replace("\\", "/");

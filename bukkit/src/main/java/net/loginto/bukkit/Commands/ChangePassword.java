@@ -10,7 +10,9 @@ package net.loginto.bukkit.Commands;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import net.loginto.bukkit.PlayerUtils.PasswordSecurity;
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -44,12 +46,12 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
 
 
         if (!sender.hasPermission("loginto.changepassword")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             return true;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("changepassword.error.changepassword-usage", player, plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_USAGE.path(), player, plugin));
             return true;
         }
 
@@ -64,10 +66,10 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
 
         if (!PasswordSecurity.doesIncludeReqChars(newPassword, plugin)) {
             sender.sendMessage(
-                    LoginToFiles.Messages.getMessage("register.error.register-character-error", player, plugin)
+                    LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_CHARACTER_ERROR.path(), player, plugin)
                             .replace(
                                     "%characters%",
-                                    LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)
+                                    LoginToFiles.Config.getString(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRED_CHAR_LIST.path(), plugin)
                             ));
             return true;
         }
@@ -79,7 +81,7 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if (PasswordSecurity.isCommon(newPassword, plugin, player.getName())) {
-                player.sendMessage(LoginToFiles.Messages.getMessage("register.error.password-too-simple", player, plugin));
+                player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_PASSWORD_TOO_SIMPLE.path(), player, plugin));
                 return;
             }
 
@@ -90,15 +92,15 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
                 String secret = database.getSecret(player.getName());
 
                 if (secret == null) {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage("changepassword.error.no-otp-code", player, plugin));
+                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_NO_OTP_CODE.path(), player, plugin));
                     return;
                 }
 
                 if (gAuth.authorize(secret, otpCode)) {
                     database.changePlayerPassword(player.getName(), newPassword);
-                    sender.sendMessage(LoginToFiles.Messages.getMessage("changepassword.password-changed", player, plugin));
+                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_PASSWORD_CHANGED.path(), player, plugin));
                 } else {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage("changepassword.error.otp-code-wrong", player, plugin));
+                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_OTP_CODE_WRONG.path(), player, plugin));
                 }
             } catch (Exception e) {
                 plugin.getLogger().severe(e.getMessage());

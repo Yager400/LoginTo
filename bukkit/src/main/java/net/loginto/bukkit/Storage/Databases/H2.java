@@ -10,7 +10,8 @@ package net.loginto.bukkit.Storage.Databases;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.SecurityUtils;
 import org.bukkit.plugin.Plugin;
 import org.mindrot.jbcrypt.BCrypt;
@@ -51,7 +52,7 @@ public class H2 implements Database {
     }
 
     private void connectH2() throws ClassNotFoundException {
-        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
+        String DBName = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_NAME.path(), plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
         File dbFile = new File(plugin.getDataFolder(), DBName);
         String url = "jdbc:h2:" + dbFile.getAbsolutePath().replace("\\", "/");

@@ -8,7 +8,8 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Events.Listeners;
 
 import net.loginto.bukkit.PlayerUtils.Sessions;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,7 +50,7 @@ public class onPreCommandProcessEvent implements Listener {
                             !command.equals("changepassword")
             ) {
                 event.setCancelled(true);
-                player.sendMessage(LoginToFiles.Messages.getMessage("errors.activity-before-login.oncommand-when-not-authenticated", player, plugin));
+                player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_ACTIVITY_BEFORE_LOGIN_ONCOMMAND.path(), player, plugin));
             }
         }
     }

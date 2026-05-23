@@ -7,7 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Events.Listeners;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,7 +31,7 @@ public class OnPlayerChangeWorld implements Listener {
             if (!player.getWorld().getName().contains(player.getName())) {
                 Location loc = event.getFrom().getSpawnLocation();
                 player.teleport(loc);
-                player.sendMessage(LoginToFiles.Messages.getMessage("changepassword.error.qrcode-world-access-denied", player, plugin));
+                player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_QRCODE_WORLD_ACCESS_DENIED.path(), player, plugin));
             }
         }
     }

@@ -1,20 +1,20 @@
 name: LoginTo
-version: '3.5.0'
+version: 3.5.1
 main: net.loginto.bukkit.LoginTo
-api-version: '1.16.5'
+api-version: 1.16
 api: spigot
 authors: [ Yager400 ]
-softdepend: [PlaceholderAPI, PacketEvents]
+softdepend: [ PlaceholderAPI, PacketEvents ]
 commands:
   register:
     usage: /register <password> <confirm_password>
-    aliases: ["r"]
+    aliases: [ "r" ]
   login:
     usage: /login <password>
-    aliases: ["l"]
+    aliases: [ "l" ]
   unregister:
     usage: /unregister <user> <confirm>
-    aliases: ["delacc"]
+    aliases: [ "delacc" ]
   changepassword:
     usage: /changepassword <new_password> <otp_code>
   premium:
@@ -22,9 +22,9 @@ commands:
   cracked:
     usage: /cracked
   getlogs:
-    usage: "/getlogs <user> [optional]<dd/MM/yyyy>"
+    usage: /getlogs <user> [optional]<dd/MM/yyyy>
   otp:
-    usage: "/otp"
+    usage: /otp
 permissions:
   loginto.register:
     default: true

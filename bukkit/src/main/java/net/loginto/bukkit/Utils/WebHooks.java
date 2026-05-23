@@ -7,6 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Utils;
 
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -18,10 +20,10 @@ import java.net.URL;
 public class WebHooks {
 
     public static void register(Plugin plugin, Player player) {
-        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+        String infoToView = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_REGISTER_MESSAGE.path(), plugin)
                 .replaceAll("%playerName%", player.getName());
 
-        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.register-webhook-url", plugin);
+        String webhookUrl = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_REGISTER_WEBHOOK_URL.path(), plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \"" + infoToView + "\"}";
@@ -35,10 +37,10 @@ public class WebHooks {
     }
 
     public static void login(Plugin plugin, Player player) {
-        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+        String infoToView = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_LOGIN_MESSAGE.path(), plugin)
                 .replaceAll("%playerName%", player.getName());
 
-        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.login-webhook-url", plugin);
+        String webhookUrl = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_LOGIN_WEBHOOK_URL.path(), plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \"" + infoToView + "\"}";
@@ -52,11 +54,11 @@ public class WebHooks {
     }
 
     public static void unregister(Plugin plugin, Player player, Player target) {
-        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+        String infoToView = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_UNREGISTER_MESSAGE.path(), plugin)
                 .replaceAll("%playerName%", player.getName())
                 .replaceAll("%targetPlayer%", target.getName());
 
-        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.unregister-webhook-url", plugin);
+        String webhookUrl = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_UNREGISTER_WEBHOOK_URL.path(), plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \"" + infoToView + "\"}";
@@ -71,10 +73,10 @@ public class WebHooks {
     }
 
     public static void changepassword(Plugin plugin, Player player) {
-        String infoToView = LoginToFiles.Config.getString("integrations.discord.register-message", plugin)
+        String infoToView = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_PASSWORD_CHANGE_MESSAGE.path(), plugin)
                 .replaceAll("%playerName%", player.getName());
 
-        String webhookUrl = LoginToFiles.Config.getString("integrations.discord.password-change-webhook-url", plugin);
+        String webhookUrl = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_DISCORD_PASSWORD_CHANGE_WEBHOOK_URL.path(), plugin);
 
         if (webhookUrl != null && !webhookUrl.isEmpty()) {
             String message = "{\"content\": \"" + infoToView + "\"}";

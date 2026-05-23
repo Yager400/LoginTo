@@ -7,7 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -24,7 +25,7 @@ public class Logs {
 
     public static void logPlayer(OfflinePlayer player, Plugin plugin, boolean loggedAsPremium) {
 
-        if (!LoginToFiles.Config.isFeatureEnabled("logging.logging", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.LOGGING_LOGGING.path(), plugin)) {
             return;
         }
 
@@ -38,7 +39,7 @@ public class Logs {
             YamlConfiguration log = YamlConfiguration.loadConfiguration(logFile);
 
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(LoginToFiles.Config.getString("logging.date-format", plugin));
+            DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(LoginToFiles.Config.getString(ConfigKeys.LOGGING_DATE_FORMAT.path(), plugin));
 
             if (!log.contains(player.getName())) {
                 log.set(player.getName() + ".times-joined", 1);

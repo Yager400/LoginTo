@@ -7,7 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -39,7 +40,7 @@ public class Tries {
     public static boolean triesEnded(Player player, Plugin plugin) {
         int triesPlayer = tries.getOrDefault(player.getUniqueId(), 0);
 
-        if (LoginToFiles.Config.getInt("auth-security.max-login-attempts", plugin) <= triesPlayer) {
+        if (LoginToFiles.Config.getInt(ConfigKeys.AUTH_SECURITY_MAX_LOGIN_ATTEMPTS.path(), plugin) <= triesPlayer) {
             return true;
         } else {
             return false;

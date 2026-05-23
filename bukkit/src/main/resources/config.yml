@@ -1,4 +1,4 @@
-ConfigVersion: "1.10" # DO NOT CHANGE THIS
+ConfigVersion: "1.11" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Configuration                                        #
@@ -41,12 +41,12 @@ password-requirements:
     # Decline any loginto action if the password is too simple
     decline-on-common-password: true
 
-    # Use the RockYou password list (if this is enabled, the plugin will download the txt file from this link: https://weakpass.com/download/90/rockyou.txt.gz)
-     # That file uncompressed will be around 130MB
+      # Use the RockYou password list (if this is enabled, the plugin will download the txt file from this link: https://weakpass.com/download/90/rockyou.txt.gz)
+    # That file uncompressed will be around 130MB
     use-rockyou: true
 
-    # If you want to add some banned password, put them here
-     # The placeholder '%username%' is to define the player name
+      # If you want to add some banned password, put them here
+    # The placeholder '%username%' is to define the player name
     banned-password:
       - "%username%"
 
@@ -71,7 +71,7 @@ spawn-settings:
     x: 0
     y: -64
     z: 0
-    
+
   # Return the player to their last known location after a successful login?
   restore-previous-location: true
 
@@ -128,14 +128,14 @@ premium:
     # Database type for cross-server communication (mysql or h2). MySQL is highly recommended if available.
     database-type: "h2"
 
-  database:
-    host: "localhost"
-    # If the port is set to 0, it will use the database's default port (3306 for MySQL and 9092 for H2)
-    port: 0
-    user: "sa"
-    password: ""
-    # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
-    database-name: "LoginTo_Sharing"
+    database:
+      host: "localhost"
+      # If the port is set to 0, it will use the database's default port (3306 for MySQL and 9092 for H2)
+      port: 0
+      user: "sa"
+      password: ""
+      # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
+      database-name: "LoginTo_Sharing"
 
 logging:
   # This feature logs all players who join the server
@@ -161,5 +161,10 @@ plugin-utility:
   # Disclaimer: If possible, I recommend setting this to 'false' and installing the dedicated PacketEvents plugin. 
   # Doing so helps prevent any internal compatibility issues regarding PacketEvents within this plugin.
   use-built-in-packetevents-api: true
+
+  # If this setting is on, LoginTo will generate the experimental.yml file that will contain every feature under development
+  # Those features might be unstable until their full release
+  # (In order for this file to be generated, a reload or restart is needed)
+  enable-experimental-features: false
 
 

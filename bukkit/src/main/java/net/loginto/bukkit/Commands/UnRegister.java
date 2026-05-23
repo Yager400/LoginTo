@@ -8,7 +8,9 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -38,27 +40,27 @@ public class UnRegister implements CommandExecutor, TabCompleter {
 
         if (!sender.hasPermission("loginto.unregister")) {
             if (sender instanceof Player player) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), plugin));
             }
             return true;
         }
 
         if (args.length != 2) {
             if (sender instanceof Player player) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.unregister-usage", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_USAGE.path(), player, plugin));
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.unregister-usage", plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_USAGE.path(), plugin));
             }
             return true;
         }
 
         if (!args[1].equalsIgnoreCase("confirm")) {
             if (sender instanceof Player player) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.unregister-usage", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_NOT_CONFIRMED.path(), player, plugin));
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.unregister-usage", plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_NOT_CONFIRMED.path(), plugin));
             }
             return true;
         }
@@ -68,9 +70,9 @@ public class UnRegister implements CommandExecutor, TabCompleter {
 
         if (!target.hasPlayedBefore()) {
             if (sender instanceof Player player) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.player-doesnt-exist", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), player, plugin));
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.player-doesnt-exist", plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), plugin));
             }
             return true;
         }
@@ -79,31 +81,31 @@ public class UnRegister implements CommandExecutor, TabCompleter {
 
         if (!success) {
             if (sender instanceof Player player) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.player-doesnt-exist", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), player, plugin));
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.error.player-doesnt-exist", plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), plugin));
             }
             return true;
         }
 
         if (target.isOnline()) {
             if (sender instanceof Player player) {
-                target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage("unregister.admin-unregistered-account", player, plugin));
+                target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ADMIN_UNREGISTERED_ACCOUNT.path(), player, plugin));
             } else {
-                target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage("unregister.admin-unregistered-account", plugin));
+                target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ADMIN_UNREGISTERED_ACCOUNT.path(), plugin));
             }
         }
 
-        if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
             CompletableFuture.runAsync(() -> {
                 PremiumUtils.PlayersInfo.sendRemovePremiumRequest(target, plugin);
             });
         }
 
         if (sender instanceof Player player) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.account-unregistered", player, plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ACCOUNT_UNREGISTERED.path(), player, plugin));
         } else {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("unregister.account-unregistered", plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ACCOUNT_UNREGISTERED.path(), plugin));
         }
 
         return true;

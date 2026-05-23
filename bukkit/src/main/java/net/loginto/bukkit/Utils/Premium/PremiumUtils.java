@@ -9,7 +9,8 @@ package net.loginto.bukkit.Utils.Premium;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -25,7 +26,7 @@ public class PremiumUtils {
     public static class PlayerPremium {
         public static boolean IsPlayerInThePremiumDB(Player player, Plugin plugin) {
 
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return false;
             }
 
@@ -56,7 +57,7 @@ public class PremiumUtils {
 
         public static boolean CheckIfAPlayerCanAutoLogin(Player player, Plugin plugin) {
 
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return false;
             }
 
@@ -105,7 +106,7 @@ public class PremiumUtils {
     public static class PlayersInfo {
         public static void sendPremiumRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return;
             }
 
@@ -120,7 +121,7 @@ public class PremiumUtils {
 
         public static void sendCrackedRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return;
             }
 
@@ -140,7 +141,7 @@ public class PremiumUtils {
 
         public static void sendRemovePremiumRequest(OfflinePlayer player, Plugin plugin) {
 
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return;
             }
 
@@ -157,7 +158,7 @@ public class PremiumUtils {
     public static HikariDataSource connectAndGetSource(Plugin plugin) {
 
         if (source == null) {
-            switch (LoginToFiles.Config.getString("premium.storage.database-type", plugin)) {
+            switch (LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_TYPE.path(), plugin)) {
                 case "h2":
                     source = new HikariDataSource(PremiumUtils.H2DB.connect(plugin));
                     break;
@@ -185,15 +186,15 @@ public class PremiumUtils {
     static class H2DB {
         protected static HikariConfig connect(Plugin plugin) {
 
-            String host = LoginToFiles.Config.getString("premium.storage.database.host", plugin);
+            String host = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_HOST.path(), plugin);
             host = (host != null) ? host : "127.0.0.1";
 
-            int port = LoginToFiles.Config.getInt("premium.storage.database.port", plugin);
+            int port = LoginToFiles.Config.getInt(ConfigKeys.PREMIUM_STORAGE_DATABASE_PORT.path(), plugin);
             port = (port != 0) ? port : 9092;
 
             String url = "jdbc:h2:tcp://" + host + ":" + port + "/./plugins/loginto/LoginTo_Sharing";
-            String user = LoginToFiles.Config.getString("premium.storage.database.user", plugin);
-            String password = LoginToFiles.Config.getString("premium.storage.database.password", plugin);
+            String user = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_USER.path(), plugin);
+            String password = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_PASSWORD.path(), plugin);
 
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(url);
@@ -209,13 +210,13 @@ public class PremiumUtils {
     static class MYSQLDB {
         protected static HikariConfig connect(Plugin plugin) {
 
-            String host = LoginToFiles.Config.getString("premium.storage.database.host", plugin);
+            String host = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_HOST.path(), plugin);
             host = (host != null) ? host : "127.0.0.1";
 
-            int port = LoginToFiles.Config.getInt("premium.storage.database.port", plugin);
+            int port = LoginToFiles.Config.getInt(ConfigKeys.PREMIUM_STORAGE_DATABASE_PORT.path(), plugin);
             port = (port != 0) ? port : 3306;
 
-            String name = LoginToFiles.Config.getString("premium.storage.database.database-name", plugin);
+            String name = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_NAME.path(), plugin);
             name = (name != null) ? name : "LoginTo_Sharing";
             /*
             if (name == null || name.trim().isEmpty()) {
@@ -224,8 +225,8 @@ public class PremiumUtils {
                  */
 
             String url = "jdbc:mysql://" + host + ":" + port + "/" + name + "?useSSL=false&serverTimezone=UTC";
-            String user = LoginToFiles.Config.getString("premium.storage.database.user", plugin);
-            String password = LoginToFiles.Config.getString("premium.storage.database.password", plugin);
+            String user = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_USER.path(), plugin);
+            String password = LoginToFiles.Config.getString(ConfigKeys.PREMIUM_STORAGE_DATABASE_PASSWORD.path(), plugin);
 
 
             HikariConfig config = new HikariConfig();

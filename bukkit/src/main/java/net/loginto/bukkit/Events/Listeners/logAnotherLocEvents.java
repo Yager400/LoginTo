@@ -7,7 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Events.Listeners;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +37,7 @@ public class logAnotherLocEvents implements Listener {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getName().equalsIgnoreCase(event.getName())) {
                 event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-                event.setKickMessage(LoginToFiles.Messages.getMessage("errors.login-fail.onkick-for-joining-with-same-name", p, plugin));
+                event.setKickMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_LOGIN_FAIL_ONKICK_SAME_NAME.path(), p, plugin));
                 break;
             }
         }

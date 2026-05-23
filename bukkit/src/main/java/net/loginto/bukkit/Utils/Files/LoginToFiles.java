@@ -5,7 +5,7 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-package net.loginto.bukkit.Utils;
+package net.loginto.bukkit.Utils.Files;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -17,61 +17,64 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-
 
 public class LoginToFiles {
 
     public static class Messages {
 
-        private static final MiniMessage mm = MiniMessage.miniMessage();
+        private static final MiniMessage mm;
+
+        //Get the method 'get' if the server includes minimessage, but it's a version that
+         // doesn't have 'MiniMessage.miniMessage();'
+        static {
+            MiniMessage tempMM;
+            try {
+                tempMM = (MiniMessage) MiniMessage.class.getMethod("get").invoke(null);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                tempMM = MiniMessage.miniMessage();
+            }
+            mm = tempMM;
+        }
 
         public static String getMessage(String path, Player player, Plugin plugin) {
             String text = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml")).getString(path);
 
             if (text == null || text.isEmpty()) {
-                return LegacyComponentSerializer.legacySection().serialize(
-                        mm.deserialize(
-                                "<red>No message found for: " + path
-                        )
-                );
+                return mmLegacySerialized(mm.deserialize("<red>No message found for: " + path));
             }
 
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                return LegacyComponentSerializer.legacySection().serialize(
-                        mm.deserialize(
-                                me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text)
-                        )
-                );
+                return mmLegacySerialized(mm.deserialize(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text)));
             }
 
             Component component = mm.deserialize(text);
 
-            return LegacyComponentSerializer.legacySection().serialize(component);
+            return mmLegacySerialized(component);
         }
 
         public static String getMessage(String path, Plugin plugin) {
             String text = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml")).getString(path);
 
             if (text == null || text.isEmpty()) {
-                return LegacyComponentSerializer.legacySection().serialize(
-                        mm.deserialize(
-                                "<red>No message found for: " + path
-                        )
-                );
+                return mmLegacySerialized(mm.deserialize("<red>No message found for: " + path));
             }
 
             Component component = mm.deserialize(text);
 
+            return mmLegacySerialized(component);
+        }
+
+        private static String mmLegacySerialized(Component component) {
             return LegacyComponentSerializer.legacySection().serialize(component);
         }
+
     }
 
     public static class Config {
-
-        //YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "config.yml")).get(path);
 
         public static Object get(String path, Plugin plugin) {
             return plugin.getConfig().get(path, null);
@@ -98,6 +101,20 @@ public class LoginToFiles {
         }
     }
 
+    public static class Experimental {
+        private static File file = null;
+
+        public static Object getExperimentalObj(String path, Plugin plugin) {
+            if (file == null) {
+                file = new File(plugin.getDataFolder(), "experimental.yml");
+                if (!file.exists()) {
+                    return null;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file).get(path);
+        }
+    }
+
     public static void saveFiles(Plugin plugin) {
 
         File config = new File(plugin.getDataFolder(), "config.yml");
@@ -119,6 +136,13 @@ public class LoginToFiles {
 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        if (LoginToFiles.Config.isFeatureEnabled("plugin-utility.enable-experimental-features", plugin)) {
+            File experimentalFile = new File(plugin.getDataFolder(), "experimental.yml");
+            if (!experimentalFile.exists()) {
+                plugin.saveResource("experimental.yml", false);
             }
         }
 

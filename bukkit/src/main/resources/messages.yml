@@ -10,7 +10,7 @@ MessageVersion: "1.7" # DO NOT CHANGE THIS
 register:
   # Messages sent during the registration process
 
-  error:  
+  error:
 
     # Sent when a player uses the /register command but is already registered
     already-registered: "<red>You are already registered!"
@@ -169,7 +169,7 @@ errors:
 
     # Sent when a feature is disabled in the main configuration file
     feature-not-enabled: "<red>This feature is currently disabled."
-    
+
   # Restrictions applied before full authentication
   activity-before-login:
 

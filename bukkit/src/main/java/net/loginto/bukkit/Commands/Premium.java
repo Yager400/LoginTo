@@ -8,7 +8,9 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -44,19 +46,19 @@ public class Premium implements CommandExecutor, TabCompleter {
 
         Player player = (Player) sender;
 
-        if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", player, plugin));
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), player, plugin));
             return true;
         }
 
         if (!player.hasPermission("loginto.premium.me")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             return true;
         }
 
         if (args.length >= 1) {
             if (!player.hasPermission("loginto.premium.others")) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", player, plugin));
+                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
                 return true;
             }
 
@@ -91,14 +93,14 @@ public class Premium implements CommandExecutor, TabCompleter {
 
                 if (isPremiumAlready) {
                     Bukkit.getScheduler().runTask(plugin, () -> {
-                        sender.sendMessage(LoginToFiles.Messages.getMessage("premium.error.already-premium", player, plugin));
+                        sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.PREMIUM_ERROR_ALREADY_PREMIUM.path(), player, plugin));
                     });
                 } else {
 
                     if (!playerList.contains(player)) {
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             playerList.add(player);
-                            sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-warn", player, plugin));
+                            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.PREMIUM_WARN.path(), player, plugin));
                         });
                         skip = true;
                     } else {
@@ -112,7 +114,7 @@ public class Premium implements CommandExecutor, TabCompleter {
                 if (!skip) {
                     PremiumUtils.PlayersInfo.sendPremiumRequest(player, plugin);
                     Bukkit.getScheduler().runTask(plugin, () -> {
-                        sender.sendMessage(LoginToFiles.Messages.getMessage("premium.premium-done", player, plugin));
+                        sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.PREMIUM_DONE.path(), player, plugin));
                     });
                 }
             });

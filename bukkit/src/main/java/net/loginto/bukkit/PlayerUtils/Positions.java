@@ -7,8 +7,9 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.JsonManager;
-import net.loginto.bukkit.Utils.LoginToFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,7 +22,7 @@ public class Positions {
 
         JsonManager oldPos = new JsonManager(plugin.getDataFolder(), "oldPosition.json");
 
-        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_TELEPORT_ON_JOIN.path(), plugin)) {
             return;
         }
 
@@ -43,10 +44,10 @@ public class Positions {
         JsonManager oldPos = new JsonManager(plugin.getDataFolder(), "oldPosition.json");
 
 
-        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_TELEPORT_ON_JOIN.path(), plugin)) {
             return;
         }
-        if (!LoginToFiles.Config.isFeatureEnabled("spawn-settings.restore-previous-location", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_RESTORE_PREVIOUS_LOCATION.path(), plugin)) {
             return;
         }
 

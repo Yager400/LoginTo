@@ -7,6 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Utils;
 
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,7 +22,7 @@ public class ProxyUtils {
     public static void sendPlayerToLobbyPostLogin(Plugin plugin, Player player) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             try {
-                String serverName = LoginToFiles.Config.getString("integrations.proxy.server-post-login", plugin);
+                String serverName = LoginToFiles.Config.getString(ConfigKeys.INTEGRATIONS_PROXY_SERVER_POST_LOGIN.path(), plugin);
 
                 if (serverName == null || serverName.isEmpty()) {
                     return;

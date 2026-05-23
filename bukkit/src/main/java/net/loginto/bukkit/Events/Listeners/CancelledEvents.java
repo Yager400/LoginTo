@@ -8,7 +8,8 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Events.Listeners;
 
 import net.loginto.bukkit.PlayerUtils.Sessions;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,7 +63,7 @@ public class CancelledEvents implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         if (!Sessions.isPlayerLogged(event.getPlayer())) {
-            event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage("errors.activity-before-login.chatting-before-login", event.getPlayer(), plugin));
+            event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_ACTIVITY_BEFORE_LOGIN_CHATTING.path(), event.getPlayer(), plugin));
             event.setCancelled(true);
         }
     }

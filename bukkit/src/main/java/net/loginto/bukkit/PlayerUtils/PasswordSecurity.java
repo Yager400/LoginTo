@@ -7,7 +7,9 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +24,7 @@ public class PasswordSecurity {
     public static URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
 
     public static boolean isCommon(String password, Plugin plugin, String playerName) {
-        if (LoginToFiles.Config.isFeatureEnabled("password-requirements.banned-password.use-rockyou", plugin)) {
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_USE_ROCKYOU.path(), plugin)) {
             File txtFile = new File(plugin.getDataFolder(), "rockyou.txt");
 
             if (!txtFile.exists()) {
@@ -43,9 +45,19 @@ public class PasswordSecurity {
             }
         }
 
+        List<?> listUnknownElements = LoginToFiles.Config.getList(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_LIST.path(), plugin);
+        List<String> list = new ArrayList<>();
 
+        for (Object i : listUnknownElements) {
+            if (i instanceof String s) {
+                list.add(s);
+            }
+        }
 
-        List<String> list = (List<String>) LoginToFiles.Config.getList("password-requirements.banned-password.banned-password", plugin);
+        if (listUnknownElements.size() != list.size()) {
+            plugin.getLogger().severe("Some banned password got excluded, make sure that all of them are strings");
+        }
+
         for (String s : list) {
             if (s.equals(password)) {
                 return true;
@@ -75,17 +87,16 @@ public class PasswordSecurity {
         }
     }
 
-
     public static boolean matchesLengthRequirement(String password, Plugin plugin, Player player) {
-        if (!LoginToFiles.Config.isFeatureEnabled("password-requirements.length-check.enabled", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_LENGTH_CHECK_ENABLED.path(), plugin)) {
             return true;
         }
-        int min = LoginToFiles.Config.getInt("password-requirements.length-check.min-length", plugin);
-        int max = LoginToFiles.Config.getInt("password-requirements.length-check.max-length", plugin);
+        int min = LoginToFiles.Config.getInt(ConfigKeys.PASSWORD_REQUIREMENTS_LENGTH_CHECK_MIN_LENGTH.path(), plugin);
+        int max = LoginToFiles.Config.getInt(ConfigKeys.PASSWORD_REQUIREMENTS_LENGTH_CHECK_MAX_LENGTH.path(), plugin);
         if (password.length() < min || password.length() > max) {
-            player.sendMessage(LoginToFiles.Messages.getMessage("register.error.password-length", player, plugin)
-                .replaceAll("%min_length%", String.valueOf(min))
-                .replaceAll("%max_length%", String.valueOf(max))
+            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_PASSWORD_LENGTH.path(), player, plugin)
+                    .replaceAll("%min_length%", String.valueOf(min))
+                    .replaceAll("%max_length%", String.valueOf(max))
             );
             return false;
         }
@@ -94,13 +105,13 @@ public class PasswordSecurity {
 
     public static boolean doesIncludeReqChars(String password, Plugin plugin) {
 
-        if (!LoginToFiles.Config.isFeatureEnabled("password-requirements.require-special-chars", plugin)) {
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRE_SPECIAL_CHARS.path(), plugin)) {
             return true;
         }
 
         final List<String> ReqChar = new ArrayList<>();
 
-        for (char c : (LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)).toCharArray()) {
+        for (char c : (LoginToFiles.Config.getString(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRED_CHAR_LIST.path(), plugin)).toCharArray()) {
             ReqChar.add(String.valueOf(c));
         }
 

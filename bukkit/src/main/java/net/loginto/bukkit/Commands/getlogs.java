@@ -8,7 +8,9 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import net.loginto.bukkit.PlayerUtils.Logs;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -33,12 +35,12 @@ public class getlogs implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!sender.hasPermission("loginto.getlogs")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.no-permission", null, plugin));
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), null, plugin));
             return false;
         }
 
-        if (!LoginToFiles.Config.isFeatureEnabled("logging.logging", plugin)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage("errors.general.feature-not-enabled", null, plugin));
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.LOGGING_LOGGING.path(), plugin)) {
+            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), null, plugin));
             return false;
         }
 

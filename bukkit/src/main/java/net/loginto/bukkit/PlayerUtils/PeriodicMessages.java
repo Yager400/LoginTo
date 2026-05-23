@@ -5,23 +5,36 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-package net.loginto.bukkit.Utils;
+package net.loginto.bukkit.PlayerUtils;
 
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class Update {
+public class PeriodicMessages {
+
+    public static void otpPeriodicMessage(Plugin plugin) {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (p.getWorld().getName().contains("qrcode")) {
+                    p.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.OTP_WORLD_PERIODIC_MESSAGE.path(), p, plugin));
+                }
+            }
+        }, 0, 1200);
+    }
+
     public static void checkForUpdates(Plugin plugin) {
-        // Check if there is an update every hour
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             try {
 
                 @SuppressWarnings("deprecation")
-                URL url = new URL("https://raw.githubusercontent.com/Yager400/LoginTo/main/LoginTo/src/main/resources/plugin.yml");
+                URL url = new URL("https://raw.githubusercontent.com/Yager400/LoginTo/refs/heads/main/bukkit/src/main/resources/config.yml");
 
 
                 InputStreamReader reader = new InputStreamReader(url.openStream());
@@ -41,7 +54,6 @@ public class Update {
             } catch (Exception e) {
                 plugin.getLogger().severe("Unable to check for updates!");
             }
-
         }, 0, 72000L);
     }
 }

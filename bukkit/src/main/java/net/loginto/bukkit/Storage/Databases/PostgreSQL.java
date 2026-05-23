@@ -11,7 +11,8 @@ package net.loginto.bukkit.Storage.Databases;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.SecurityUtils;
 import org.bukkit.plugin.Plugin;
 import org.mindrot.jbcrypt.BCrypt;
@@ -54,16 +55,16 @@ public class PostgreSQL implements Database {
 
     private void connectPostgreSQL() throws Exception {
 
-        String host = LoginToFiles.Config.getString("storage.database.host", plugin);
+        String host = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_HOST.path(), plugin);
         host = (host != null) ? host : "127.0.0.1";
-        int port = LoginToFiles.Config.getInt("storage.database.port", plugin);
-        String DBName = LoginToFiles.Config.getString("storage.database.name", plugin);
+        int port = LoginToFiles.Config.getInt(ConfigKeys.STORAGE_DATABASE_PORT.path(), plugin);
+        String DBName = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_NAME.path(), plugin);
         DBName = (DBName != null) ? DBName : "LoginTo_DB";
 
         String urlNoDB = "jdbc:postgresql://" + host + ":" + port + "/";
         String url = urlNoDB + DBName;
-        String user = LoginToFiles.Config.getString("storage.database.user", plugin);
-        String password = LoginToFiles.Config.getString("storage.database.password", plugin);
+        String user = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_USER.path(), plugin);
+        String password = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_PASSWORD.path(), plugin);
 
         plugin.getLogger().info("Connecting to: " + url);
 

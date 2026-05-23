@@ -8,7 +8,8 @@ See the LICENSE file for details.
 package net.loginto.bukkit.PlayerUtils;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +40,7 @@ public class Sessions {
     public static class Proxy {
 
         public static boolean isPlayerLoggedN(Player player, Plugin plugin) {
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return false;
             }
 
@@ -69,7 +70,7 @@ public class Sessions {
         }
 
         public static void addPlayerN(Player player, Plugin plugin) {
-            if (!LoginToFiles.Config.isFeatureEnabled("premium.enable-premium-features", plugin)) {
+            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
                 return;
             }
 

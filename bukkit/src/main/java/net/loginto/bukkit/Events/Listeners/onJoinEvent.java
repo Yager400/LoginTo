@@ -11,7 +11,9 @@ import net.loginto.bukkit.PlayerUtils.PlayerStatus;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 import net.loginto.bukkit.PlayerUtils.Tries;
 import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.MessageKeys;
 import net.loginto.bukkit.Utils.Premium.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +41,7 @@ public class onJoinEvent implements Listener {
 
         plugin.reloadConfig();
 
-        String watermark = (LoginToFiles.Config.isFeatureEnabled("plugin-utility.show-watermark", plugin)) ? " - Service offered by LoginTo on Modrinth" : "";
+        String watermark = (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_SHOW_WATERMARK.path(), plugin)) ? " - Service offered by LoginTo on Modrinth" : "";
 
         CompletableFuture.supplyAsync(() -> {
 
@@ -68,10 +70,10 @@ public class onJoinEvent implements Listener {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (canAutoLogin || isLogged) {
-                    event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage("login.login-success", event.getPlayer(), plugin));
+                    event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_SUCCESS.path(), event.getPlayer(), plugin));
                     PlayerStatus.setPlayerAsLogged(event.getPlayer(), plugin, true, true);
                 } else {
-                    event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage("login.login-prompt", event.getPlayer(), plugin));
+                    event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_PROMPT.path(), event.getPlayer(), plugin));
                     JoinUtil.startCounter(event, plugin, isLogged);
                     Tries.insertPlayerWithZeroTries(event.getPlayer());
                 }
@@ -82,33 +84,33 @@ public class onJoinEvent implements Listener {
 
     private static class JoinUtil {
         public static void sendRegisterMessages(PlayerJoinEvent event, Plugin plugin, String watermark) {
-            if (LoginToFiles.Config.isFeatureEnabled("password-requirements.require-special-chars", plugin)) {
+            if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRE_SPECIAL_CHARS.path(), plugin)) {
 
                 event.getPlayer().sendMessage(
-                        LoginToFiles.Messages.getMessage("register.register-prompt-characters", event.getPlayer(), plugin)
+                        LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_PROMPT_CHARACTERS.path(), event.getPlayer(), plugin)
                                 .replace(
                                         "%characters%",
-                                        LoginToFiles.Config.getString("password-requirements.required-char-list", plugin)
+                                        LoginToFiles.Config.getString(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRED_CHAR_LIST.path(), plugin)
                                 ) +
                                 ChatColor.GRAY +
                                 watermark
                 );
 
             } else {
-                event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage("register.register-prompt", event.getPlayer(), plugin));
+                event.getPlayer().sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_PROMPT.path(), event.getPlayer(), plugin));
             }
         }
 
         public static void startCounter(PlayerJoinEvent event, Plugin plugin, boolean isLogged) {
-            if (LoginToFiles.Config.isFeatureEnabled("auth-security.kick-on-auth-timeout", plugin)) {
+            if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.AUTH_SECURITY_KICK_ON_AUTH_TIMEOUT.path(), plugin)) {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         if (!Sessions.isPlayerLogged(event.getPlayer()) && !isLogged) {
-                            event.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage("errors.login-fail.onkick-for-long-waiting", event.getPlayer(), plugin));
+                            event.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_LOGIN_FAIL_ONKICK_LONG_WAITING.path(), event.getPlayer(), plugin));
                         }
                     }
-                }.runTaskLater(plugin, LoginToFiles.Config.getInt("auth-security.auth-timeout-seconds", plugin) * 20L);
+                }.runTaskLater(plugin, LoginToFiles.Config.getInt(ConfigKeys.AUTH_SECURITY_AUTH_TIMEOUT_SECONDS.path(), plugin) * 20L);
 
             }
         }

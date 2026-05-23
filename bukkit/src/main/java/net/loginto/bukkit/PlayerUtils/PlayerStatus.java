@@ -7,7 +7,8 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import net.loginto.bukkit.Utils.LoginToFiles;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.ProxyUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class PlayerStatus {
 
             Tries.resetTries(player);
 
-            if (teleportBack && LoginToFiles.Config.isFeatureEnabled("spawn-settings.teleport-on-join", plugin) && LoginToFiles.Config.isFeatureEnabled("spawn-settings.restore-previous-location", plugin)) {
+            if (teleportBack && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_TELEPORT_ON_JOIN.path(), plugin) && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_RESTORE_PREVIOUS_LOCATION.path(), plugin)) {
                 Positions.teleportPlayerToTheOldPos(player, plugin);
             }
 

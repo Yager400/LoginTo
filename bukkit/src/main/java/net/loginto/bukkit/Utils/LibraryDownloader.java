@@ -10,6 +10,8 @@ package net.loginto.bukkit.Utils;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.LibraryManager;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.plugin.Plugin;
 
 public class LibraryDownloader {
@@ -26,7 +28,9 @@ public class LibraryDownloader {
                 .build();
         libManager.loadLibrary(hikari);
 
-        if (LoginToFiles.Config.isFeatureEnabled("plugin-utility.use-built-in-packetevents-api", plugin)) {
+        downloadKyoriDependency(libManager);
+
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), plugin)) {
             downloadPacketEventsDependency(libManager);
         }
 
@@ -62,31 +66,6 @@ public class LibraryDownloader {
                 .build();
         libManager.loadLibrary(h2);
 
-        //Kyori
-        Library kyoriMiniMessage = Library.builder()
-                .groupId("net.kyori")
-                .artifactId("adventure-text-minimessage")
-                .version("4.26.1")
-                .repository("https://repo1.maven.org/maven2/")
-                .build();
-        libManager.loadLibrary(kyoriMiniMessage);
-
-        Library kyoriLegacy = Library.builder()
-                .groupId("net.kyori")
-                .artifactId("adventure-text-serializer-legacy")
-                .version("4.26.1")
-                .repository("https://repo1.maven.org/maven2/")
-                .build();
-        libManager.loadLibrary(kyoriLegacy);
-
-        Library kyoriPlain = Library.builder()
-                .groupId("net.kyori")
-                .artifactId("adventure-text-serializer-plain")
-                .version("4.26.1")
-                .repository("https://repo1.maven.org/maven2/")
-                .build();
-        libManager.loadLibrary(kyoriPlain);
-
         //QRCode lib
         Library zxing = Library.builder()
                 .groupId("com.google.zxing")
@@ -108,6 +87,33 @@ public class LibraryDownloader {
 
     private static void downloadPacketEventsDependency(LibraryManager libManager) {
 
+        //PacketEvents
+        Library packeteventsAPI = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-api")
+                .version("2.12.1")
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .build();
+        libManager.loadLibrary(packeteventsAPI);
+
+        Library packetEventsNettyCommon = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-netty-common")
+                .version("2.12.1")
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .build();
+        libManager.loadLibrary(packetEventsNettyCommon);
+
+        Library packetevents = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-spigot")
+                .version("2.12.1")
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .build();
+        libManager.loadLibrary(packetevents);
+    }
+
+    private static void downloadKyoriDependency(LibraryManager libManager) {
         //Kyori
         Library kyoriAPI = Library.builder()
                 .groupId("net.kyori")
@@ -149,29 +155,20 @@ public class LibraryDownloader {
                 .build();
         libManager.loadLibrary(kyoriExaminationString);
 
-        //PacketEvents
-        Library packeteventsAPI = Library.builder()
-                .groupId("com.github.retrooper")
-                .artifactId("packetevents-api")
-                .version("2.12.1")
-                .repository("https://repo.codemc.io/repository/maven-releases/")
+        Library kyoriMiniMessage = Library.builder()
+                .groupId("net.kyori")
+                .artifactId("adventure-text-serializer-legacy")
+                .version("4.26.1")
+                .repository("https://repo1.maven.org/maven2/")
                 .build();
-        libManager.loadLibrary(packeteventsAPI);
+        libManager.loadLibrary(kyoriMiniMessage);
 
-        Library packetEventsNettyCommon = Library.builder()
-                .groupId("com.github.retrooper")
-                .artifactId("packetevents-netty-common")
-                .version("2.12.1")
-                .repository("https://repo.codemc.io/repository/maven-releases/")
+        Library kyoriLegacyTextSerializer = Library.builder()
+                .groupId("net.kyori")
+                .artifactId("adventure-text-minimessage")
+                .version("4.26.1")
+                .repository("https://repo1.maven.org/maven2/")
                 .build();
-        libManager.loadLibrary(packetEventsNettyCommon);
-
-        Library packetevents = Library.builder()
-                .groupId("com.github.retrooper")
-                .artifactId("packetevents-spigot")
-                .version("2.12.1")
-                .repository("https://repo.codemc.io/repository/maven-releases/")
-                .build();
-        libManager.loadLibrary(packetevents);
+        libManager.loadLibrary(kyoriLegacyTextSerializer);
     }
 }
