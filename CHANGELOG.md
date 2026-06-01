@@ -1,21 +1,29 @@
-### Version 3.5.1
+### Version 3.6.0
 
 ___
 
-Fixed premium database configuration problem (on bukkit)
+Added experimental.yml versioning
 
 ___
 
-Fixed periodic otp code message not showing
+Added **experimental** premium authentication on bukkit (with mojang sessions)
 
 ___
 
-Fixed MiniMessages problem with older version of Paper
+Fixed other problems caused by minimessage and kyori api
 
 ___
 
-Fixed every problem with the configuration, wrong messages ect...
+Added support for older version (1.13 to 26.1.2)
 
 ___
 
-Added experimental.yml file for experimental features
+Fixed performance problem while download rockyou.txt
+
+___
+
+Fixed some problem with external dependency, now, the h2 database shouldn't give any problem
+
+___
+
+The plugin is now for minimum java 8 for bukkit and java 17 for velocity/bungeecord

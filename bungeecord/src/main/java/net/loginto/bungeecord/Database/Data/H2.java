@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
+import org.h2.tools.Server;
 
 public class H2 {
 
@@ -28,7 +29,7 @@ public class H2 {
     private final ProxyServer server;
     private final Plugin plugin;
 
-    private Object tcpServer;
+    private Server tcpServer;
 
     public H2(ProxyServer server, Plugin plugin) {
         this.server = server;
@@ -42,15 +43,9 @@ public class H2 {
 
             String port = YamlRead("database.database.port");
 
-            Class<?> serverClass = Class.forName("net.loginto.libs.h2.tools.Server");
-            try {
-                //Create h2 tcp server
-                tcpServer = serverClass
-                        .getMethod("createTcpServer", String[].class)
-                        .invoke(null, (Object) new String[]{"-tcpPort", port, "-tcpAllowOthers", "-ifNotExists"});
-                //Start h2 tcp server
-                serverClass.getMethod("start").invoke(tcpServer);
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException |IllegalAccessException e) { e.printStackTrace(); }
+            tcpServer = Server.createTcpServer("-tcpPort", port, "-tcpAllowOthers", "-ifNotExists");
+
+            tcpServer.start();
 
             conn = DriverManager.getConnection(
                 "jdbc:h2:tcp://localhost:" + port + "/./plugins/loginto/LoginTo_Sharing;IFEXISTS=FALSE",

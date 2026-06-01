@@ -22,11 +22,17 @@ import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
 import net.loginto.bukkit.Utils.LibraryDownloader;
-import net.loginto.bukkit.Utils.Metrics;
-import net.loginto.bukkit.Utils.Metrics.SimplePie;
-import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.Premium.bukkit.PremiumCache;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
+import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import net.loginto.bukkit.Utils.YMLVersion;
+import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class LoginTo extends JavaPlugin {
 
@@ -49,6 +55,15 @@ public class LoginTo extends JavaPlugin {
 
         getLogger().warning("LoginTo started loading...");
 
+        if (!new File(getDataFolder(), "rockyou.txt").exists()) {
+            getLogger().info("Downloading rockyou.txt");
+            LoginToFiles.downloadRockYou(this);
+        }
+
+        if (Bukkit.getOnlineMode()) {
+            getLogger().warning("Your server is in online mode, LoginTo will still work, but every player will be 100% premium (so they are the real owners of that account).\nLoginTo will still ask for the password during login");
+        }
+
         PacketEvents.getAPI().init();
 
         //Metrics
@@ -70,6 +85,14 @@ public class LoginTo extends JavaPlugin {
                     .resource("messages.yml")
                     .versionKey(MessageKeys.MESSAGE_VERSION.path())
                     .build();
+            if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_EXPERIMENTAL_FEATURES.path(), this)) {
+                YMLVersion.builder()
+                        .plugin(this)
+                        .version("1.0")
+                        .resource("experimental.yml")
+                        .versionKey("ExperimentalVersion")
+                        .build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +150,7 @@ public class LoginTo extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new logAnotherLocEvents(this), this);
         getServer().getPluginManager().registerEvents(new OnPlayerChangeWorld(this), this);
 
-        Listener.implementPacketEventListener();
+        Listener.implementPacketEventListener(this);
 
         //-----
 
@@ -148,12 +171,21 @@ public class LoginTo extends JavaPlugin {
         getCommand("changepassword").setTabCompleter(new ChangePassword(this, database));
         getCommand("changepassword").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.changepassword"));
 
-        getCommand("premium").setExecutor(new Premium(this, database));
-        getCommand("premium").setTabCompleter(new Premium(this, database));
-        getCommand("premium").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.premium"));
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), this)) {
+            getCommand("premium").setExecutor(new Premium(this, database));
+            getCommand("premium").setTabCompleter(new Premium(this, database));
+            getCommand("premium").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.premium"));
 
-        getCommand("cracked").setExecutor(new Cracked(this, database));
-        getCommand("cracked").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.cracked"));
+            getCommand("cracked").setExecutor(new Cracked(this, database));
+            getCommand("cracked").getAliases().addAll(getConfig().getStringList("commands-settings.command-aliases.cracked"));
+        } else {
+            Permission premiumMePerm = Bukkit.getPluginManager().getPermission("loginto.premium.me");
+            Permission permissionOtherPerm = Bukkit.getPluginManager().getPermission("loginto.premium.other");
+            Permission crackedPerm = Bukkit.getPluginManager().getPermission("loginto.cracked.me");
+            if (premiumMePerm != null) premiumMePerm.setDefault(PermissionDefault.FALSE);
+            if (permissionOtherPerm != null) permissionOtherPerm.setDefault(PermissionDefault.FALSE);
+            if (crackedPerm != null) crackedPerm.setDefault(PermissionDefault.FALSE);
+        }
 
         getCommand("getlogs").setExecutor(new getlogs(this));
         getCommand("getlogs").setTabCompleter(new getlogs(this));
@@ -180,6 +212,8 @@ public class LoginTo extends JavaPlugin {
     @Override
     public void onDisable() {
         database.close();
+        PremiumUtils.close();
         PacketEvents.getAPI().terminate();
+        PremiumCache.closeIfOpen();
     }
 }

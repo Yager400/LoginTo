@@ -57,13 +57,6 @@ public class H2 implements Database {
         File dbFile = new File(plugin.getDataFolder(), DBName);
         String url = "jdbc:h2:" + dbFile.getAbsolutePath().replace("\\", "/");
 
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            plugin.getLogger().severe("H2 JDBC driver missing!");
-            return;
-        }
-
         HikariConfig cfg = new HikariConfig();
         cfg.setJdbcUrl(url);
         cfg.setUsername("sa");
@@ -72,6 +65,7 @@ public class H2 implements Database {
         cfg.setMaximumPoolSize(10);
         cfg.setMinimumIdle(5);
         cfg.setAutoCommit(true);
+        cfg.setDriverClassName("net.loginto.libs.h2.Driver");
 
         dataSource = new HikariDataSource(cfg);
 

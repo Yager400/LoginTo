@@ -10,35 +10,29 @@ package net.loginto.bukkit.Utils.Files;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.loginto.bukkit.PlayerUtils.PasswordSecurity;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public class LoginToFiles {
 
+    public static URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
+
     public static class Messages {
 
-        private static final MiniMessage mm;
-
-        //Get the method 'get' if the server includes minimessage, but it's a version that
-         // doesn't have 'MiniMessage.miniMessage();'
-        static {
-            MiniMessage tempMM;
-            try {
-                tempMM = (MiniMessage) MiniMessage.class.getMethod("get").invoke(null);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                tempMM = MiniMessage.miniMessage();
-            }
-            mm = tempMM;
-        }
+        private static final MiniMessage mm = MiniMessage.miniMessage();
 
         public static String getMessage(String path, Player player, Plugin plugin) {
             String text = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml")).getString(path);
@@ -113,6 +107,36 @@ public class LoginToFiles {
             }
             return YamlConfiguration.loadConfiguration(file).get(path);
         }
+
+        public static boolean getExperimentalBoolean(String path, Plugin plugin) {
+            if (file == null) {
+                file = new File(plugin.getDataFolder(), "experimental.yml");
+                if (!file.exists()) {
+                    return false;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file).getBoolean(path);
+        }
+
+        public static int getExperimentalInteger(String path, Plugin plugin) {
+            if (file == null) {
+                file = new File(plugin.getDataFolder(), "experimental.yml");
+                if (!file.exists()) {
+                    return 0;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file).getInt(path);
+        }
+
+        public static String getExperimentalString(String path, Plugin plugin) {
+            if (file == null) {
+                file = new File(plugin.getDataFolder(), "experimental.yml");
+                if (!file.exists()) {
+                    return null;
+                }
+            }
+            return YamlConfiguration.loadConfiguration(file).getString(path);
+        }
     }
 
     public static void saveFiles(Plugin plugin) {
@@ -139,14 +163,34 @@ public class LoginToFiles {
             }
         }
 
-        if (LoginToFiles.Config.isFeatureEnabled("plugin-utility.enable-experimental-features", plugin)) {
+        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_EXPERIMENTAL_FEATURES.path(), plugin)) {
+            plugin.getLogger().info("Thank you for using experimental features, if you find any bug or want to suggest a feature, you can do that here: https://github.com/Yager400/LoginTo/issues\nRemember that those features are still in beta and they might contain bugs. ");
             File experimentalFile = new File(plugin.getDataFolder(), "experimental.yml");
             if (!experimentalFile.exists()) {
                 plugin.saveResource("experimental.yml", false);
             }
         }
-
     }
 
+    public static void downloadRockYou(Plugin plugin) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_USE_ROCKYOU.path(), plugin)) {
+                File txtFile = new File(plugin.getDataFolder(), "rockyou.txt");
 
+                if (!txtFile.exists()) {
+                    try (GZIPInputStream gzipIn = new GZIPInputStream(rockyouURL.toURL().openStream());
+                         FileOutputStream fileOut = new FileOutputStream(txtFile)) {
+
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = gzipIn.read(buffer)) != -1) {
+                            fileOut.write(buffer, 0, bytesRead);
+                        }
+                    } catch (IOException e) {
+                        plugin.getLogger().severe(e.getMessage());
+                    }
+                }
+            }
+        });
+    }
 }

@@ -11,7 +11,7 @@ import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
-import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -120,7 +120,6 @@ public class Premium implements CommandExecutor, TabCompleter {
             });
 
         }
-
 
         return true;
     }

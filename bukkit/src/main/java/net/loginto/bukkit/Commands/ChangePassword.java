@@ -8,6 +8,7 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import net.loginto.bukkit.LoginTo;
 import net.loginto.bukkit.PlayerUtils.PasswordSecurity;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
@@ -46,12 +47,12 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
 
 
         if (!sender.hasPermission("loginto.changepassword")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
+            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             return true;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_USAGE.path(), player, plugin));
+            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_USAGE.path(), player, plugin));
             return true;
         }
 
@@ -92,15 +93,15 @@ public class ChangePassword implements CommandExecutor, TabCompleter {
                 String secret = database.getSecret(player.getName());
 
                 if (secret == null) {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_NO_OTP_CODE.path(), player, plugin));
+                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_NO_OTP_CODE.path(), player, plugin));
                     return;
                 }
 
                 if (gAuth.authorize(secret, otpCode)) {
                     database.changePlayerPassword(player.getName(), newPassword);
-                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_PASSWORD_CHANGED.path(), player, plugin));
+                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_PASSWORD_CHANGED.path(), player, plugin));
                 } else {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_OTP_CODE_WRONG.path(), player, plugin));
+                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CHANGEPASSWORD_ERROR_OTP_CODE_WRONG.path(), player, plugin));
                 }
             } catch (Exception e) {
                 plugin.getLogger().severe(e.getMessage());

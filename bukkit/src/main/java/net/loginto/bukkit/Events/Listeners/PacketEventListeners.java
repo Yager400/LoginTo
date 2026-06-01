@@ -8,12 +8,25 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Events.Listeners;
 
 import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 
+public class PacketEventListeners implements PacketListener {
 
-public class OnPacketSend implements PacketListener {
+    @Override
+    public void onPacketReceive(PacketReceiveEvent event) {
+        if (event.getPacketType() == PacketType.Play.Client.CLICK_WINDOW ||
+                event.getPacketType() == PacketType.Play.Client.HELD_ITEM_CHANGE) {
+
+            if (Sessions.isPlayerLogged(event.getPlayer())) {
+                return;
+            }
+
+            event.setCancelled(true);
+        }
+    }
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
@@ -31,4 +44,5 @@ public class OnPacketSend implements PacketListener {
 
         }
     }
+
 }

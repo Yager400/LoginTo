@@ -65,7 +65,8 @@ public enum ConfigKeys {
 
     PLUGIN_UTILITY_ENABLE_UPDATE_CHECKER("plugin-utility.enable-update-checker"),
     PLUGIN_UTILITY_SHOW_WATERMARK("plugin-utility.show-watermark"),
-    PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API("plugin-utility.use-built-in-packetevents-api");
+    PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API("plugin-utility.use-built-in-packetevents-api"),
+    PLUGIN_UTILITY_USE_EXPERIMENTAL_FEATURES("plugin-utility.enable-experimental-features");
 
     private final String s;
 

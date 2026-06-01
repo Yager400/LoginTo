@@ -21,15 +21,13 @@ import java.util.zip.GZIPInputStream;
 
 public class PasswordSecurity {
 
-    public static URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
-
     public static boolean isCommon(String password, Plugin plugin, String playerName) {
         if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_USE_ROCKYOU.path(), plugin)) {
             File txtFile = new File(plugin.getDataFolder(), "rockyou.txt");
 
-            if (!txtFile.exists()) {
+            /*if (!txtFile.exists()) {
                 downloadRockYou(plugin, txtFile);
-            }
+            }*/
 
             try (BufferedReader reader = new BufferedReader(new FileReader(txtFile))) {
                 String line;
@@ -49,7 +47,8 @@ public class PasswordSecurity {
         List<String> list = new ArrayList<>();
 
         for (Object i : listUnknownElements) {
-            if (i instanceof String s) {
+            if (i instanceof String) {
+                String s = (String) i;
                 list.add(s);
             }
         }
@@ -71,20 +70,6 @@ public class PasswordSecurity {
         }
 
         return false;
-    }
-
-    private static void downloadRockYou(Plugin plugin, File file) {
-        try (GZIPInputStream gzipIn = new GZIPInputStream(rockyouURL.toURL().openStream());
-             FileOutputStream fileOut = new FileOutputStream(file)) {
-
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = gzipIn.read(buffer)) != -1) {
-                fileOut.write(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            plugin.getLogger().severe(e.getMessage());
-        }
     }
 
     public static boolean matchesLengthRequirement(String password, Plugin plugin, Player player) {

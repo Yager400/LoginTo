@@ -1,3 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    java
+    id("com.gradleup.shadow") version "9.4.1"
+}
 dependencies {
     compileOnly("org.spigotmc:spigot-api:${rootProject.extra["spigotVersion"]}")
     compileOnly("com.github.retrooper:packetevents-spigot:${rootProject.extra["packetEventsVersion"]}")
@@ -11,4 +17,11 @@ dependencies {
     compileOnly("org.postgresql:postgresql:${rootProject.extra["postgresVersion"]}")
     compileOnly("com.h2database:h2:${rootProject.extra["h2Version"]}")
     compileOnly("com.warrenstrange:googleauth:${rootProject.extra["googleauthVersion"]}")
+    compileOnly("org.geysermc.floodgate:api:${rootProject.extra["floodgateVersion"]}")
+    implementation("org.bstats:bstats-bukkit:${rootProject.extra["bstatsVersion"]}")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }

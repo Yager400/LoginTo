@@ -15,7 +15,6 @@ import net.loginto.bungeecord.Database.Database;
 import net.loginto.bungeecord.Database.SQLite;
 import net.loginto.bungeecord.Events.*;
 import net.loginto.bungeecord.Utility.LibraryDownloader;
-import net.loginto.bungeecord.Utility.Metrics;
 
 import static net.loginto.bungeecord.Utility.FileMGR.createBungeeConfigFile;
 
@@ -26,9 +25,6 @@ public class LoginTo extends Plugin {
 
     @Override
     public void onEnable() {
-
-        @SuppressWarnings("unused")
-        Metrics metric = new Metrics(this, 30332);
 
         Logger logger = getLogger();
         ProxyServer server = getProxy();

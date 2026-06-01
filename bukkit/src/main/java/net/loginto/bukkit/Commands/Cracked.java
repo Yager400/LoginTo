@@ -7,11 +7,12 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Commands;
 
+import net.loginto.bukkit.LoginTo;
 import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
-import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,12 +46,12 @@ public class Cracked implements CommandExecutor {
         Player player = (Player) sender;
 
         if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), player, plugin));
+            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), player, plugin));
             return true;
         }
 
         if (!player.hasPermission("loginto.cracked")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
+            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             return true;
         }
 
@@ -61,14 +62,14 @@ public class Cracked implements CommandExecutor {
 
             if (isPremiumAlready) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_ERROR_ALREADY_CRACKED.path(), player, plugin));
+                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_ERROR_ALREADY_CRACKED.path(), player, plugin));
                 });
             } else {
 
                 if (!playerList.contains(player)) {
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         playerList.add(player);
-                        sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_WARN.path(), player, plugin));
+                        player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_WARN.path(), player, plugin));
                     });
                     skip = true;
                 } else {
@@ -82,7 +83,7 @@ public class Cracked implements CommandExecutor {
             if (!skip) {
                 PremiumUtils.PlayersInfo.sendCrackedRequest(player, plugin);
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_DONE.path(), player, plugin));
+                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.CRACKED_DONE.path(), player, plugin));
                 });
             }
         });

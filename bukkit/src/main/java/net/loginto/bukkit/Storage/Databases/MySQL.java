@@ -83,10 +83,9 @@ public class MySQL implements Database {
             cfg.addDataSourceProperty("cachePrepStmts", "true");
             cfg.addDataSourceProperty("prepStmtCacheSize", "250");
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            cfg.setDriverClassName("net.loginto.libs.mysql.cj.jdbc.Driver");
 
             dataSource = new HikariDataSource(cfg);
-
-            plugin.getLogger().info("MySQL connection OK (HikariCP)");
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -9,6 +9,8 @@ build
 
 bin
 
+run
+
 .vscode
 .idea
 *.iml

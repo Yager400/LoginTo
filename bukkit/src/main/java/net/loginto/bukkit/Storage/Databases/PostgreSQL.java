@@ -93,6 +93,7 @@ public class PostgreSQL implements Database {
         cfg.addDataSourceProperty("cachePrepStmts", "true");
         cfg.addDataSourceProperty("prepStmtCacheSize", "250");
         cfg.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        cfg.setDriverClassName("net.loginto.libs.postgresql.Driver");
 
         dataSource = new HikariDataSource(cfg);
 

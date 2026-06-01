@@ -60,13 +60,6 @@ public class SQLite implements Database {
         File dbFile = new File(plugin.getDataFolder(), DBName + ".db");
         String url = "jdbc:sqlite:" + dbFile.getAbsolutePath().replace("\\", "/");
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            plugin.getLogger().severe("SQLite JDBC driver missing!");
-            return;
-        }
-
         HikariConfig cfg = new HikariConfig();
         cfg.setJdbcUrl(url);
         cfg.setPoolName("LoginTo-SQLite");

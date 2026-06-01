@@ -21,7 +21,6 @@ import net.loginto.velocity.Database.Database;
 import net.loginto.velocity.Database.SQLite;
 import net.loginto.velocity.Events.*;
 import net.loginto.velocity.Utility.LibraryDownloader;
-import net.loginto.velocity.Utility.Metrics;
 
 import static net.loginto.velocity.Utility.FileMGR.createVeloConfigFile;
 
@@ -35,22 +34,17 @@ public class LoginTo {
     private final Path dataDirectory;
     private Database database;
     private SQLite sqlite;
-    private Metrics.Factory makeFactory;
 
     @Inject
-    public LoginTo(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory, Metrics.Factory makeFactory) {
+    public LoginTo(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
-        this.makeFactory = makeFactory;
     }
 
     @Subscribe
     public void onProxyInit(ProxyInitializeEvent event) {
         LibraryDownloader.Libs(this, logger, dataDirectory, server);
-
-        @SuppressWarnings("unused")
-        Metrics metric = makeFactory.make(this, 30331);
 
         createVeloConfigFile(this);
 

@@ -11,7 +11,7 @@ import net.loginto.bukkit.Storage.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
-import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -39,7 +39,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!sender.hasPermission("loginto.unregister")) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), plugin));
@@ -48,7 +49,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
         }
 
         if (args.length != 2) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_USAGE.path(), player, plugin));
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_USAGE.path(), plugin));
@@ -57,7 +59,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
         }
 
         if (!args[1].equalsIgnoreCase("confirm")) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_NOT_CONFIRMED.path(), player, plugin));
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_NOT_CONFIRMED.path(), plugin));
@@ -69,7 +72,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
         if (!target.hasPlayedBefore()) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), player, plugin));
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), plugin));
@@ -80,7 +84,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
         boolean success = database.removePlayer(target.getName());
 
         if (!success) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), player, plugin));
             } else {
                 sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ERROR_PLAYER_DOESNT_EXIST.path(), plugin));
@@ -89,7 +94,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
         }
 
         if (target.isOnline()) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ADMIN_UNREGISTERED_ACCOUNT.path(), player, plugin));
             } else {
                 target.getPlayer().kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ADMIN_UNREGISTERED_ACCOUNT.path(), plugin));
@@ -102,7 +108,8 @@ public class UnRegister implements CommandExecutor, TabCompleter {
             });
         }
 
-        if (sender instanceof Player player) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
             sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ACCOUNT_UNREGISTERED.path(), player, plugin));
         } else {
             sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.UNREGISTER_ACCOUNT_UNREGISTERED.path(), plugin));

@@ -146,9 +146,10 @@ public class CancelledEvents implements Listener {
 
     @EventHandler
     public void onPlayerHit(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player player)) {
+        if (!(event.getDamager() instanceof Player)) {
             return;
         }
+        Player player = (Player) event.getDamager();
         if (!Sessions.isPlayerLogged(player)) {
             event.setCancelled(true);
         }

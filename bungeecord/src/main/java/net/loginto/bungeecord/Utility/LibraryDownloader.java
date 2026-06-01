@@ -26,20 +26,20 @@ public class LibraryDownloader {
         libManager.loadLibrary(sqlite);
 
         Library h2 = Library.builder()
-            .groupId("com.h2database")
+            .groupId("com{}h2database")
             .artifactId("h2")
             .version("2.4.240")
             .repository("https://repo1.maven.org/maven2/")
-            .relocate("org.h2", "net.loginto.libs.h2")
+            .relocate("org{}h2", "net{}loginto{}libs{}h2")
             .build();
         libManager.loadLibrary(h2);
 
         Library mysql = Library.builder()
-            .groupId("com.mysql")
+            .groupId("com{}mysql")
             .artifactId("mysql-connector-j")
             .version("8.2.0")
             .repository("https://repo1.maven.org/maven2/")
-            .relocate("com.mysql", "net.loginto.libs.mysql")
+            .relocate("com{}mysql", "net{}loginto{}libs{}mysql")
             .build();
         libManager.loadLibrary(mysql);
 

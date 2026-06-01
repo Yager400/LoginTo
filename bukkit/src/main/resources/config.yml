@@ -120,8 +120,12 @@ storage:
 # Premium system (Original accounts)
 premium:
   # Enables AutoLogin, /premium, and /cracked commands, and makes proxy commands unusable until the user is logged in.
-  # Requires a Proxy (Velocity/Bungee) with the plugin installed. If you are running the proxy and the server on 
-  # two different machines or using a dedicated host with Pterodactyl, you must use MySQL.
+  # This version requires a proxy like Velocity or BungeeCord. If you are using a server panel (such as Pterodactyl),
+  # change the database-type to 'mysql'.
+  #
+  # If you want to use Bukkit premium authentication (without a proxy), you must first enable experimental features
+  # (go to plugin-utility and set 'enable-experimental-features' to true), then enable Bukkit premium authentication
+  # in the experimental.yml file.
   enable-premium-features: false
 
   storage:

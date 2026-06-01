@@ -21,10 +21,11 @@ public class LibraryDownloader {
         BukkitLibraryManager libManager = new BukkitLibraryManager(plugin);
 
         Library hikari = Library.builder()
-                .groupId("com.zaxxer")
+                .groupId("com{}zaxxer")
                 .artifactId("HikariCP")
                 .version("4.0.3")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("com{}zaxxer{}hikari", "net{}loginto{}libs{}hikari")
                 .build();
         libManager.loadLibrary(hikari);
 
@@ -43,44 +44,49 @@ public class LibraryDownloader {
         libManager.loadLibrary(sqlite);
 
         Library mysql = Library.builder()
-                .groupId("com.mysql")
+                .groupId("com{}mysql")
                 .artifactId("mysql-connector-j")
                 .version("8.2.0")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("com{}mysql", "net{}loginto{}libs{}mysql")
                 .build();
         libManager.loadLibrary(mysql);
 
         Library postgreSQL = Library.builder()
-                .groupId("org.postgresql")
+                .groupId("org{}postgresql")
                 .artifactId("postgresql")
                 .version("42.7.8")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("org{}postgresql", "net{}loginto{}libs{}postgresql")
                 .build();
         libManager.loadLibrary(postgreSQL);
 
         Library h2 = Library.builder()
-                .groupId("com.h2database")
+                .groupId("com{}h2database")
                 .artifactId("h2")
                 .version("2.4.240")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("org{}h2", "net{}loginto{}libs{}h2")
                 .build();
         libManager.loadLibrary(h2);
 
         //QRCode lib
         Library zxing = Library.builder()
-                .groupId("com.google.zxing")
+                .groupId("com{}google{}zxing")
                 .artifactId("core")
                 .version("3.5.3")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("com{}google{}zxing", "net{}loginto{}libs{}zxing")
                 .build();
         libManager.loadLibrary(zxing);
 
         //Google Auth lib
         Library gauth = Library.builder()
-                .groupId("com.warrenstrange")
+                .groupId("com{}warrenstrange")
                 .artifactId("googleauth")
                 .version("1.5.0")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("com{}warrenstrange{}googleauth", "net{}loginto{}libs{}googleauth")
                 .build();
         libManager.loadLibrary(gauth);
     }
@@ -93,6 +99,7 @@ public class LibraryDownloader {
                 .artifactId("packetevents-api")
                 .version("2.12.1")
                 .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(packeteventsAPI);
 
@@ -101,6 +108,7 @@ public class LibraryDownloader {
                 .artifactId("packetevents-netty-common")
                 .version("2.12.1")
                 .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(packetEventsNettyCommon);
 
@@ -109,6 +117,7 @@ public class LibraryDownloader {
                 .artifactId("packetevents-spigot")
                 .version("2.12.1")
                 .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(packetevents);
     }
@@ -116,58 +125,65 @@ public class LibraryDownloader {
     private static void downloadKyoriDependency(LibraryManager libManager) {
         //Kyori
         Library kyoriAPI = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("adventure-api")
                 .version("4.26.1")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriAPI);
 
         Library kyoriNBT = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("adventure-nbt")
                 .version("4.26.1")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriNBT);
 
         Library kyoriKEY = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("adventure-key")
                 .version("4.26.1")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriKEY);
 
         Library kyoriExamination = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("examination-api")
                 .version("1.3.0")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriExamination);
 
         Library kyoriExaminationString = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("examination-string")
                 .version("1.3.0")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriExaminationString);
 
         Library kyoriMiniMessage = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("adventure-text-serializer-legacy")
                 .version("4.26.1")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriMiniMessage);
 
         Library kyoriLegacyTextSerializer = Library.builder()
-                .groupId("net.kyori")
+                .groupId("net{}kyori")
                 .artifactId("adventure-text-minimessage")
                 .version("4.26.1")
                 .repository("https://repo1.maven.org/maven2/")
+                .relocate("net{}kyori", "net{}loginto{}libs{}kyori")
                 .build();
         libManager.loadLibrary(kyoriLegacyTextSerializer);
     }

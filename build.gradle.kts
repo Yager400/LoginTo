@@ -1,9 +1,17 @@
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
+
 plugins {
     java
     id("com.gradleup.shadow") version "9.4.1"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
+
+val minecraftTestServerVersion = "26.1.2"
+val minecraftTestServerJversion = 25
+
 val javaVersion = JavaVersion.VERSION_17
-val spigotVersion = "1.16.5-R0.1-SNAPSHOT"
+val spigotVersion = "1.13-R0.1-SNAPSHOT"
 val velocityVersion = "3.4.0-SNAPSHOT"
 val bungeeVersion = "1.20-R0.1"
 val hikariVersion = "4.0.3"
@@ -19,6 +27,8 @@ val adventureVersion = "4.26.1"
 val minimessageVersion = "4.26.1"
 val zxingVersion = "3.5.3"
 val googleauthVersion = "1.5.0"
+val floodgateVersion = "2.2.0-SNAPSHOT"
+val bstatsVersion = "3.1.0"
 
 extra["spigotVersion"] = spigotVersion
 extra["velocityVersion"] = velocityVersion
@@ -36,10 +46,13 @@ extra["adventureVersion"] = adventureVersion
 extra["minimessageVersion"] = minimessageVersion
 extra["zxingVersion"] = zxingVersion
 extra["googleauthVersion"] = googleauthVersion
+extra["floodgateVersion"] = floodgateVersion
+extra["bstatsVersion"] = bstatsVersion
+
 subprojects {
     apply(plugin = "java")
     group = "net.loginto"
-    version = "3.5.1"
+    version = "3.6.0"
     java {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -51,6 +64,7 @@ subprojects {
         maven("https://repo.codemc.io/repository/maven-releases/")
         maven("https://repo.alessiodp.com/releases")
         maven("https://repo.helpch.at/releases/")
+        maven("https://repo.opencollab.dev/main/")
     }
 
     dependencies {
@@ -82,12 +96,33 @@ tasks {
 
     shadowJar {
         archiveBaseName.set("LoginTo")
-        archiveVersion.set("3.5.1")
+        archiveVersion.set("3.6.0")
         archiveClassifier.set("")
 
         relocate("net.byteflux.libby", "net.loginto.libs.libby")
         relocate("org.mindrot.jbcrypt", "net.loginto.libs.jbcrypt")
+        relocate("org.bstats", "net.loginto.libs.bstats")
+        relocate("net.kyori", "net.loginto.libs.kyori")
+        relocate("com.zaxxer.hikari", "net.loginto.libs.hikari")
+        relocate("com.mysql", "net.loginto.libs.mysql")
+        relocate("org.postgresql", "net.loginto.libs.postgresql")
+        relocate("org.h2", "net.loginto.libs.h2")
+        relocate("com.google.zxing", "net.loginto.libs.zxing")
+        relocate("com.warrenstrange.googleauth", "net.loginto.libs.googleauth")
     }
 
     build { dependsOn(shadowJar) }
+}
+
+tasks {
+    runServer {
+        minecraftVersion(minecraftTestServerVersion)
+
+        val toolchains = project.extensions.getByType<JavaToolchainService>()
+        javaLauncher.set(
+            toolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(minecraftTestServerJversion))
+            }
+        )
+    }
 }

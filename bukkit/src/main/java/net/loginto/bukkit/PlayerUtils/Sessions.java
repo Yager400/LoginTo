@@ -10,7 +10,7 @@ package net.loginto.bukkit.PlayerUtils;
 import com.zaxxer.hikari.HikariDataSource;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
-import net.loginto.bukkit.Utils.Premium.PremiumUtils;
+import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
