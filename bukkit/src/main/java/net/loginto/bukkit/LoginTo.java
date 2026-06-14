@@ -8,24 +8,21 @@ See the LICENSE file for details.
 package net.loginto.bukkit;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import net.loginto.bukkit.Commands.*;
-import net.loginto.bukkit.Events.Listener;
-import net.loginto.bukkit.Events.Listeners.*;
+import net.loginto.bukkit.Database.DatabaseConnectionUtils;
+import net.loginto.bukkit.Events.Listeners;
 import net.loginto.bukkit.PlayerUtils.PeriodicMessages;
-import net.loginto.bukkit.Storage.Database;
-import net.loginto.bukkit.Storage.Databases.H2;
-import net.loginto.bukkit.Storage.Databases.MySQL;
-import net.loginto.bukkit.Storage.Databases.PostgreSQL;
-import net.loginto.bukkit.Storage.Databases.SQLite;
+import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
-import net.loginto.bukkit.Utils.LibraryDownloader;
-import net.loginto.bukkit.Utils.Premium.bukkit.PremiumCache;
+import net.loginto.bukkit.Utils.Dependencies.Libraries;
+import net.loginto.bukkit.Utils.Premium.PremiumCache;
+import net.loginto.bukkit.Utils.TemporaryPremiumFeatureConfig;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
-import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import net.loginto.bukkit.Utils.YMLVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
@@ -37,6 +34,7 @@ import java.io.File;
 public class LoginTo extends JavaPlugin {
 
     private Database database;
+    private static net.kyori.adventure.platform.bukkit.BukkitAudiences adventure;
 
     @Override
     public void onLoad() {
@@ -44,7 +42,7 @@ public class LoginTo extends JavaPlugin {
         LoginToFiles.saveFiles(this);
         //-----
 
-        LibraryDownloader.Libs(this);
+        Libraries.loadLibs(this);
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().load();
@@ -55,6 +53,10 @@ public class LoginTo extends JavaPlugin {
 
         getLogger().warning("LoginTo started loading...");
 
+        TemporaryPremiumFeatureConfig.setPremiumFeature(this, "1.12");
+
+        adventure = net.kyori.adventure.platform.bukkit.BukkitAudiences.create(this);
+
         if (!new File(getDataFolder(), "rockyou.txt").exists()) {
             getLogger().info("Downloading rockyou.txt");
             LoginToFiles.downloadRockYou(this);
@@ -62,6 +64,10 @@ public class LoginTo extends JavaPlugin {
 
         if (Bukkit.getOnlineMode()) {
             getLogger().warning("Your server is in online mode, LoginTo will still work, but every player will be 100% premium (so they are the real owners of that account).\nLoginTo will still ask for the password during login");
+        }
+
+        if (!PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_16)) {
+            getLogger().warning("Legacy color and legacy minimessage will be used since the server version is under 1.16");
         }
 
         PacketEvents.getAPI().init();
@@ -75,20 +81,20 @@ public class LoginTo extends JavaPlugin {
         try {
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.11")
+                    .version("1.12")
                     .resource("config.yml")
                     .versionKey(ConfigKeys.CONFIG_VERSION.path())
                     .build();
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.7")
+                    .version("1.8")
                     .resource("messages.yml")
                     .versionKey(MessageKeys.MESSAGE_VERSION.path())
                     .build();
             if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_EXPERIMENTAL_FEATURES.path(), this)) {
                 YMLVersion.builder()
                         .plugin(this)
-                        .version("1.0")
+                        .version("1.1")
                         .resource("experimental.yml")
                         .versionKey("ExperimentalVersion")
                         .build();
@@ -102,56 +108,21 @@ public class LoginTo extends JavaPlugin {
         String databaseType = LoginToFiles.Config.getString(ConfigKeys.STORAGE_STORAGE_TYPE.path(), this);
         database = null;
         switch (databaseType) {
-            case "sqlite":
-                database = new SQLite(this);
-                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                    return "sqlite";
-                }));
-                break;
-            case "mysql":
-                database = new MySQL(this);
-                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                    return "mysql";
-                }));
-                break;
-            case "postgresql":
-                database = new PostgreSQL(this);
-                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                    return "postgresql";
-                }));
-                break;
-            case "h2":
-                database = new H2(this);
-                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                    return "h2";
-                }));
-                break;
+            case "sqlite":      database = DatabaseConnectionUtils.connectSQLite(this); break;
+            case "mysql":       database = DatabaseConnectionUtils.connectMySQL(this); break;
+            case "postgresql":  database = DatabaseConnectionUtils.connectPostgreSQL(this); break;
+            case "h2":          database = DatabaseConnectionUtils.connectH2(this); break;
             default:
                 getLogger().severe("Database type '" + databaseType + "' is not valid, using sqlite");
-                database = new SQLite(this);
-                metrics.addCustomChart(new SimplePie("storage_type_used", () -> {
-                    return "sqlite";
-                }));
+                database = DatabaseConnectionUtils.connectSQLite(this);
+                databaseType = "sqlite";
                 break;
         }
-        //Connecting premium database
-        if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), this)) {
-            PremiumUtils.connectAndGetSource(this);
-        }
-
-        //-----
+        final String finalDatabaseType = databaseType;
+        metrics.addCustomChart(new SimplePie("storage_type_used", () -> finalDatabaseType));
 
         //Registering listener
-        getServer().getPluginManager().registerEvents(new CancelledEvents(this), this);
-
-        getServer().getPluginManager().registerEvents(new onJoinEvent(this, database), this);
-        getServer().getPluginManager().registerEvents(new onPreCommandProcessEvent(this), this);
-        getServer().getPluginManager().registerEvents(new onQuitEvent(this), this);
-        getServer().getPluginManager().registerEvents(new logAnotherLocEvents(this), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerChangeWorld(this), this);
-
-        Listener.implementPacketEventListener(this);
-
+        Listeners.registerAllListener(this, database);
         //-----
 
         //Add commands
@@ -209,11 +180,15 @@ public class LoginTo extends JavaPlugin {
 
     }
 
+    public static net.kyori.adventure.platform.bukkit.BukkitAudiences getAdventure() {
+        return adventure;
+    }
+
     @Override
     public void onDisable() {
         database.close();
-        PremiumUtils.close();
         PacketEvents.getAPI().terminate();
         PremiumCache.closeIfOpen();
+        adventure.close();
     }
 }

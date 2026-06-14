@@ -8,6 +8,7 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import net.loginto.bukkit.PlayerUtils.Logs;
+import net.loginto.bukkit.PlayerUtils.PlayerMessages;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
@@ -35,12 +36,12 @@ public class getlogs implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!sender.hasPermission("loginto.getlogs")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), null, plugin));
+            PlayerMessages.console.sendMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), plugin);
             return false;
         }
 
         if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.LOGGING_LOGGING.path(), plugin)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), null, plugin));
+            PlayerMessages.console.sendMessage(MessageKeys.ERRORS_GENERAL_FEATURE_NOT_ENABLED.path(), plugin);
             return false;
         }
 
@@ -79,7 +80,7 @@ public class getlogs implements CommandExecutor, TabCompleter {
             List<String> list = new ArrayList<>();
 
             for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                p.getName();
+                list.add(p.getName());
             }
 
             return list;

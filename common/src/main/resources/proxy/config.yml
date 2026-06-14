@@ -1,0 +1,111 @@
+ConfigVersion: "1.11" # DO NOT CHANGE THIS
+# -------------------------------------------------------------------------------------------------- #
+#                                                                                                    #
+#                                       LoginTo Configuration                                        #
+#                                                                                                    #
+# -------------------------------------------------------------------------------------------------- #
+
+
+commands-settings:
+  # Enter here the commands that will be allowed before logging in (the /login and /register commands will always be active; aliases like /l and /r must be added below)
+  pre-login-allowed-commands:
+    - "l"
+    - "r"
+
+servers:
+  # Enter here the auth servers, if you can add more that 1 server, it will be better (so if a server crashes, the players will still be able to join)
+  auth-servers:
+    - auth
+    - auth1
+    - auth2
+
+  # Enter here the destination servers (in order), after the login, the player will be teleported in the fist server there
+  destination-servers:
+    - lobby
+    - lobby1
+    - lobby2
+
+auth-security:
+
+  # Kick the player if they enter an incorrect password during /login?
+  kick-on-invalid-password: true
+  # Maximum login attempts allowed before getting kicked
+  max-login-attempts: 3
+
+  # Kick players who remain unauthenticated for too long?
+  kick-on-auth-timeout: true
+  # Seconds allowed to authenticate before the kick occurs
+  auth-timeout-seconds: 10
+
+password-requirements:
+  # Require specific special characters in the password during registration?
+  require-special-chars: false
+  # List the required characters if the setting above is set to true
+  required-char-list: ''
+
+  # Define password length constraints
+  length-check:
+    enabled: true
+    min-length: 8
+    max-length: 32
+
+  # Settings for too common passwords
+  banned-password:
+    # Decline any loginto action if the password is too simple
+    decline-on-common-password: true
+
+    # Use the RockYou password list (if this is enabled, the plugin will download the txt file from this link: https://weakpass.com/download/90/rockyou.txt.gz)
+    # That file uncompressed will be around 130MB
+    use-rockyou: true
+
+    # If you want to add some banned password, put them here
+    # The placeholder '%username%' is to define the player name
+    banned-password:
+      - "%username%"
+
+# Integrations and webhooks
+integrations:
+
+  discord:
+    # Webhook URLs and custom messages (Supports Discord Markdown)
+    # Available variables: %playerName%, %targetPlayer%
+
+    register-webhook-url: ''
+    register-message: "**%playerName%** has completed the registration"
+
+    login-webhook-url: ''
+    login-message: "**%playerName%** has logged in"
+
+    unregister-webhook-url: ''
+    unregister-message: "**%playerName%** has deleted **%targetPlayer%**'s account"
+
+
+# Storage
+storage:
+
+  # Supported storage methods: sqlite or mysql
+  # Changing this option requires a full server reboot
+  storage-type: "sqlite"
+
+  database:
+    # Connection details for the database (for sqlite you will only need to change the name)
+    host: "localhost"
+    port: 3306
+    name: "LoginTo_DB"
+    user: ""
+    password: ""
+
+
+# Premium system (Original accounts)
+premium:
+  # Enables AutoLogin, /premium, and /cracked commands, and makes proxy commands unusable until the user is logged in.
+  premium-features: true
+
+
+plugin-utility:
+  # Check for new updates on startup and notify the console?
+  enable-update-checker: true
+
+  # Show the 'Service offered by LoginTo' watermark? If you want to support my work, please consider leaving this enabled.
+  show-watermark: true
+

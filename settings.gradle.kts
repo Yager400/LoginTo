@@ -13,4 +13,4 @@ plugins {
 
 rootProject.name = "LoginTo"
 
-include("bukkit", "bungeecord", "velocity")
+include("bukkit", "bungeecord", "velocity", "common")

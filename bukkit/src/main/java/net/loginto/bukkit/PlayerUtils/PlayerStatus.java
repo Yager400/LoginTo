@@ -16,8 +16,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.concurrent.CompletableFuture;
-
 public class PlayerStatus {
 
     @SuppressWarnings("deprecation")
@@ -25,9 +23,6 @@ public class PlayerStatus {
 
         Bukkit.getScheduler().runTask(plugin, () -> {
             Sessions.addPlayer(player);
-            CompletableFuture.runAsync(() -> {
-                Sessions.Proxy.addPlayerN(player, plugin);
-            });
 
             Tries.resetTries(player);
 

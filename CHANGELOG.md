@@ -1,29 +1,23 @@
-### Version 3.6.0
+### Version 3.7.0
 
 ___
 
-Added experimental.yml versioning
+Added cool minimessage (no more legacy), now it supports gradient and rgb (only for client and servers over 1.16)
 
 ___
 
-Added **experimental** premium authentication on bukkit (with mojang sessions)
+Fully redesigned how the plugin in the proxy works
 
 ___
 
-Fixed other problems caused by minimessage and kyori api
+Removed the premium player's bridge between the proxy and bukkit.<br>
+Why?, the classic premium feature was too complex to set up.<br> Now if you want to use the plugin in a network, you install it only on the proxy. <br> If you don't have a network, you can still use the premium feature with just bukkit (not this variant of the premium feature is no more an experimental feature)
 
 ___
 
-Added support for older version (1.13 to 26.1.2)
+/premium and /cracked command now work for the bukkit premium feature
 
 ___
 
-Fixed performance problem while download rockyou.txt
-
-___
-
-Fixed some problem with external dependency, now, the h2 database shouldn't give any problem
-
-___
-
-The plugin is now for minimum java 8 for bukkit and java 17 for velocity/bungeecord
+**Important**<br>
+Changed the password's column name from 'password_hash' to 'password' for H2 databases, this will break every old H2 database, but from the bstats data, no one was using it so it's ok

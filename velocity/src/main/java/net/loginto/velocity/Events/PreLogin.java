@@ -5,91 +5,106 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-
 package net.loginto.velocity.Events;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import static net.loginto.velocity.Utility.PremiumUserName.isUserNamePremium;
+import net.loginto.common.Database.Cache.PremiumSQLiteCache;
+import net.loginto.common.Database.Database;
+import net.loginto.common.PlayerUtils.Sessions;
+import net.loginto.common.Utils.Files.ConfigKeys;
+import net.loginto.velocity.Utils.Files.LoginToFiles;
+import net.loginto.common.Utils.Files.MessageKeys;
+import net.loginto.common.Utils.PremiumUtils;
+import org.geysermc.floodgate.api.FloodgateApi;
+import org.slf4j.Logger;
 
-import static net.loginto.velocity.Utility.CheckIfValidUsername.checkValidUsername;
-import static net.loginto.velocity.Utility.FileMGR.YamlRead;
-
-import net.kyori.adventure.text.Component;
-import net.loginto.velocity.Utility.AntiSpam;
-import net.loginto.velocity.LoginTo;
-import net.loginto.velocity.Database.Database;
-import net.loginto.velocity.Database.SQLite;
-
+import java.util.UUID;
 
 public class PreLogin {
 
     private final Database database;
-    private final SQLite sqlite;
-    private final AntiSpam antispam;
+    private final ProxyServer server;
+    private final Logger logger;
+    private final FloodgateApi floodgateApi;
+    private final PremiumSQLiteCache sqliteCache;
 
-    public PreLogin(ProxyServer server, Database database, SQLite sqlite, LoginTo plugin) {
+    public PreLogin(Database database, ProxyServer server, Logger logger, PremiumSQLiteCache sqliteCache) {
         this.database = database;
-        this.sqlite = sqlite;
-        this.antispam = new AntiSpam(server, plugin);
+        this.server = server;
+        this.logger = logger;
+        this.sqliteCache = sqliteCache;
+
+        if (!server.getPluginManager().isLoaded("floodgate") && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_PREMIUM_FEATURES.path())) {
+            logger.warn("Floodgate is not installed, if a bedrock player joins the network, they will be kicked");
+            floodgateApi = null;
+        } else {
+            floodgateApi = FloodgateApi.getInstance();
+        }
     }
-
-
 
     @Subscribe
     public void onPreLogin(PreLoginEvent event) {
 
-        String ip = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
-        if (antispam.isIpOver(ip)) {
-            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(YamlRead("anti_join-spam.ban-message"))));
-            return;
-        }
-
-        if (!Boolean.parseBoolean(YamlRead("loginto-premium-auth"))) {
-            event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode()); 
-            return;
-        }
-
-        boolean usernameResult = checkValidUsername(event);
-
-        String invalidMessage = YamlRead("messages.invalid-username").replace("%username%", event.getUsername());
-
-        if (!usernameResult) {
-            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(invalidMessage)));
-            return;
-        }
-
-        boolean UserNamePremium = isUserNamePremium(event.getUsername(), sqlite);
-        
-        if (UserNamePremium) {
-
-            String AccStatus = database.accStatus(event.getUsername());
-
-            if (AccStatus.equals("premium")) {
-                // This is a player that have executed the /premium command, in any case we will use the online authentication
-                event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
-                database.insertTempAuthPlayer(event.getUsername(), true);
-            } 
-            else if (AccStatus.equals("cracked")) {
-                // This account is cracked and executed the /cracked command, but have joined before this premium name was registered by mojang
-                event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
-                database.insertTempAuthPlayer(event.getUsername(), false);
-            } 
-            else {
-                if (AccStatus.equals("notindb")) {
-                    // This player never joined in this server, for not let him stealing this name, we will require the premium authentication
-                    event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
-                    database.insertTempAuthPlayer(event.getUsername(), true);
-                }
+        for (Player player : server.getAllPlayers()) {
+            if (player.getUsername().equalsIgnoreCase(event.getUsername())) {
+                event.setResult(PreLoginEvent.PreLoginComponentResult.denied(LoginToFiles.Messages.getMessageComponent(MessageKeys.ERRORS_LOGIN_FAIL_ONKICK_SAME_NAME.path())));
+                return;
             }
-
-        } else {
-            // 100% cracked player
-            event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
-            database.insertTempAuthPlayer(event.getUsername(), false);
         }
 
-        antispam.incrementConnection(ip);
+        // in Sessions.addBorrowData, the ->noregistration mark is to tell if the player is already registered
+
+        String username = event.getUsername();
+        UUID uuid = event.getUniqueId();
+
+        if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_PREMIUM_FEATURES.path())) {
+            event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
+            if (database.isPlayerPresentInDB(username)) {
+                Sessions.addBorrowData(uuid, "cracked");
+            } else {
+                Sessions.addBorrowData(uuid, "cracked->noregistration");
+            }
+            return;
+        }
+
+        if (floodgateApi != null) {
+            if (floodgateApi.isFloodgateId(uuid)) {
+                if (database.isPlayerPresentInDB(username)) {
+                    Sessions.addBorrowData(uuid, "bedrock");
+                } else {
+                    Sessions.addBorrowData(uuid, "bedrock->noregistration");
+                }
+                return;
+            }
+        }
+
+        boolean isUsernameValid = PremiumUtils.checkValidUsername(username);
+
+        if (!isUsernameValid) {
+            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(LoginToFiles.Messages.getMessageComponent(MessageKeys.ERRORS_LOGIN_FAIL_INVALID_USERNAME.path())));
+            return;
+        }
+
+        boolean isUsernamePremium = PremiumUtils.isUserNamePremium(username, sqliteCache);
+
+        if (database.isPlayerPresentInDB(username)) {
+            if (database.isPremium(username)) {
+                event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
+                Sessions.addBorrowData(uuid, "premium");
+            } else {
+                event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
+                Sessions.addBorrowData(uuid, "cracked");
+            }
+        } else if (isUsernamePremium) {
+            event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
+            Sessions.addBorrowData(uuid, "premium->noregistration");
+        } else {
+            event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
+            Sessions.addBorrowData(uuid, "cracked->noregistration");
+        }
     }
+
 }

@@ -1,7 +1,0 @@
-.relocate("com.warrenstrange.googleauth", "net.loginto.libs.googleauth")
-.relocate("com.google.zxing", "net.loginto.libs.zxing")
-.relocate("org.h2", "net.loginto.libs.h2")
-.relocate("org.postgresql", "net.loginto.libs.postgresql")
-.relocate("com.mysql", "net.loginto.libs.mysql")
-.relocate("org.sqlite", "net.loginto.libs.sqlite")
-.relocate("com.zaxxer.hikari", "net.loginto.libs.hikari")

@@ -14,10 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
+import java.util.Map;
 
 public class PasswordSecurity {
 
@@ -79,10 +79,10 @@ public class PasswordSecurity {
         int min = LoginToFiles.Config.getInt(ConfigKeys.PASSWORD_REQUIREMENTS_LENGTH_CHECK_MIN_LENGTH.path(), plugin);
         int max = LoginToFiles.Config.getInt(ConfigKeys.PASSWORD_REQUIREMENTS_LENGTH_CHECK_MAX_LENGTH.path(), plugin);
         if (password.length() < min || password.length() > max) {
-            player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_PASSWORD_LENGTH.path(), player, plugin)
-                    .replaceAll("%min_length%", String.valueOf(min))
-                    .replaceAll("%max_length%", String.valueOf(max))
-            );
+            Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("%min_length%", String.valueOf(min));
+            placeholders.put("%max_length%", String.valueOf(max));
+            PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_PASSWORD_LENGTH.path(), player, plugin, placeholders);
             return false;
         }
         return true;

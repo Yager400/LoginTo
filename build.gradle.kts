@@ -25,10 +25,12 @@ val libbyVersion = "1.3.1"
 val bcryptVersion = "0.4"
 val adventureVersion = "4.26.1"
 val minimessageVersion = "4.26.1"
+val bukkitPlatformAdventure = "4.3.4"
 val zxingVersion = "3.5.3"
 val googleauthVersion = "1.5.0"
 val floodgateVersion = "2.2.0-SNAPSHOT"
 val bstatsVersion = "3.1.0"
+val mavenModelVersion = "3.9.9"
 
 extra["spigotVersion"] = spigotVersion
 extra["velocityVersion"] = velocityVersion
@@ -44,15 +46,17 @@ extra["libbyVersion"] = libbyVersion
 extra["bcryptVersion"] = bcryptVersion
 extra["adventureVersion"] = adventureVersion
 extra["minimessageVersion"] = minimessageVersion
+extra["bukkitPlatformAdventure"] = bukkitPlatformAdventure
 extra["zxingVersion"] = zxingVersion
 extra["googleauthVersion"] = googleauthVersion
 extra["floodgateVersion"] = floodgateVersion
 extra["bstatsVersion"] = bstatsVersion
+extra["mavenModelVersion"] = mavenModelVersion
 
 subprojects {
     apply(plugin = "java")
     group = "net.loginto"
-    version = "3.6.0"
+    version = "3.7.0"
     java {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -81,8 +85,9 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":bukkit"))
-    implementation(project(":bungeecord"))
+    implementation(project(":common"))
+    implementation(project(":bukkit", "shadow"))
+    implementation(project(":bungeecord", "shadow"))
     implementation(project(":velocity"))
 
     implementation("net.byteflux:libby-bukkit:${rootProject.extra["libbyVersion"]}")
@@ -94,24 +99,28 @@ dependencies {
 tasks {
     jar { enabled = false }
 
+
     shadowJar {
         archiveBaseName.set("LoginTo")
-        archiveVersion.set("3.6.0")
+        archiveVersion.set("3.7.0")
         archiveClassifier.set("")
 
         relocate("net.byteflux.libby", "net.loginto.libs.libby")
         relocate("org.mindrot.jbcrypt", "net.loginto.libs.jbcrypt")
         relocate("org.bstats", "net.loginto.libs.bstats")
-        relocate("net.kyori", "net.loginto.libs.kyori")
         relocate("com.zaxxer.hikari", "net.loginto.libs.hikari")
         relocate("com.mysql", "net.loginto.libs.mysql")
         relocate("org.postgresql", "net.loginto.libs.postgresql")
         relocate("org.h2", "net.loginto.libs.h2")
         relocate("com.google.zxing", "net.loginto.libs.zxing")
         relocate("com.warrenstrange.googleauth", "net.loginto.libs.googleauth")
+        relocate("org.apache.maven.model", "net.loginto.libs.maven.model")
+        relocate("org.codehaus.plexus.util", "net.loginto.libs.plexus.util")
+
     }
 
     build { dependsOn(shadowJar) }
+
 }
 
 tasks {

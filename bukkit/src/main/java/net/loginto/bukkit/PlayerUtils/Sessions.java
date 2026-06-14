@@ -7,16 +7,7 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import com.zaxxer.hikari.HikariDataSource;
-import net.loginto.bukkit.Utils.Files.ConfigKeys;
-import net.loginto.bukkit.Utils.Files.LoginToFiles;
-import net.loginto.bukkit.Utils.Premium.proxy.PremiumUtils;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,65 +26,5 @@ public class Sessions {
 
     public static void addPlayer(Player player) {
         loggedPlayers.add(player.getUniqueId());
-    }
-
-    public static class Proxy {
-
-        public static boolean isPlayerLoggedN(Player player, Plugin plugin) {
-            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
-                return false;
-            }
-
-            HikariDataSource src = PremiumUtils.connectAndGetSource(plugin);
-
-            if (src == null) {
-                plugin.getLogger().severe("Source null");
-                return false;
-            }
-
-            String sql = "select * from LoggedPlayers where username = ?";
-
-            try (Connection conn = src.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-
-                ps.setString(1, player.getName());
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    return rs.next();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return false;
-        }
-
-        public static void addPlayerN(Player player, Plugin plugin) {
-            if (!LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin)) {
-                return;
-            }
-
-            HikariDataSource src = PremiumUtils.connectAndGetSource(plugin);
-
-            if (src == null) {
-                plugin.getLogger().severe("Source null");
-                return;
-            }
-
-            String sql = "insert into LoggedPlayers(username) values (?)";
-
-            try (Connection conn = src.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-
-                ps.setString(1, player.getName());
-
-                ps.execute();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }

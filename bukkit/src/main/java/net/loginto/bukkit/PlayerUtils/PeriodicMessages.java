@@ -7,7 +7,6 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.PlayerUtils;
 
-import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,7 +22,7 @@ public class PeriodicMessages {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 if (p.getWorld().getName().contains("qrcode")) {
-                    p.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.OTP_WORLD_PERIODIC_MESSAGE.path(), p, plugin));
+                    PlayerMessages.player.sendMessage(MessageKeys.OTP_WORLD_PERIODIC_MESSAGE.path(), p, plugin);
                 }
             }
         }, 0, 1200);

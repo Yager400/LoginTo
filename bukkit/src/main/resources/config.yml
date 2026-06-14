@@ -1,4 +1,4 @@
-ConfigVersion: "1.11" # DO NOT CHANGE THIS
+ConfigVersion: "1.12" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Configuration                                        #
@@ -85,7 +85,7 @@ integrations:
     server-post-login: ""
 
   discord:
-    # Webhook URLs and custom messages (Supports Discord Markdown & PAPI)
+    # Webhook URLs and custom messages (Supports Discord Markdown)
     # Available variables: %playerName%, %targetPlayer%
     
     register-webhook-url: ''
@@ -119,27 +119,19 @@ storage:
 
 # Premium system (Original accounts)
 premium:
-  # Enables AutoLogin, /premium, and /cracked commands, and makes proxy commands unusable until the user is logged in.
-  # This version requires a proxy like Velocity or BungeeCord. If you are using a server panel (such as Pterodactyl),
-  # change the database-type to 'mysql'.
+  # Enables AutoLogin, /premium, and /cracked commands.
+  # Requirements: the server must be in offline mode and NOT in a network (not linked to a proxy)
   #
-  # If you want to use Bukkit premium authentication (without a proxy), you must first enable experimental features
-  # (go to plugin-utility and set 'enable-experimental-features' to true), then enable Bukkit premium authentication
-  # in the experimental.yml file.
+  # When the user joins the server, if the username is premium (for example 'Dream'), the server will perform the normal
+  # mojang's authentication. If the player is from floodgate, the plugin will let him pass since it's verified by
+  # floodgate. If the username is not premium (like a random name), the server will let that player pass without mojang's
+  # authentication, but the plugin will still require the /login command from the player
   enable-premium-features: false
 
-  storage:
-    # Database type for cross-server communication (mysql or h2). MySQL is highly recommended if available.
-    database-type: "h2"
-
-    database:
-      host: "localhost"
-      # If the port is set to 0, it will use the database's default port (3306 for MySQL and 9092 for H2)
-      port: 0
-      user: "sa"
-      password: ""
-      # Only used for MySQL; H2 defaults to 'LoginTo_Sharing'
-      database-name: "LoginTo_Sharing"
+  # The duration of the name cache (in hours).
+  # After X hours, the player's record will expire and the plugin will remove it.
+  # The cache.db file can be deleted when the server is off
+  cache-duration: 24
 
 logging:
   # This feature logs all players who join the server

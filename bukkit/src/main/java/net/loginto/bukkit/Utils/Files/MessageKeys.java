@@ -27,6 +27,8 @@ public enum MessageKeys {
     LOGIN_ERROR_WRONG_PASSWORD("login.error.wrong-password"),
     LOGIN_PROMPT("login.login-prompt"),
     LOGIN_SUCCESS("login.login-success"),
+    LOGIN_PREMIUM_SUCCESS("login.login-premium-success"),
+    LOGIN_BEDROCK_SUCCESS("login.login-bedrock-success"),
 
     UNREGISTER_ERROR_PLAYER_DOESNT_EXIST("unregister.error.player-doesnt-exist"),
     UNREGISTER_ERROR_NOT_CONFIRMED("unregister.error.unregister-not-confirmed"),
@@ -59,7 +61,10 @@ public enum MessageKeys {
     ERRORS_ACTIVITY_BEFORE_LOGIN_CHATTING("errors.activity-before-login.chatting-before-login"),
     ERRORS_LOGIN_FAIL_ONKICK_FAILED_LOGIN("errors.login-fail.onkick-for-failed-login"),
     ERRORS_LOGIN_FAIL_ONKICK_LONG_WAITING("errors.login-fail.onkick-for-long-waiting"),
-    ERRORS_LOGIN_FAIL_ONKICK_SAME_NAME("errors.login-fail.onkick-for-joining-with-same-name");
+    ERRORS_LOGIN_FAIL_ONKICK_SAME_NAME("errors.login-fail.onkick-for-joining-with-same-name"),
+    ERRORS_LOGIN_FAIL_ON_AUTHENTICATION_SKIP("errors.login-fail.on-authentication-skip"),
+    ERRORS_LOGIN_FAIL_JAVA_PLAYER_MARKED_AS_BEDROCK("errors.login-fail.java-player-marked-as-bedrock"),
+    ERRORS_LOGIN_FAIL_ONLOGIN_WITH_DIFFERENT_UUID("errors.login-fail.on-login-with-different-uuid");
 
 
     private final String s;

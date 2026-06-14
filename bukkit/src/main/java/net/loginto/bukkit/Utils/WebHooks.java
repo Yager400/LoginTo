@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 public class WebHooks {
 
     public static void register(Plugin plugin, Player player) {

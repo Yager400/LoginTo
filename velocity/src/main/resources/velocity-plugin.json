@@ -1,8 +1,16 @@
 {
   "id": "loginto",
   "name": "LoginTo",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "main": "net.loginto.velocity.LoginTo",
   "authors": ["Yager400"],
-  "dependencies": []
+  "dependencies": [
+    {
+      "id": "floodgate",
+      "optional": true
+    }, {
+      "id": "luckperms",
+      "optional": true
+    }
+  ]
 }

@@ -5,39 +5,46 @@ This file is part of this project, released under the terms of
 the GNU General Public License v3.0.
 See the LICENSE file for details.
  */
-
 package net.loginto.bungeecord.Events;
 
+import net.loginto.bungeecord.Utils.Files.LoginToFiles;
+import net.loginto.common.PlayerUtils.Sessions;
+import net.loginto.common.Utils.Files.ConfigKeys;
+import net.loginto.common.Utils.Files.MessageKeys;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import net.loginto.bungeecord.Database.Database;
-
 public class CommandEvent implements Listener {
 
-    public final Database database;
-
-    public CommandEvent(Database database) {
-        this.database = database;
-    }
-
     @EventHandler
-    public void onChat(ChatEvent event) {
-        if (!event.getMessage().startsWith("/")) return;
+    public void onCommand(ChatEvent event) {
 
-        if (
-            event.getMessage().startsWith("/login") || 
-            event.getMessage().startsWith("/l") ||
-            event.getMessage().startsWith("/register") ||
-            event.getMessage().startsWith("/r")
-        ) return;
+        String messageTrim = event.getMessage().trim();
+        if (!messageTrim.startsWith("/")) {
+            return;
+        }
+        messageTrim = messageTrim.replace("/", "");
 
-        if (event.getSender() instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-            if (!database.isPlayerLogged(player.getName())) {
+        if (messageTrim.startsWith("login") ||
+                messageTrim.startsWith("l") ||
+                messageTrim.startsWith("register") ||
+                messageTrim.startsWith("r")
+        ) {
+            return;
+        }
+
+        for (Object allowedCommand : LoginToFiles.Config.getList(ConfigKeys.COMMANDS_SETTINGS_PRE_LOGIN_ALLOWED_COMMANDS.path())) {
+            if (messageTrim.equalsIgnoreCase(String.valueOf(allowedCommand))) {
+                return;
+            }
+        }
+
+        if (event.getSender() instanceof ProxiedPlayer player) {
+            if (!Sessions.isPlayerLogged(player.getUniqueId())) {
                 event.setCancelled(true);
+                player.sendMessage(LoginToFiles.Messages.getMessageLegacyComponent(MessageKeys.ERRORS_ACTIVITY_BEFORE_LOGIN_ONCOMMAND.path()));
             }
         }
     }

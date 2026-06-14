@@ -24,46 +24,61 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public class LoginToFiles {
 
-    public static URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
+    public static final URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
 
     public static class Messages {
 
         private static final MiniMessage mm = MiniMessage.miniMessage();
 
-        public static String getMessage(String path, Player player, Plugin plugin) {
+        public static Component getMessage(String path, Player player, Plugin plugin, Map<String, String> placeholders) {
             String text = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml")).getString(path);
 
             if (text == null || text.isEmpty()) {
-                return mmLegacySerialized(mm.deserialize("<red>No message found for: " + path));
+                return mm.deserialize("<red>No message found for: " + path);
+            }
+
+            if (placeholders != null) {
+                for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                    text = text.replace(entry.getKey(), entry.getValue());
+                }
             }
 
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-                return mmLegacySerialized(mm.deserialize(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text)));
+                return mm.deserialize(me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text));
             }
 
-            Component component = mm.deserialize(text);
-
-            return mmLegacySerialized(component);
+            return mm.deserialize(text);
         }
 
-        public static String getMessage(String path, Plugin plugin) {
+        public static Component getMessage(String path, Plugin plugin, Map<String, String> placeholders) {
             String text = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml")).getString(path);
 
             if (text == null || text.isEmpty()) {
-                return mmLegacySerialized(mm.deserialize("<red>No message found for: " + path));
+                return mm.deserialize("<red>No message found for: " + path);
             }
 
-            Component component = mm.deserialize(text);
+            if (placeholders != null) {
+                for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                    text = text.replace(entry.getKey(), entry.getValue());
+                }
+            }
 
-            return mmLegacySerialized(component);
+            return mm.deserialize(text);
         }
 
-        private static String mmLegacySerialized(Component component) {
-            return LegacyComponentSerializer.legacySection().serialize(component);
+        public static void setMessageValue(String path, Object value, Plugin plugin) {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "messages.yml"));
+            config.set(path, value);
+            try {
+                config.save(new File(plugin.getDataFolder(), "messages.yml"));
+            } catch (IOException e) {
+                plugin.getLogger().severe(e.getMessage());
+            }
         }
 
     }
@@ -82,21 +97,73 @@ public class LoginToFiles {
             return plugin.getConfig().getInt(path, 0);
         }
 
+        public static int getIntOrDefault(String path, Plugin plugin, int defaultValue) {
+            int i = getInt(path, plugin);
+            if (i == 0) {
+                return defaultValue;
+            } else {
+                return i;
+            }
+        }
+
         public static String getString(String path, Plugin plugin) {
             return plugin.getConfig().getString(path, null);
+        }
+
+        public static String getStringOrDefault(String path, Plugin plugin, String defaultValue) {
+            String i = getString(path, plugin);
+            if (i == null || i.isEmpty()) {
+                return defaultValue;
+            } else {
+                return i;
+            }
         }
 
         public static Double getDouble(String path, Plugin plugin) {
             return plugin.getConfig().getDouble(path, 0);
         }
 
+        public static Double getDoubleOrDefault(String path, Plugin plugin, Double defaultValue) {
+            Double i = getDouble(path, plugin);
+            if (i == 0) {
+                return defaultValue;
+            } else {
+                return i;
+            }
+        }
+
         public static List<?> getList(String path, Plugin plugin) {
             return plugin.getConfig().getList(path, null);
+        }
+
+        public static void setConfigValue(String path, Object value, Plugin plugin) {
+            plugin.getConfig().set(path, value);
+            try {
+                plugin.getConfig().save(new File(plugin.getDataFolder(), "config.yml"));
+            } catch (IOException e) {
+                plugin.getLogger().severe(e.getMessage());
+            }
         }
     }
 
     public static class Experimental {
         private static File file = null;
+
+        public static void setExperimentalValue(String path, Object value, Plugin plugin) {
+            if (file == null) {
+                file = new File(plugin.getDataFolder(), "experimental.yml");
+                if (!file.exists()) {
+                    return;
+                }
+            }
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            config.set(path, value);
+            try {
+                config.save(new File(plugin.getDataFolder(), "experimental.yml"));
+            } catch (IOException e) {
+                plugin.getLogger().severe(e.getMessage());
+            }
+        }
 
         public static Object getExperimentalObj(String path, Plugin plugin) {
             if (file == null) {

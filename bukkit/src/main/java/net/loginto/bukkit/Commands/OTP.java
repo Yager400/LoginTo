@@ -14,7 +14,8 @@ import com.google.zxing.common.BitMatrix;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
-import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.PlayerUtils.PlayerMessages;
+import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
@@ -53,24 +54,24 @@ public class OTP implements CommandExecutor {
         Player player = (Player) sender;
 
         if (!player.hasPermission("loginto.otp")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin);
             return true;
         }
 
         if (!database.isPlayerPresentInDB(player.getName())) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.OTP_ERROR_REQUEST_WITHOUT_ACCOUNT.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.OTP_ERROR_REQUEST_WITHOUT_ACCOUNT.path(), player, plugin);
             return true;
         }
 
         String possibleSecret = database.getSecret(player.getName());
 
         if (possibleSecret != null && !possibleSecret.isEmpty()) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.OTP_ERROR_ALREADY_CREATED.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.OTP_ERROR_ALREADY_CREATED.path(), player, plugin);
             return true;
         }
 
         if (!players.contains(player)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.OTP_ALERT.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.OTP_ALERT.path(), player, plugin);
             players.add(player);
             return true;
         }

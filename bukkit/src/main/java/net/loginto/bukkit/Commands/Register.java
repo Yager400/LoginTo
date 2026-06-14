@@ -8,8 +8,9 @@ See the LICENSE file for details.
 package net.loginto.bukkit.Commands;
 
 import net.loginto.bukkit.PlayerUtils.PasswordSecurity;
+import net.loginto.bukkit.PlayerUtils.PlayerMessages;
 import net.loginto.bukkit.PlayerUtils.PlayerStatus;
-import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
@@ -22,7 +23,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Register implements CommandExecutor, TabCompleter {
 
@@ -45,12 +48,12 @@ public class Register implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
 
         if (!sender.hasPermission("loginto.register")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin);
             return true;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_USAGE.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_USAGE.path(), player, plugin);
             return true;
         }
 
@@ -59,17 +62,14 @@ public class Register implements CommandExecutor, TabCompleter {
         String repetePassword = args[1];
 
         if (!password.equals(repetePassword)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_PASSWORD_MISMATCH.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_PASSWORD_MISMATCH.path(), player, plugin);
             return true;
         }
 
         if (!PasswordSecurity.doesIncludeReqChars(password, plugin)) {
-            sender.sendMessage(
-                    LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_CHARACTER_ERROR.path(), player, plugin)
-                            .replace(
-                                    "%characters%",
-                                    LoginToFiles.Config.getString(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRED_CHAR_LIST.path(), plugin)
-                            ));
+            Map<String, String> placeholders = new HashMap<>();
+            placeholders.put("%characters%", LoginToFiles.Config.getString(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRED_CHAR_LIST.path(), plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_CHARACTER_ERROR.path(), player, plugin, placeholders);
             return true;
         }
 
@@ -81,13 +81,13 @@ public class Register implements CommandExecutor, TabCompleter {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_DECLINE_ON_COMMON.path(), plugin)) {
                 if (PasswordSecurity.isCommon(password, plugin, player.getName())) {
-                    player.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_PASSWORD_TOO_SIMPLE.path(), player, plugin));
+                    PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_PASSWORD_TOO_SIMPLE.path(), player, plugin);
                     return;
                 }
             }
 
             if (database.isPlayerPresentInDB(player.getName())) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_ERROR_ALREADY_REGISTERED.path(), player, plugin));
+                PlayerMessages.player.sendMessage(MessageKeys.REGISTER_ERROR_ALREADY_REGISTERED.path(), player, plugin);
                 return;
             }
 
@@ -98,7 +98,7 @@ public class Register implements CommandExecutor, TabCompleter {
                 e.printStackTrace();
             }
 
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.REGISTER_SUCCESS.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.REGISTER_SUCCESS.path(), player, plugin);
 
             PlayerStatus.setPlayerAsLogged(player, plugin, false, false);
         });

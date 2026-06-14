@@ -53,12 +53,7 @@ public enum ConfigKeys {
     STORAGE_DATABASE_PASSWORD("storage.database.password"),
 
     PREMIUM_ENABLE_PREMIUM_FEATURES("premium.enable-premium-features"),
-    PREMIUM_STORAGE_DATABASE_TYPE("premium.storage.database-type"),
-    PREMIUM_STORAGE_DATABASE_HOST("premium.storage.database.host"),
-    PREMIUM_STORAGE_DATABASE_PORT("premium.storage.database.port"),
-    PREMIUM_STORAGE_DATABASE_USER("premium.storage.database.user"),
-    PREMIUM_STORAGE_DATABASE_PASSWORD("premium.storage.database.password"),
-    PREMIUM_STORAGE_DATABASE_NAME("premium.storage.database.database-name"),
+    PREMIUM_CACHE_DURATION(""),
 
     LOGGING_LOGGING("logging.logging"),
     LOGGING_DATE_FORMAT("logging.date-format"),

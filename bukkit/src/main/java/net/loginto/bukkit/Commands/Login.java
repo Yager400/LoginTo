@@ -7,10 +7,11 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Commands;
 
+import net.loginto.bukkit.PlayerUtils.PlayerMessages;
 import net.loginto.bukkit.PlayerUtils.PlayerStatus;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 import net.loginto.bukkit.PlayerUtils.Tries;
-import net.loginto.bukkit.Storage.Database;
+import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
@@ -46,19 +47,19 @@ public class Login implements CommandExecutor, TabCompleter {
 
 
         if (!sender.hasPermission("loginto.login")) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin);
             return true;
         }
 
 
         if (args.length != 1) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_ERROR_USAGE.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.LOGIN_ERROR_USAGE.path(), player, plugin);
             return true;
         }
 
 
         if (Sessions.isPlayerLogged(player)) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_ERROR_ALREADY_LOGGED_IN.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.LOGIN_ERROR_ALREADY_LOGGED_IN.path(), player, plugin);
             return true;
         }
 
@@ -66,21 +67,21 @@ public class Login implements CommandExecutor, TabCompleter {
         String password = args[0];
 
         if (!database.isPlayerPresentInDB(player.getName())) {
-            sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_ERROR_NOT_REGISTERED.path(), player, plugin));
+            PlayerMessages.player.sendMessage(MessageKeys.LOGIN_ERROR_NOT_REGISTERED.path(), player, plugin);
             return true;
         }
 
         try {
             if (!database.isPasswordCorrect(player.getName(), password)) {
-                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_ERROR_WRONG_PASSWORD.path(), player, plugin));
+                PlayerMessages.player.sendMessage(MessageKeys.LOGIN_ERROR_WRONG_PASSWORD.path(), player, plugin);
                 if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.AUTH_SECURITY_KICK_ON_INVALID_PASSWORD.path(), plugin)) {
                     Tries.addTry(player);
                     if (Tries.triesEnded(player, plugin)) {
-                        player.kickPlayer(LoginToFiles.Messages.getMessage(MessageKeys.ERRORS_LOGIN_FAIL_ONKICK_FAILED_LOGIN.path(), player, plugin));
+                        PlayerMessages.player.kickPlayer(MessageKeys.ERRORS_LOGIN_FAIL_ONKICK_FAILED_LOGIN.path(), player, plugin);
                     }
                 }
             } else {
-                sender.sendMessage(LoginToFiles.Messages.getMessage(MessageKeys.LOGIN_SUCCESS.path(), player, plugin));
+                PlayerMessages.player.sendMessage(MessageKeys.LOGIN_SUCCESS.path(), player, plugin);
                 PlayerStatus.setPlayerAsLogged(player, plugin, false, true);
             }
         } catch (Exception e) {

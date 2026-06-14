@@ -1,9 +1,8 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     java
     id("com.gradleup.shadow") version "9.4.1"
 }
+
 dependencies {
     compileOnly("org.spigotmc:spigot-api:${rootProject.extra["spigotVersion"]}")
     compileOnly("com.github.retrooper:packetevents-spigot:${rootProject.extra["packetEventsVersion"]}")
@@ -11,6 +10,7 @@ dependencies {
     compileOnly("com.zaxxer:HikariCP:${rootProject.extra["hikariVersion"]}")
     compileOnly("net.kyori:adventure-text-serializer-legacy:${rootProject.extra["minimessageVersion"]}")
     compileOnly("net.kyori:adventure-text-minimessage:${rootProject.extra["minimessageVersion"]}")
+    compileOnly("net.kyori:adventure-platform-bukkit:${rootProject.extra["bukkitPlatformAdventure"]}")
     compileOnly("com.google.zxing:core:${rootProject.extra["zxingVersion"]}")
     compileOnly("org.xerial:sqlite-jdbc:${rootProject.extra["sqliteVersion"]}")
     compileOnly("com.mysql:mysql-connector-j:${rootProject.extra["mysqlVersion"]}")
@@ -19,9 +19,14 @@ dependencies {
     compileOnly("com.warrenstrange:googleauth:${rootProject.extra["googleauthVersion"]}")
     compileOnly("org.geysermc.floodgate:api:${rootProject.extra["floodgateVersion"]}")
     implementation("org.bstats:bstats-bukkit:${rootProject.extra["bstatsVersion"]}")
+    compileOnly("org.apache.maven:maven-model:${rootProject.extra["mavenModelVersion"]}")
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.shadowJar {
+    relocate("net.kyori", "net.loginto.libs.kyori")
 }

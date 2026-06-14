@@ -1,11 +1,11 @@
-MessageVersion: "1.7" # DO NOT CHANGE THIS
+MessageVersion: "1.8" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Messages Config                                      #
 #                                                                                                    #
 # -------------------------------------------------------------------------------------------------- #
 
-# These messages support PlaceholderAPI (if installed) and MiniMessage format.
+# These messages support PlaceholderAPI (if installed) and MiniMessage format (except for the kick messages).
 
 register:
   # Messages sent during the registration process
@@ -62,7 +62,13 @@ login:
   login-prompt: "<dark_aqua>Please use /login <password> to authenticate."
 
   # Sent when a player successfully logs in
-  login-success: "<green>Login successful! Welcome back."
+  login-success: "<green>Logged in successful! Welcome back."
+
+  # Sent when a player successfully logs in with the premium account
+  login-premium-success: "<green>Logged in with the premium account! Welcome back."
+
+  # Sent when a player successfully logs in with the bedrock account
+  login-bedrock-success: "<green>Logged in with the bedrock account! Welcome back."
 
 
 unregister:
@@ -130,7 +136,7 @@ premium:
   error:
 
     # Sent when the player is already marked as a premium user
-    already-premium: "<red>You are already a premium user."
+    already-premium: "<red>You are already marked as a premium user."
 
   # Warning displayed when a player executes the /premium command
   premium-warn: "<bold><gold>WARNING:</gold></bold><red> If you switch to premium status, you might lose access to your current progress if your Minecraft account names do not match perfectly.\nType <green>/premium</green> again to confirm."
@@ -191,4 +197,12 @@ errors:
     # Kick message sent when a player attempts to join while their username is already online
     onkick-for-joining-with-same-name: "<red>Another player with your name is already online on this server."
 
+    # Sent when a player joins with a premium username but 'skipped' the plugin's premium authentication process.
+    on-authentication-skip: "<red>You do not have an authenticated profile right now. Please contact the staff or try restarting your launcher."
+
+    # Sent when the player that is trying to join, the plugin consider them as bedrock, but the floodgate doesn't find the player
+    java-player-marked-as-bedrock: "<red>You got marked as bedrock player, but it seems you are from java, try rejoining."
+
+    # Sent when the player that is trying to join send to the server an uuid, but then bukkit has a different uuid for that player
+    on-login-with-different-uuid: "<red>The authentication system and the server have 2 different UUID related to your account, try rejoining."
 
