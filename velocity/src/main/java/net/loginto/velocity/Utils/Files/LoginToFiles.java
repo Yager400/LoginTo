@@ -84,7 +84,9 @@ public class LoginToFiles {
                 }
                 current = ((Map<String, Object>) current).get(part);
                 if (current == null) {
-                    if (key.equals("config-ver")) return "1.0";
+                    if (key.equals(ConfigKeys.CONFIG_VERSION.path())) return "1.11";
+                    if (key.equals(MessageKeys.MESSAGE_VERSION.path())) return "1.7";
+                    
                     throw new RuntimeException("Key '" + key + "' not found in " + fileName);
                 }
             }
@@ -99,7 +101,7 @@ public class LoginToFiles {
     public static void saveFiles(LoginTo plugin) {
         File configFile = new File("plugins/loginto/config.yml");
 
-        final String CONFIG_VER = "1.0";
+        final String CONFIG_VER = "1.11";
 
         if (configFile.exists() && !LoginToFiles.Config.getString(ConfigKeys.CONFIG_VERSION.path()).equals(CONFIG_VER)) {
             configFile.renameTo(new File("plugins/loginto/config.yml.old"));
@@ -121,7 +123,7 @@ public class LoginToFiles {
 
         File messageFile = new File("plugins/loginto/messages.yml");
 
-        final String MESSAGE_VER = "1.0";
+        final String MESSAGE_VER = "1.7";
 
         if (messageFile.exists() && !LoginToFiles.Messages.getMessageString(MessageKeys.MESSAGE_VERSION.path()).equals(MESSAGE_VER)) {
             messageFile.renameTo(new File("plugins/loginto/messages.yml.old"));
