@@ -17,11 +17,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class PasswordSecurity {
+
+    private static final String autoRegisterLower = "abcdefghijklmnopqrstuvwxyz";
+    private static final String autoRegisterUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String autoRegisterNumbers = "0123456789";
+    private static final SecureRandom autoRegisterRandom = new SecureRandom();
 
     public static boolean isCommon(String password, String playerName, Logger logger) {
         if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_USE_ROCKYOU.path())) {
@@ -109,5 +115,24 @@ public class PasswordSecurity {
         }
 
         return true;
+    }
+
+    public static String generatePassword() {
+        String lower = autoRegisterLower;
+        String upper = autoRegisterUpper;
+        String numbers = autoRegisterNumbers;
+        String allChars = lower + upper + numbers;
+
+        StringBuilder sb = new StringBuilder(10);
+
+        sb.append(lower.charAt(autoRegisterRandom.nextInt(lower.length())));
+        sb.append(upper.charAt(autoRegisterRandom.nextInt(upper.length())));
+        sb.append(numbers.charAt(autoRegisterNumbers.length()));
+
+        for (int i = 3; i < 10; i++) {
+            int indiceCasuale = autoRegisterRandom.nextInt(allChars.length());
+            sb.append(allChars.charAt(indiceCasuale));
+        }
+        return sb.toString();
     }
 }

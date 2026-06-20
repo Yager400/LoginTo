@@ -1,4 +1,4 @@
-MessageVersion: "1.8" # DO NOT CHANGE THIS
+MessageVersion: "1.9" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Messages Config                                      #
@@ -38,6 +38,12 @@ register:
 
   # Sent when a player successfully registers their account
   register-success: "<green>Registration completed successfully! Have fun on the server."
+
+  # Sent when the plugin automatically register a player that is premium. Use %password% for replacing the random password
+  auto-register-premium: "<green>Auto registered with your premium account, your password is: <gold>%password%"
+
+  # Sent when the plugin automatically register a player that is from bedrock. Use %password% for replacing the random password
+  auto-register-bedrock: "<green>Auto registered with your bedrock account, your password is: <gold>%password%"
 
 
 login:

@@ -1,4 +1,4 @@
-ConfigVersion: "1.12" # DO NOT CHANGE THIS
+ConfigVersion: "1.13" # DO NOT CHANGE THIS
 # -------------------------------------------------------------------------------------------------- #
 #                                                                                                    #
 #                                       LoginTo Configuration                                        #
@@ -132,6 +132,11 @@ premium:
   # After X hours, the player's record will expire and the plugin will remove it.
   # The cache.db file can be deleted when the server is off
   cache-duration: 24
+
+  # When premium authentication is enabled, premium and Bedrock players typically must use /register during their first login.
+  # This feature automates that process by generating a random password, allowing them to bypass registration entirely.
+  auto-register: true
+
 
 logging:
   # This feature logs all players who join the server

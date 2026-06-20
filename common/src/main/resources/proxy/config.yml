@@ -101,6 +101,10 @@ premium:
   # Enables AutoLogin, /premium, and /cracked commands, and makes proxy commands unusable until the user is logged in.
   premium-features: true
 
+  # When premium authentication is enabled, premium and Bedrock players typically must use /register during their first login.
+  # This feature automates that process by generating a random password, allowing them to bypass registration entirely.
+  auto-register: true
+
 
 plugin-utility:
   # Check for new updates on startup and notify the console?

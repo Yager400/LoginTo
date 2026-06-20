@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package net.loginto.bungeecord.Events;
 
+import net.loginto.bungeecord.PlayerUtils.PasswordSecurity;
 import net.loginto.bungeecord.PlayerUtils.PlayerStatus;
 import net.loginto.bungeecord.Utils.Files.LoginToFiles;
 import net.loginto.common.Database.Database;
@@ -20,6 +21,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class ServerChoseEvent implements Listener {
@@ -51,31 +53,50 @@ public class ServerChoseEvent implements Listener {
             PlayerStatus.setPlayerAsNotLogged(event, server);
         }
 
-        switch (accState) {
-            case "premium":
-            case "bedrock":
-                managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), false);
-                break;
+        try {
+            switch (accState) {
+                case "premium":
+                case "bedrock":
+                    managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), false);
+                    break;
 
-            case "premium->noregistration":
-            case "bedrock->noregistration":
-                managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), true);
-                break;
+                case "premium->noregistration":
+                case "bedrock->noregistration":
+                    managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), true);
+                    break;
 
-            case "cracked":
-                managePlayersPrompt(event.getPlayer(), false, false, false);
-                break;
+                case "cracked":
+                    managePlayersPrompt(event.getPlayer(), false, false, false);
+                    break;
 
-            case "cracked->noregistration":
-                managePlayersPrompt(event.getPlayer(), false, false, true);
-                break;
+                case "cracked->noregistration":
+                    managePlayersPrompt(event.getPlayer(), false, false, true);
+                    break;
+            }
+
+            Sessions.removeBorrowedData(event.getPlayer().getUniqueId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            event.getPlayer().disconnect("Login Error");
         }
-
-        Sessions.removeBorrowedData(event.getPlayer().getUniqueId());
     }
 
-    protected void managePlayersPrompt(ProxiedPlayer player, boolean isPremium, boolean isBedrock, boolean firstTime) {
+    protected void managePlayersPrompt(ProxiedPlayer player, boolean isPremium, boolean isBedrock, boolean firstTime) throws Exception {
         if (firstTime) {
+
+            if ((isPremium || isBedrock) && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_AUTO_REGISTER.path())) {
+                String password = PasswordSecurity.generatePassword();
+                database.insertPlayer(player.getName(), password);
+                HashMap<String, String> placeholders = new HashMap<>();
+                placeholders.put("%password%", password);
+                if (isPremium) {
+                    player.sendMessage(LoginToFiles.Messages.getMessageLegacyComponent(MessageKeys.REGISTER_AUTO_REGISTER_PREMIUM.path(), placeholders));
+                } else {
+                    player.sendMessage(LoginToFiles.Messages.getMessageLegacyComponent(MessageKeys.REGISTER_AUTO_REGISTER_BEDROCK.path(), placeholders));
+                }
+                return;
+            }
+
             String watermark = (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_SHOW_WATERMARK.path())) ? " - Service offered by LoginTo on Modrinth" : "";
             if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRE_SPECIAL_CHARS.path())) {
                 player.sendMessage(LoginToFiles.Messages.getMessageLegacyComponent(MessageKeys.REGISTER_PROMPT_CHARACTERS.path(), watermark));

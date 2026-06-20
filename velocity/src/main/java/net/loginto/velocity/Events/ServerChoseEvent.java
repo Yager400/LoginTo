@@ -11,14 +11,19 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.loginto.common.Database.Database;
 import net.loginto.velocity.LoginTo;
+import net.loginto.velocity.PlayerUtils.PasswordSecurity;
 import net.loginto.velocity.PlayerUtils.PlayerStatus;
 import net.loginto.common.PlayerUtils.Sessions;
 import net.loginto.common.Utils.Files.ConfigKeys;
 import net.loginto.velocity.Utils.Files.LoginToFiles;
 import net.loginto.common.Utils.Files.MessageKeys;
 
+import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class ServerChoseEvent {
@@ -49,31 +54,50 @@ public class ServerChoseEvent {
             PlayerStatus.setPlayerAsNotLogged(event, server);
         }
 
-        switch (accState) {
-            case "premium":
-            case "bedrock":
-                managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), false);
-                break;
+        try {
+            switch (accState) {
+                case "premium":
+                case "bedrock":
+                    managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), false);
+                    break;
 
-            case "premium->noregistration":
-            case "bedrock->noregistration":
-                managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), true);
-                break;
+                case "premium->noregistration":
+                case "bedrock->noregistration":
+                    managePlayersPrompt(event.getPlayer(), accState.equals("premium"), accState.equals("bedrock"), true);
+                    break;
 
-            case "cracked":
-                managePlayersPrompt(event.getPlayer(), false, false, false);
-                break;
+                case "cracked":
+                    managePlayersPrompt(event.getPlayer(), false, false, false);
+                    break;
 
-            case "cracked->noregistration":
-                managePlayersPrompt(event.getPlayer(), false, false, true);
-                break;
+                case "cracked->noregistration":
+                    managePlayersPrompt(event.getPlayer(), false, false, true);
+                    break;
+            }
+            Sessions.removeBorrowedData(event.getPlayer().getUniqueId());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            event.getPlayer().disconnect(Component.text("Login error", NamedTextColor.RED));
         }
-
-        Sessions.removeBorrowedData(event.getPlayer().getUniqueId());
     }
 
-    protected void managePlayersPrompt(Player player, boolean isPremium, boolean isBedrock, boolean firstTime) {
+    protected void managePlayersPrompt(Player player, boolean isPremium, boolean isBedrock, boolean firstTime) throws Exception {
         if (firstTime) {
+
+            if ((isPremium || isBedrock) && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_AUTO_REGISTER.path())) {
+                String password = PasswordSecurity.generatePassword();
+                database.insertPlayer(player.getUsername(), password);
+                HashMap<String, String> placeholders = new HashMap<>();
+                placeholders.put("%password%", password);
+                if (isPremium) {
+                    player.sendMessage(LoginToFiles.Messages.getMessageComponent(MessageKeys.REGISTER_AUTO_REGISTER_PREMIUM.path(), placeholders));
+                } else {
+                    player.sendMessage(LoginToFiles.Messages.getMessageComponent(MessageKeys.REGISTER_AUTO_REGISTER_BEDROCK.path(), placeholders));
+                }
+                return;
+            }
+
             String watermark = (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_SHOW_WATERMARK.path())) ? " - Service offered by LoginTo on Modrinth" : "";
             if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_REQUIRE_SPECIAL_CHARS.path())) {
                 player.sendMessage(LoginToFiles.Messages.getMessageComponent(MessageKeys.REGISTER_PROMPT_CHARACTERS.path(), watermark));
@@ -81,6 +105,7 @@ public class ServerChoseEvent {
                 player.sendMessage(LoginToFiles.Messages.getMessageComponent(MessageKeys.REGISTER_PROMPT.path(), watermark));
             }
             startCountdown(player);
+
             return;
         }
 

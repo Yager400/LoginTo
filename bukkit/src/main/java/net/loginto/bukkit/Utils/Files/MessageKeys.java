@@ -20,6 +20,8 @@ public enum MessageKeys {
     REGISTER_PROMPT("register.register-prompt"),
     REGISTER_PROMPT_CHARACTERS("register.register-prompt-characters"),
     REGISTER_SUCCESS("register.register-success"),
+    REGISTER_AUTO_REGISTER_PREMIUM("register.auto-register-premium"),
+    REGISTER_AUTO_REGISTER_BEDROCK("register.auto-register-bedrock"),
 
     LOGIN_ERROR_NOT_REGISTERED("login.error.not-registered"),
     LOGIN_ERROR_ALREADY_LOGGED_IN("login.error.already-logged-in"),

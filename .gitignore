@@ -11,6 +11,8 @@ bin
 
 run
 
+backupRun
+
 .vscode
 .idea
 *.iml

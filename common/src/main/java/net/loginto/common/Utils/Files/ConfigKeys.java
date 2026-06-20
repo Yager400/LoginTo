@@ -44,6 +44,7 @@ public enum ConfigKeys {
     STORAGE_DATABASE_PASSWORD("storage.database.password"),
 
     PREMIUM_PREMIUM_FEATURES("premium.premium-features"),
+    PREMIUM_AUTO_REGISTER("premium.auto-register"),
 
     PLUGIN_UTILITY_ENABLE_UPDATE_CHECKER("plugin-utility.enable-update-checker"),
     PLUGIN_UTILITY_SHOW_WATERMARK("plugin-utility.show-watermark");

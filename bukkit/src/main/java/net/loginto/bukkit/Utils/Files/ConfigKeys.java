@@ -54,6 +54,7 @@ public enum ConfigKeys {
 
     PREMIUM_ENABLE_PREMIUM_FEATURES("premium.enable-premium-features"),
     PREMIUM_CACHE_DURATION(""),
+    PREMIUM_AUTO_REGISTER("premium.auto-register"),
 
     LOGGING_LOGGING("logging.logging"),
     LOGGING_DATE_FORMAT("logging.date-format"),

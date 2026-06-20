@@ -73,7 +73,7 @@ public class LoginTo {
             LoginToFiles.downloadRockYou(logger);
         }
 
-        String host = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_NAME.path());
+        String host = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_HOST.path());
         int port = LoginToFiles.Config.getInt(ConfigKeys.STORAGE_DATABASE_PORT.path());
         String username = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_USER.path());
         String password = LoginToFiles.Config.getString(ConfigKeys.STORAGE_DATABASE_PASSWORD.path());

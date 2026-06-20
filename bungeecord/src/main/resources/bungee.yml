@@ -1,5 +1,5 @@
 name: "LoginTo"
 main: "net.loginto.bungeecord.LoginTo"
-version: "3.7.0"
+version: "3.7.1"
 author: "Yager400"
 softDepends: ["luckperms"]

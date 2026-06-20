@@ -11,6 +11,8 @@ import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.LibraryManager;
 import net.loginto.bukkit.Utils.Dependencies.LibbyExtension.DependencyManager;
 import net.loginto.bukkit.Utils.Dependencies.LibbyExtension.Library;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -55,13 +57,16 @@ public class Libraries {
             libraries.add(new Library("com{}h2database:h2:2.4.240"));
             libraries.add(new Library("com{}google{}zxing:core:3.5.3"));
             libraries.add(new Library("com{}warrenstrange:googleauth:1.5.0"));
-            libraries.add(new Library("com.github.retrooper:packetevents-api:2.12.1", Library.Resository.CODEMC));
-            libraries.add(new Library("com.github.retrooper:packetevents-spigot:2.12.1", Library.Resository.CODEMC));
             libraries.add(new Library("net{}kyori:adventure-text-serializer-legacy:4.26.1"));
             libraries.add(new Library("net{}kyori:adventure-text-minimessage:4.26.1"));
             libraries.add(new Library("net{}kyori:adventure-platform-api:4.3.4"));
             libraries.add(new Library("net{}kyori:adventure-platform-bukkit:4.3.4"));
             libraries.add(new Library("net{}kyori:adventure-api:4.26.1"));
+
+            if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), plugin)) {
+                libraries.add(new Library("com.github.retrooper:packetevents-api:2.12.1", Library.Resository.CODEMC));
+                libraries.add(new Library("com.github.retrooper:packetevents-spigot:2.12.1", Library.Resository.CODEMC));
+            }
 
             plugin.getLogger().info("Library downloader started, this might take a while if you connection is slow");
 

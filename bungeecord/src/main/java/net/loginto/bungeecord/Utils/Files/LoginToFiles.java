@@ -91,7 +91,7 @@ public class LoginToFiles {
                 if (current == null) {
                     if (key.equals(ConfigKeys.CONFIG_VERSION.path())) return "1.11";
                     if (key.equals(MessageKeys.MESSAGE_VERSION.path())) return "1.7";
-                    
+
                     throw new RuntimeException("Key '" + key + "' not found in " + fileName);
                 }
             }

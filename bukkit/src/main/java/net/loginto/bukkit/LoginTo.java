@@ -81,13 +81,13 @@ public class LoginTo extends JavaPlugin {
         try {
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.12")
+                    .version("1.13")
                     .resource("config.yml")
                     .versionKey(ConfigKeys.CONFIG_VERSION.path())
                     .build();
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.8")
+                    .version("1.9")
                     .resource("messages.yml")
                     .versionKey(MessageKeys.MESSAGE_VERSION.path())
                     .build();
