@@ -127,7 +127,7 @@ public class PasswordSecurity {
 
         sb.append(lower.charAt(autoRegisterRandom.nextInt(lower.length())));
         sb.append(upper.charAt(autoRegisterRandom.nextInt(upper.length())));
-        sb.append(numbers.charAt(autoRegisterNumbers.length()));
+        sb.append(numbers.charAt(autoRegisterRandom.nextInt(numbers.length())));
 
         for (int i = 3; i < 10; i++) {
             int indiceCasuale = autoRegisterRandom.nextInt(allChars.length());

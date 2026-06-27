@@ -53,7 +53,7 @@ public enum ConfigKeys {
     STORAGE_DATABASE_PASSWORD("storage.database.password"),
 
     PREMIUM_ENABLE_PREMIUM_FEATURES("premium.enable-premium-features"),
-    PREMIUM_CACHE_DURATION(""),
+    PREMIUM_CACHE_DURATION("premium.cache-duration"),
     PREMIUM_AUTO_REGISTER("premium.auto-register"),
 
     LOGGING_LOGGING("logging.logging"),

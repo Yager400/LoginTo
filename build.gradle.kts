@@ -15,7 +15,7 @@ val spigotVersion = "1.13-R0.1-SNAPSHOT"
 val velocityVersion = "3.4.0-SNAPSHOT"
 val bungeeVersion = "1.20-R0.1"
 val hikariVersion = "4.0.3"
-val packetEventsVersion = "2.12.0"
+val packetEventsVersion = "2.13.0"
 val placeholderApiVersion = "2.12.2"
 val sqliteVersion = "3.51.0.0"
 val mysqlVersion = "8.2.0"
@@ -56,7 +56,7 @@ extra["mavenModelVersion"] = mavenModelVersion
 subprojects {
     apply(plugin = "java")
     group = "net.loginto"
-    version = "3.7.0"
+    version = "3.7.2"
     java {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -102,7 +102,7 @@ tasks {
 
     shadowJar {
         archiveBaseName.set("LoginTo")
-        archiveVersion.set("3.7.0")
+        archiveVersion.set("3.7.2")
         archiveClassifier.set("")
 
         relocate("net.byteflux.libby", "net.loginto.libs.libby")

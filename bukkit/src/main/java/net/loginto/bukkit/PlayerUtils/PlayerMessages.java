@@ -29,6 +29,9 @@ public class PlayerMessages {
 
     public static class player {
         public static void sendMessage(String path, Player player, Plugin plugin) {
+            if (player == null) {
+                return;
+            }
             User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
             if (user.getPacketVersion().isNewerThanOrEquals(ClientVersion.V_1_16)) {
                 LoginTo.getAdventure().player(player).sendMessage(LoginToFiles.Messages.getMessage(path, player, plugin, null));
@@ -37,6 +40,9 @@ public class PlayerMessages {
             }
         }
         public static void sendMessage(String path, Player player, Plugin plugin, Map<String, String> placeholders) {
+            if (player == null) {
+                return;
+            }
             User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
             if (user.getPacketVersion().isNewerThanOrEquals(ClientVersion.V_1_16)) {
                 LoginTo.getAdventure().player(player).sendMessage(LoginToFiles.Messages.getMessage(path, player, plugin, placeholders));
@@ -45,6 +51,9 @@ public class PlayerMessages {
             }
         }
         public static void kickPlayer(String path, Player player, Plugin plugin) {
+            if (player == null) {
+                return;
+            }
             player.kickPlayer(mmLegacySerialized(LoginToFiles.Messages.getMessage(path, player, plugin, null)));
         }
     }

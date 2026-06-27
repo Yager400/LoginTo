@@ -7,10 +7,7 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Events.Listener;
 
-import net.loginto.bukkit.PlayerUtils.PlayerMessages;
-import net.loginto.bukkit.PlayerUtils.PlayerStatus;
-import net.loginto.bukkit.PlayerUtils.Sessions;
-import net.loginto.bukkit.PlayerUtils.Tries;
+import net.loginto.bukkit.PlayerUtils.*;
 import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
@@ -26,6 +23,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,13 +62,21 @@ public class onJoinEvent implements Listener {
 
             //If the player is from floodgate
             if (authenticatedPlayer.isBedrock) {
-                bukkitPremiumAuthHandlers.handleBedrock(database, authenticatedPlayer, plugin, event, watermark);
+                try {
+                    bukkitPremiumAuthHandlers.handleBedrock(database, authenticatedPlayer, plugin, event, watermark);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return;
             }
 
             //If the player did the authentication via mojang (using the plugin's system)
             if (authenticatedPlayer.isPremium) {
-                bukkitPremiumAuthHandlers.handlePremium(database, authenticatedPlayer, plugin, event, watermark);
+                try {
+                    bukkitPremiumAuthHandlers.handlePremium(database, authenticatedPlayer, plugin, event, watermark);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return;
             }
 
@@ -92,12 +98,24 @@ public class onJoinEvent implements Listener {
     }
 
     private static class bukkitPremiumAuthHandlers {
-        private static void handleBedrock(Database database, AuthenticatedPlayer authenticatedPlayer, Plugin plugin, PlayerJoinEvent event, String watermark) {
+        private static void handleBedrock(Database database, AuthenticatedPlayer authenticatedPlayer, Plugin plugin, PlayerJoinEvent event, String watermark) throws Exception {
             org.geysermc.floodgate.api.player.FloodgatePlayer floodgatePlayer = org.geysermc.floodgate.api.FloodgateApi.getInstance().getPlayer(authenticatedPlayer.playerUUID);
 
             if (floodgatePlayer == null) {
                 PlayerMessages.player.kickPlayer(MessageKeys.ERRORS_LOGIN_FAIL_JAVA_PLAYER_MARKED_AS_BEDROCK.path(), event.getPlayer(), plugin);
                 return;
+            }
+
+            if (!database.isPlayerPresentInDB(event.getPlayer().getName())) {
+                if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_AUTO_REGISTER.path(), plugin)) {
+                    String password = PasswordSecurity.generatePassword();
+                    HashMap<String, String> placeholders = new HashMap<>();
+                    placeholders.put("%password%", password);
+                    database.insertPlayer(event.getPlayer().getName(), password);
+                    PlayerMessages.player.sendMessage(MessageKeys.REGISTER_AUTO_REGISTER_BEDROCK.path(), event.getPlayer(), plugin, placeholders);
+                    PlayerStatus.setPlayerAsLogged(event.getPlayer(), plugin, true, true);
+                    return;
+                }
             }
 
             if (JoinUtil.firstTimeUtils(database, event.getPlayer(), event, plugin, watermark)) {
@@ -109,13 +127,25 @@ public class onJoinEvent implements Listener {
 
         }
 
-        private static void handlePremium(Database database, AuthenticatedPlayer authenticatedPlayer, Plugin plugin, PlayerJoinEvent event, String watermark) {
+        private static void handlePremium(Database database, AuthenticatedPlayer authenticatedPlayer, Plugin plugin, PlayerJoinEvent event, String watermark) throws Exception {
 
             Player player = Bukkit.getPlayer(authenticatedPlayer.playerUUID);
 
             if (player == null) {
                 PlayerMessages.player.kickPlayer(MessageKeys.ERRORS_LOGIN_FAIL_ONLOGIN_WITH_DIFFERENT_UUID.path(), event.getPlayer(), plugin);
                 return;
+            }
+
+            if (!database.isPlayerPresentInDB(player.getName())) {
+                if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_AUTO_REGISTER.path(), plugin)) {
+                    String password = PasswordSecurity.generatePassword();
+                    HashMap<String, String> placeholders = new HashMap<>();
+                    placeholders.put("%password%", password);
+                    database.insertPlayer(player.getName(), password);
+                    PlayerMessages.player.sendMessage(MessageKeys.REGISTER_AUTO_REGISTER_PREMIUM.path(), player, plugin, placeholders);
+                    PlayerStatus.setPlayerAsLogged(player, plugin, true, true);
+                    return;
+                }
             }
 
             if (JoinUtil.firstTimeUtils(database, event.getPlayer(), event, plugin, watermark)) {

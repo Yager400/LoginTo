@@ -1,15 +1,11 @@
-### Version 3.7.1
+### Version 3.7.2
 
-Fixed a connectivity problem with MySQL on Velocity and Bungeecord
-
-___
-
-Fixed a small problem with the 'use-built-in-packetevents' feature
+Fixed auto register problem on bukkit, velocity and bungeecord
 
 ___
 
-Added auto registration for Premium and Bedrock players
+Added a warning log for the packetevents api
 
 ___
 
-Fixed file versioning on velocity and bungeecord (by xYc4t)
+Added support for bukkit 26.2

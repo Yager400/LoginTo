@@ -27,7 +27,7 @@ public class Libraries {
 
         DependencyManager dependencyManager = new DependencyManager(plugin);
 
-        dependencyManager.setDataFileVersion("1");
+        dependencyManager.setDataFileVersion("2");
 
         HashMap<String, String> relocations = new HashMap<>();
         relocations.put("com{}zaxxer{}hikari", "net{}loginto{}libs{}hikari");
@@ -64,8 +64,8 @@ public class Libraries {
             libraries.add(new Library("net{}kyori:adventure-api:4.26.1"));
 
             if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), plugin)) {
-                libraries.add(new Library("com.github.retrooper:packetevents-api:2.12.1", Library.Resository.CODEMC));
-                libraries.add(new Library("com.github.retrooper:packetevents-spigot:2.12.1", Library.Resository.CODEMC));
+                libraries.add(new Library("com.github.retrooper:packetevents-api:2.13.0", Library.Resository.CODEMC));
+                libraries.add(new Library("com.github.retrooper:packetevents-spigot:2.13.0", Library.Resository.CODEMC));
             }
 
             plugin.getLogger().info("Library downloader started, this might take a while if you connection is slow");

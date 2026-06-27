@@ -15,7 +15,7 @@ import net.loginto.bukkit.Events.Listener.*;
 import net.loginto.bukkit.Database.Database;
 import net.loginto.bukkit.Utils.Files.ConfigKeys;
 import net.loginto.bukkit.Utils.Files.LoginToFiles;
-import net.loginto.bukkit.Utils.Premium.PacketEventListener;
+import net.loginto.bukkit.Utils.Premium.AuthPacketEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -69,7 +69,7 @@ public class Listeners {
 
         if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PREMIUM_ENABLE_PREMIUM_FEATURES.path(), plugin) && bukkitPremiumAuthListener == null) {
             if (!Bukkit.getOnlineMode()) {
-                bukkitPremiumAuthListener = new PacketEventListener(plugin, database);
+                bukkitPremiumAuthListener = new AuthPacketEventListener(plugin, database);
                 events.registerListener(bukkitPremiumAuthListener, PacketListenerPriority.HIGHEST);
                 if (Bukkit.getPluginManager().getPlugin("floodgate") == null) {
                     plugin.getLogger().warning("Floodgate not detected, every bedrock player without a java account will get disconnected. To fix this, just install floodgate and geyser in your server (no special configuration needed).");

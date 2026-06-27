@@ -33,7 +33,7 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class PacketEventListener implements PacketListener {
+public class AuthPacketEventListener implements PacketListener {
 
     private final Map<User, loginUser> onLoginUsers = new HashMap<>();
 
@@ -41,7 +41,7 @@ public class PacketEventListener implements PacketListener {
     private final PremiumCache cacheDB;
     private final Database database;
 
-    public PacketEventListener(Plugin plugin, Database database) {
+    public AuthPacketEventListener(Plugin plugin, Database database) {
         this.plugin = plugin;
         this.database = database;
 

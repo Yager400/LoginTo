@@ -14,12 +14,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PasswordSecurity {
+
+    private static final String autoRegisterLower = "abcdefghijklmnopqrstuvwxyz";
+    private static final String autoRegisterUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String autoRegisterNumbers = "0123456789";
+    private static final SecureRandom autoRegisterRandom = new SecureRandom();
 
     public static boolean isCommon(String password, Plugin plugin, String playerName) {
         if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PASSWORD_REQUIREMENTS_BANNED_PASSWORD_USE_ROCKYOU.path(), plugin)) {
@@ -107,5 +113,24 @@ public class PasswordSecurity {
         }
 
         return true;
+    }
+
+    public static String generatePassword() {
+        String lower = autoRegisterLower;
+        String upper = autoRegisterUpper;
+        String numbers = autoRegisterNumbers;
+        String allChars = lower + upper + numbers;
+
+        StringBuilder sb = new StringBuilder(10);
+
+        sb.append(lower.charAt(autoRegisterRandom.nextInt(lower.length())));
+        sb.append(upper.charAt(autoRegisterRandom.nextInt(upper.length())));
+        sb.append(numbers.charAt(autoRegisterRandom.nextInt(numbers.length())));
+
+        for (int i = 3; i < 10; i++) {
+            int indiceCasuale = autoRegisterRandom.nextInt(allChars.length());
+            sb.append(allChars.charAt(indiceCasuale));
+        }
+        return sb.toString();
     }
 }

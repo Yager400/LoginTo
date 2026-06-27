@@ -8,13 +8,12 @@ See the LICENSE file for details.
 package net.loginto.bukkit.PlayerUtils;
 
 import org.bukkit.entity.Player;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 public class Sessions {
 
-    public static List<UUID> loggedPlayers = new ArrayList<>();
+    public static Set<UUID> loggedPlayers = new HashSet<>();
 
     public static boolean isPlayerLogged(Player player) {
         return loggedPlayers.contains(player.getUniqueId());

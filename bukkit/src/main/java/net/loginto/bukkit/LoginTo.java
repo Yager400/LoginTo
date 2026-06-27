@@ -42,6 +42,16 @@ public class LoginTo extends JavaPlugin {
         LoginToFiles.saveFiles(this);
         //-----
 
+        getLogger().warning("If you get class exceptions, go into the plugin's folder and delete the 'lib' folder");
+
+        if (getServer().getPluginManager().getPlugin("packetevents") != null && LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), this)) {
+            LoginToFiles.Config.setConfigValue(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), false, this);
+            getLogger().info("PacketEvents already detected in the server, the built-in api will not be loaded");
+        } else if (getServer().getPluginManager().getPlugin("packetevents") == null && !LoginToFiles.Config.isFeatureEnabled(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), this)) {
+            LoginToFiles.Config.setConfigValue(ConfigKeys.PLUGIN_UTILITY_USE_BUILT_IN_PACKETEVENTS_API.path(), true, this);
+            getLogger().severe("PacketEvents plugin not detected, the api will be automatically downloaded by the plugin");
+        }
+
         Libraries.loadLibs(this);
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
@@ -81,13 +91,13 @@ public class LoginTo extends JavaPlugin {
         try {
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.13")
+                    .version("1.12")
                     .resource("config.yml")
                     .versionKey(ConfigKeys.CONFIG_VERSION.path())
                     .build();
             YMLVersion.builder()
                     .plugin(this)
-                    .version("1.9")
+                    .version("1.8")
                     .resource("messages.yml")
                     .versionKey(MessageKeys.MESSAGE_VERSION.path())
                     .build();
