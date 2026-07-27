@@ -23,6 +23,7 @@ import net.md_5.bungee.event.EventHandler;
 import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -93,6 +94,21 @@ public class PreLogin implements Listener {
             event.setCancelReason(LoginToFiles.Messages.getMessageLegacyComponent(MessageKeys.ERRORS_LOGIN_FAIL_INVALID_USERNAME.path()));
             return;
         }
+
+        List<?> playerBypassList = LoginToFiles.Config.getList(ConfigKeys.PREMIUM_BYPASS_PREMIUM_CHECK_PLAYERS.path());
+        for (Object bypassPlayerName : playerBypassList) {
+            if (String.valueOf(bypassPlayerName).equals(username)) {
+                // User can bypass the premium authentication even if the name is premium (still requires /login <password>)
+                event.getConnection().setOnlineMode(false);
+                if (database.isPlayerPresentInDB(username)) {
+                    temporaryLoginState.put(username, "cracked");
+                } else {
+                    temporaryLoginState.put(username, "cracked->noregistration");
+                }
+                return;
+            }
+        }
+
 
         boolean isUsernamePremium = PremiumUtils.isUserNamePremium(username, sqliteCache);
 

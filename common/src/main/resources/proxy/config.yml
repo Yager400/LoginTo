@@ -105,6 +105,11 @@ premium:
   # This feature automates that process by generating a random password, allowing them to bypass registration entirely.
   auto-register: true
 
+  # A list of players name that will not get affected by the premium authentication security even if their name is premium
+  # Even if those player will still be able to access the server, they will still need to do /login <password> before playing
+  bypass-premium-check-for-players:
+    - "username"
+
 
 plugin-utility:
   # Check for new updates on startup and notify the console?

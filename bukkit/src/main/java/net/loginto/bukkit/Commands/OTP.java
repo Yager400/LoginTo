@@ -27,6 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -101,8 +103,8 @@ public class OTP implements CommandExecutor {
         WorldCreator creator = getWorldCreator(player, matrix);
 
         World world = creator.createWorld();
-        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+
+        setGameRules(world);
 
         world.getBlockAt(0, 59, 0).setType(Material.BARRIER);
 
@@ -158,4 +160,63 @@ public class OTP implements CommandExecutor {
         return creator;
     }
 
+
+    private void setGameRules(World world) {
+        Class<?> gameRulesClass;
+        try {
+            gameRulesClass = Class.forName("org.bukkit.GameRules");
+        } catch (Exception e) {
+            gameRulesClass = GameRule.class;
+        }
+
+        try {
+            Method setGameRuleMethod = World.class.getMethod("setGameRule", gameRulesClass, Object.class);
+
+            Field spawnMobsField = gameRulesClass.getDeclaredField("SPAWN_MOBS");
+            Object spawnMobsEnum = spawnMobsField.get(null);
+            setGameRuleMethod.invoke(world, spawnMobsEnum, false);
+
+            Field advanceTimeField = gameRulesClass.getDeclaredField("ADVANCE_TIME");
+            Object advanceTimeEnum = advanceTimeField.get(null);
+            setGameRuleMethod.invoke(world, advanceTimeEnum, false);
+        } catch (Exception e) {
+            // If the version is under 1.21.11
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        }
+    }
+    /*
+    try {
+            // Reflection for new gamemodes on papermc (the class is GameRules and not GameRule, aslo the gamerules identifiers got changed, so instad of DO_MOB_SPAWNING is SPAWN_MOBS)
+            Class<?> gameRulesClass = Class.forName("org.bukkit.GameRules");
+
+            Method setGameRuleMethod = World.class.getMethod("setGameRule", gameRulesClass, Object.class);
+
+            Field spawnMobsField = gameRulesClass.getDeclaredField("SPAWN_MOBS");
+            Object spawnMobsEnum = spawnMobsField.get(null);
+            setGameRuleMethod.invoke(world, spawnMobsEnum, false);
+
+            Field advanceTimeField = gameRulesClass.getDeclaredField("ADVANCE_TIME");
+            Object advanceTimeEnum = advanceTimeField.get(null);
+            setGameRuleMethod.invoke(world, advanceTimeEnum, false);
+        } catch (Exception e) {
+            try {
+                Class<?> gameRuleClass = GameRule.class;
+
+                Method setGameRuleMethod = World.class.getMethod("setGameRule", gameRuleClass, Object.class);
+
+                Field spawnMobsField = gameRuleClass.getDeclaredField("SPAWN_MOBS");
+                Object spawnMobsEnum = spawnMobsField.get(null);
+                setGameRuleMethod.invoke(world, spawnMobsEnum, false);
+
+                Field advanceTimeField = gameRuleClass.getDeclaredField("ADVANCE_TIME");
+                Object advanceTimeEnum = advanceTimeField.get(null);
+                setGameRuleMethod.invoke(world, advanceTimeEnum, false);
+            } catch (Exception ee) {
+                // If the version is under 1.21.11
+                world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+                world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            }
+        }
+     */
 }

@@ -55,6 +55,7 @@ public enum ConfigKeys {
     PREMIUM_ENABLE_PREMIUM_FEATURES("premium.enable-premium-features"),
     PREMIUM_CACHE_DURATION("premium.cache-duration"),
     PREMIUM_AUTO_REGISTER("premium.auto-register"),
+    PREMIUM_BYPASS_PREMIUM_CHECK_PLAYERS("premium.bypass-premium-check-for-players"),
 
     LOGGING_LOGGING("logging.logging"),
     LOGGING_DATE_FORMAT("logging.date-format"),

@@ -20,7 +20,6 @@ public class JsonManager {
     private JsonObject jsonObject;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-
     public JsonManager(File parentFolder, String filename) {
         this.file = new File(parentFolder, filename);
         if (!file.exists()) {
@@ -63,7 +62,6 @@ public class JsonManager {
             }
         }
     }
-
 
     public String getString(String path) {
         JsonElement element = getElement(path);
@@ -132,7 +130,6 @@ public class JsonManager {
             }
         }
     } */
-
 
     public void set(String path, Object value) {
         String[] parts = path.split("\\.");

@@ -5,6 +5,7 @@ plugins {
     java
     id("com.gradleup.shadow") version "9.4.1"
     id("xyz.jpenilla.run-paper") version "3.0.2"
+    `maven-publish`
 }
 
 val minecraftTestServerVersion = "26.1.2"
@@ -53,10 +54,15 @@ extra["floodgateVersion"] = floodgateVersion
 extra["bstatsVersion"] = bstatsVersion
 extra["mavenModelVersion"] = mavenModelVersion
 
+allprojects {
+    group = "net.loginto"
+    version = "3.8.0"
+}
+
 subprojects {
     apply(plugin = "java")
-    group = "net.loginto"
-    version = "3.7.2"
+    apply(plugin = "maven-publish")
+
     java {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
@@ -98,11 +104,10 @@ dependencies {
 
 tasks {
     jar { enabled = false }
-
-
+    
     shadowJar {
         archiveBaseName.set("LoginTo")
-        archiveVersion.set("3.7.2")
+        archiveVersion.set("3.8.0")
         archiveClassifier.set("")
 
         relocate("net.byteflux.libby", "net.loginto.libs.libby")

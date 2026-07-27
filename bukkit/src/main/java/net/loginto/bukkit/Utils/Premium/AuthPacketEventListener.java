@@ -21,6 +21,8 @@ import com.github.retrooper.packetevents.wrapper.login.client.WrapperLoginClient
 import com.github.retrooper.packetevents.wrapper.login.client.WrapperLoginClientLoginStart;
 import com.github.retrooper.packetevents.wrapper.login.server.WrapperLoginServerEncryptionRequest;
 import net.loginto.bukkit.Database.Database;
+import net.loginto.bukkit.Utils.Files.ConfigKeys;
+import net.loginto.bukkit.Utils.Files.LoginToFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -67,11 +69,28 @@ public class AuthPacketEventListener implements PacketListener {
                 }
 
             }
+
+
+            String pName = packetLoginStart.getUsername();
+            UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + pName).getBytes(StandardCharsets.UTF_8));
+
+            // Skip the player if their name is on the bypass check list
+            List<?> playerBypassList = LoginToFiles.Config.getList(ConfigKeys.PREMIUM_BYPASS_PREMIUM_CHECK_PLAYERS.path(), plugin);
+            for (Object bypassPlayerName : playerBypassList) {
+                if (String.valueOf(bypassPlayerName).equals(pName)) {
+                    // User can bypass the premium authentication even if the name is premium (still requires /login <password>)
+                    ProtocolUtils.authenticatedPlayer.put(offlineUUID, new AuthenticatedPlayer(
+                       offlineUUID,
+                       false,
+                       false
+                    ));
+                    return;
+                }
+            }
+
+
             event.setCancelled(true);
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-
-                String pName = packetLoginStart.getUsername();
-                UUID offlineUUID = UUID.nameUUIDFromBytes(("OfflinePlayer:" + pName).getBytes(StandardCharsets.UTF_8));
 
                 //Execute an http request to mojang servers for knowing if the players if premium or not, returns the response code code
                 int mojangNameApiResCode = ProtocolUtils.isUserNamePremium(pName, plugin, cacheDB);
@@ -136,6 +155,7 @@ public class AuthPacketEventListener implements PacketListener {
                 } catch (NoSuchAlgorithmException e) {
                     user.closeConnection();
                     onLoginUsers.remove(user);
+                    plugin.getLogger().severe("Error while authenticating the user!");
                     throw new RuntimeException(e);
                 }
             });
@@ -171,6 +191,7 @@ public class AuthPacketEventListener implements PacketListener {
             } catch (Exception e) {
                 user.closeConnection();
                 onLoginUsers.remove(user);
+                plugin.getLogger().severe("Error while verifying the encryption response");
                 throw new RuntimeException(e);
             }
 
@@ -218,6 +239,7 @@ public class AuthPacketEventListener implements PacketListener {
                 } catch (IOException e) {
                     user.closeConnection();
                     onLoginUsers.remove(user);
+                    plugin.getLogger().severe("Error while verifying the server hash with mojang");
                     throw new RuntimeException(e);
                 }
             });

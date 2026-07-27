@@ -47,7 +47,7 @@ public class Cracked implements CommandExecutor {
             return true;
         }
 
-        if (!player.hasPermission("loginto.cracked")) {
+        if (!player.hasPermission("loginto.cracked.me")) {
             PlayerMessages.player.sendMessage(MessageKeys.ERRORS_GENERAL_NO_PERMISSION.path(), player, plugin);
             return true;
         }

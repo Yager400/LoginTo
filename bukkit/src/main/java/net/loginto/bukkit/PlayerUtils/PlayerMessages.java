@@ -33,6 +33,9 @@ public class PlayerMessages {
                 return;
             }
             User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
+            if (user == null) {
+                return;
+            }
             if (user.getPacketVersion().isNewerThanOrEquals(ClientVersion.V_1_16)) {
                 LoginTo.getAdventure().player(player).sendMessage(LoginToFiles.Messages.getMessage(path, player, plugin, null));
             } else {

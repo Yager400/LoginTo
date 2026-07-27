@@ -45,6 +45,7 @@ public enum ConfigKeys {
 
     PREMIUM_PREMIUM_FEATURES("premium.premium-features"),
     PREMIUM_AUTO_REGISTER("premium.auto-register"),
+    PREMIUM_BYPASS_PREMIUM_CHECK_PLAYERS("premium.bypass-premium-check-for-players"),
 
     PLUGIN_UTILITY_ENABLE_UPDATE_CHECKER("plugin-utility.enable-update-checker"),
     PLUGIN_UTILITY_SHOW_WATERMARK("plugin-utility.show-watermark");

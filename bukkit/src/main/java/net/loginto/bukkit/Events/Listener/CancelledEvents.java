@@ -10,6 +10,7 @@ package net.loginto.bukkit.Events.Listener;
 import net.loginto.bukkit.PlayerUtils.PlayerMessages;
 import net.loginto.bukkit.PlayerUtils.Sessions;
 import net.loginto.bukkit.Utils.Files.MessageKeys;
+import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,7 +77,7 @@ public class CancelledEvents implements Listener {
     }
 
     @EventHandler
-    public void onIntentoryDrag(InventoryDragEvent event) {
+    public void onInventoryDrag(InventoryDragEvent event) {
         if (!Sessions.isPlayerLogged((Player) event.getWhoClicked())) {
             event.setCancelled(true);
         }
@@ -98,6 +99,14 @@ public class CancelledEvents implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+
+
+        if (from.getX() == to.getX() && from.getY() == to.getY() && from.getZ() == to.getZ()) {
+            return;
+        }
 
         if (event.getPlayer().getWorld().getName().contains("qrcode")) {
             event.setCancelled(true);

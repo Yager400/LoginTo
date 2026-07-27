@@ -21,6 +21,7 @@ import net.loginto.common.Utils.PremiumUtils;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.slf4j.Logger;
 
+import java.util.List;
 import java.util.UUID;
 
 public class PreLogin {
@@ -87,6 +88,22 @@ public class PreLogin {
             event.setResult(PreLoginEvent.PreLoginComponentResult.denied(LoginToFiles.Messages.getMessageComponent(MessageKeys.ERRORS_LOGIN_FAIL_INVALID_USERNAME.path())));
             return;
         }
+
+        List<?> playerBypassList = LoginToFiles.Config.getList(ConfigKeys.PREMIUM_BYPASS_PREMIUM_CHECK_PLAYERS.path());
+
+        for (Object bypassPlayerName : playerBypassList) {
+            if (String.valueOf(bypassPlayerName).equals(username)) {
+                // User can bypass the premium authentication even if the name is premium (still requires /login <password>)
+                event.setResult(PreLoginEvent.PreLoginComponentResult.forceOfflineMode());
+                if (database.isPlayerPresentInDB(username)) {
+                    Sessions.addBorrowData(uuid, "cracked");
+                } else {
+                    Sessions.addBorrowData(uuid, "cracked->noregistration");
+                }
+                return;
+            }
+        }
+
 
         boolean isUsernamePremium = PremiumUtils.isUserNamePremium(username, sqliteCache);
 
