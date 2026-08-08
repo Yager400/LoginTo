@@ -20,6 +20,7 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:${rootProject.extra["floodgateVersion"]}")
     implementation("org.bstats:bstats-bukkit:${rootProject.extra["bstatsVersion"]}")
     compileOnly("org.apache.maven:maven-model:${rootProject.extra["mavenModelVersion"]}")
+    compileOnly("org.codehaus.plexus:plexus-utils:3.5.1")
 }
 
 java {

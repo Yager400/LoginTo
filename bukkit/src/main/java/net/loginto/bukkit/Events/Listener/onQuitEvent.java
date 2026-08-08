@@ -41,7 +41,6 @@ public class onQuitEvent implements Listener {
 
         if (Sessions.isPlayerLogged(player)) {
             Sessions.removePlayer(player);
-            ;
         }
         Tries.resetTries(player);
 
@@ -53,15 +52,18 @@ public class onQuitEvent implements Listener {
 
             World qrWorld = Bukkit.getWorld(player.getName() + "-qrcode");
 
-            player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
+            // This will throw an exception since the player is not online while teleporting
+            // player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
 
-            if (qrWorld != null) {
-                Bukkit.unloadWorld(qrWorld, false);
-            }
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (qrWorld != null) {
+                    Bukkit.unloadWorld(qrWorld, false);
+                }
 
-            File worldFolder = new File(Bukkit.getWorldContainer(), player.getName() + "-qrcode");
+                File worldFolder = new File(Bukkit.getWorldContainer(), player.getName() + "-qrcode");
 
-            deleteFolder(worldFolder);
+                deleteFolder(worldFolder);
+            }, 20L);
         }
 
         if (LoginToFiles.Config.isFeatureEnabled(ConfigKeys.SPAWN_SETTINGS_TELEPORT_ON_JOIN.path(), plugin)) {

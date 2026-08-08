@@ -1,9 +1,10 @@
 name: LoginTo
-version: 3.8.0
+version: 3.8.1
 main: net.loginto.bukkit.LoginTo
 api-version: 1.13
 api: spigot
 authors: [ Yager400 ]
+load: STARTUP
 softdepend: [ PlaceholderAPI, PacketEvents, floodgate ]
 commands:
   register:

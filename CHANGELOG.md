@@ -1,20 +1,11 @@
-### Version 3.8.0
+### Version 3.8.1
 
-Fixed a permission problem with /cracked command
-
-___
-
-Added an option to let cracked accounts bypass the premium authentication even if their username is premium.<br>
-However they will still need to do **/login password** before playing into the server
+Fixed the dependency download problem on older version
 
 ___
 
-Optimized the player's movement event, not it will only block the player moving, not the camera moving
+Removed the error that pop-up when a player leaves in the qrcode world (this also caused the world not to be deleted automatically)
 
 ___
 
-Fixed the /otp command problem where, on newer version, it will show an error due to gamerules changes
-
-___
-
-Fixed an error popping out when the /unregister command was executed on yourself (this didn't cause the plugin not to work, but wan annoying to see that error in the logs)
+Fixed a problem related to the mysql driver on bungeecord and velocity

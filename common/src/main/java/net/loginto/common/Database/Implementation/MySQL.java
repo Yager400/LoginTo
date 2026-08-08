@@ -46,24 +46,30 @@ public class MySQL implements Database {
     }
 
     @Override
-    public void connect(String host, int port, String password, String username, String databaseName) {
+    public void connect(String host, int port, String username, String password, String databaseName) {
         try {
-            connectMySQL(host, port, password, username, databaseName);
+            connectMySQL(host, port, username, password, databaseName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    private void connectMySQL(String host, int port, String password, String user, String databaseName) throws Exception {
+    private void connectMySQL(String host, int port, String user, String password, String databaseName) throws Exception {
 
         String urlNoDB = "jdbc:mysql://" + host + ":" + port + "/";
         String url = urlNoDB + databaseName;
 
         try {
 
+            /*
             try (Connection tmp = DriverManager.getConnection(urlNoDB, user, password)) {
                 tmp.prepareStatement("create database if not exists `" + databaseName + "`").execute();
+            } */
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             HikariConfig cfg = new HikariConfig();
@@ -76,11 +82,11 @@ public class MySQL implements Database {
             cfg.addDataSourceProperty("cachePrepStmts", "true");
             cfg.addDataSourceProperty("prepStmtCacheSize", "250");
             cfg.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-            cfg.setDriverClassName("net.loginto.libs.mysql.cj.jdbc.Driver");
+            cfg.setDriverClassName("net.loginto.libs.mysql.jdbc.Driver");
 
             dataSource = new HikariDataSource(cfg);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }

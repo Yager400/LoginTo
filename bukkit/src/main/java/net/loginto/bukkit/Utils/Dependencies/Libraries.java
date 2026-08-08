@@ -37,6 +37,7 @@ public class Libraries {
         relocations.put("com{}google{}zxing", "net{}loginto{}libs{}zxing");
         relocations.put("com{}warrenstrange{}googleauth", "net{}loginto{}libs{}googleauth");
         relocations.put("net{}kyori", "net{}loginto{}libs{}kyori");
+        relocations.put("org{}apache", "net{}loginto{}libs{}apache");
         dependencyManager.addGlobalRelocation(relocations);
 
         //Skip big packages like io.netty (the server already includes them, and they are like 30+ MB)
@@ -57,6 +58,9 @@ public class Libraries {
             libraries.add(new Library("com{}h2database:h2:2.4.240"));
             libraries.add(new Library("com{}google{}zxing:core:3.5.3"));
             libraries.add(new Library("com{}warrenstrange:googleauth:1.5.0"));
+            libraries.add(new Library("commons-codec:commons-codec:1.14"));
+            libraries.add(new Library("org{}apache{}httpcomponents:httpcore:4.4.16"));
+            libraries.add(new Library("org{}apache{}httpcomponents:httpclient:4.5.12"));
             libraries.add(new Library("net{}kyori:adventure-text-serializer-legacy:4.26.1"));
             libraries.add(new Library("net{}kyori:adventure-text-minimessage:4.26.1"));
             libraries.add(new Library("net{}kyori:adventure-platform-api:4.3.4"));
@@ -86,6 +90,7 @@ public class Libraries {
                 .version("3.9.9")
                 .repository("https://repo1.maven.org/maven2/")
                 .relocate("org{}apache{}maven{}model", "net{}loginto{}libs{}maven{}model")
+                .relocate("org{}codehaus{}plexus{}util", "net{}loginto{}libs{}plexus{}util")
                 .build();
         libManager.loadLibrary(mavenModels);
 
@@ -95,6 +100,7 @@ public class Libraries {
                 .version("3.5.1")
                 .repository("https://repo1.maven.org/maven2/")
                 .relocate("org{}codehaus{}plexus{}util", "net{}loginto{}libs{}plexus{}util")
+                .relocate("org{}apache{}maven{}model", "net{}loginto{}libs{}maven{}model")
                 .build();
         libManager.loadLibrary(codeHaus);
     }

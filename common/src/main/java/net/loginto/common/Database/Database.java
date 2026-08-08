@@ -28,7 +28,7 @@ public interface Database {
 
     void close();
 
-    void connect(String host, int port, String password, String username, String databaseName);
+    void connect(String host, int port, String username, String password, String databaseName);
 
     boolean ping();
 

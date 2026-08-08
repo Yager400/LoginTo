@@ -47,7 +47,7 @@ public class SQLite implements Database {
     }
 
     @Override
-    public void connect(String host, int port, String password, String username, String databaseName) {
+    public void connect(String host, int port, String username, String password, String databaseName) {
         try {
             connectSQLite(databaseName);
         } catch (ClassNotFoundException e) {

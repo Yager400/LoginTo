@@ -7,7 +7,6 @@ See the LICENSE file for details.
  */
 package net.loginto.bukkit.Utils.Dependencies.LibbyExtension;
 
-import com.sun.jdi.InvalidTypeException;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.LibraryManager;
 import org.bukkit.configuration.ConfigurationSection;
@@ -98,7 +97,7 @@ public class DependencyManager {
         DependencyManager.dataFileVersion = version;
     }
 
-    public void downloadLibraries(List<Library> libraries) throws InvalidTypeException, IOException {
+    public void downloadLibraries(List<Library> libraries) throws Exception, IOException {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(librariesSavingFile);
         String dataVersion = config.getString("version");
 

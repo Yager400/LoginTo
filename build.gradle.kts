@@ -8,6 +8,8 @@ plugins {
     `maven-publish`
 }
 
+val LoginToVersion = "3.8.1"
+
 val minecraftTestServerVersion = "26.1.2"
 val minecraftTestServerJversion = 25
 
@@ -33,6 +35,7 @@ val floodgateVersion = "2.2.0-SNAPSHOT"
 val bstatsVersion = "3.1.0"
 val mavenModelVersion = "3.9.9"
 
+extra["LoginToVersion"] = LoginToVersion
 extra["spigotVersion"] = spigotVersion
 extra["velocityVersion"] = velocityVersion
 extra["bungeeVersion"] = bungeeVersion
@@ -56,7 +59,7 @@ extra["mavenModelVersion"] = mavenModelVersion
 
 allprojects {
     group = "net.loginto"
-    version = "3.8.0"
+    version = LoginToVersion
 }
 
 subprojects {
@@ -83,6 +86,14 @@ subprojects {
         implementation("net.byteflux:libby-velocity:${rootProject.extra["libbyVersion"]}")
         implementation("org.mindrot:jbcrypt:${rootProject.extra["bcryptVersion"]}")
     }
+
+    tasks.withType<ProcessResources>().configureEach {
+        val ver = project.version.toString()
+        inputs.property("version", ver)
+        filesMatching("**/*.*") {
+            expand("version" to ver)
+        }
+    }
 }
 
 repositories {
@@ -107,7 +118,7 @@ tasks {
     
     shadowJar {
         archiveBaseName.set("LoginTo")
-        archiveVersion.set("3.8.0")
+        archiveVersion.set(LoginToVersion)
         archiveClassifier.set("")
 
         relocate("net.byteflux.libby", "net.loginto.libs.libby")
@@ -121,10 +132,14 @@ tasks {
         relocate("com.warrenstrange.googleauth", "net.loginto.libs.googleauth")
         relocate("org.apache.maven.model", "net.loginto.libs.maven.model")
         relocate("org.codehaus.plexus.util", "net.loginto.libs.plexus.util")
+        relocate("org.apache", "net.loginto.libs.apache")
 
+        dependsOn(processResources)
     }
 
-    build { dependsOn(shadowJar) }
+    build {
+        dependsOn(shadowJar)
+    }
 
 }
 
