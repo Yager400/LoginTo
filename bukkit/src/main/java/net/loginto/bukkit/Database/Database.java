@@ -19,7 +19,11 @@ public class Database {
         this.plugin = plugin;
 
         //-----
-        String createTable = "create table if not exists LoginTo_Users(name text primary key not null, password text not null, secret text);";
+        // `name` is the primary key, so it must be a bounded string type on
+        // MySQL. MySQL 8.x does not allow TEXT/BLOB columns in a key unless a
+        // prefix length is specified. VARCHAR also remains portable across
+        // SQLite, PostgreSQL, and H2.
+        String createTable = "create table if not exists LoginTo_Users(name varchar(50) primary key not null, password text not null, secret text);";
         executePreparedQuery(createTable);
 
         if (!doesColumnExists("LoginTo_Users", "secret")) {
