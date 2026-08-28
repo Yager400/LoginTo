@@ -4,30 +4,26 @@ plugins {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:${rootProject.extra["spigotVersion"]}")
-    compileOnly("com.github.retrooper:packetevents-spigot:${rootProject.extra["packetEventsVersion"]}")
-    compileOnly("me.clip:placeholderapi:${rootProject.extra["placeholderApiVersion"]}")
-    compileOnly("com.zaxxer:HikariCP:${rootProject.extra["hikariVersion"]}")
-    compileOnly("net.kyori:adventure-text-serializer-legacy:${rootProject.extra["minimessageVersion"]}")
-    compileOnly("net.kyori:adventure-text-minimessage:${rootProject.extra["minimessageVersion"]}")
-    compileOnly("net.kyori:adventure-platform-bukkit:${rootProject.extra["bukkitPlatformAdventure"]}")
-    compileOnly("com.google.zxing:core:${rootProject.extra["zxingVersion"]}")
-    compileOnly("org.xerial:sqlite-jdbc:${rootProject.extra["sqliteVersion"]}")
-    compileOnly("com.mysql:mysql-connector-j:${rootProject.extra["mysqlVersion"]}")
-    compileOnly("org.postgresql:postgresql:${rootProject.extra["postgresVersion"]}")
-    compileOnly("com.h2database:h2:${rootProject.extra["h2Version"]}")
-    compileOnly("com.warrenstrange:googleauth:${rootProject.extra["googleauthVersion"]}")
-    compileOnly("org.geysermc.floodgate:api:${rootProject.extra["floodgateVersion"]}")
-    implementation("org.bstats:bstats-bukkit:${rootProject.extra["bstatsVersion"]}")
-    compileOnly("org.apache.maven:maven-model:${rootProject.extra["mavenModelVersion"]}")
-    compileOnly("org.codehaus.plexus:plexus-utils:3.5.1")
+    compileOnly(project(":common"))
+    compileOnly(project(":folia-lib"))
+    compileOnly("org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
+    compileOnly("me.clip:placeholderapi:2.12.2")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:4.26.1")
+    compileOnly("net.kyori:adventure-text-minimessage:4.26.1")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.4")
+    compileOnly("com.google.zxing:core:3.5.3")
+    compileOnly("com.warrenstrange:googleauth:1.5.0")
+    compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.1.0")
+    compileOnly("com.zaxxer:HikariCP:4.0.3")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.shadowJar {
-    relocate("net.kyori", "net.loginto.libs.kyori")
+    relocate("net.kyori", "com.github.yager400.loginto.libs.kyori")
 }

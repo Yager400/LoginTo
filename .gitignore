@@ -6,7 +6,10 @@ build
 
 bin
 
-run
+run-paper
+run-velocity
+run-waterfall
+run-folia
 
 backupRun
 
@@ -14,5 +17,4 @@ backupRun
 .idea
 *.iml
 
-oldMDCommandsMessages
 Idee

@@ -1,0 +1,10 @@
+# Insert here your discord webhooks url for sending data to
+ # your discord server when someone interact with the plugin.
+# For example when a user do /register or /login, a webhook
+ # will be sent.
+# Leave this empty for not enabling the feature
+discord-webhook-url: ""
+interactions:
+  register: true
+  login: true
+  unregister: true

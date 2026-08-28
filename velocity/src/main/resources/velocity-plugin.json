@@ -1,8 +1,8 @@
 {
   "id": "loginto",
   "name": "LoginTo",
-  "version": "3.8.1",
-  "main": "net.loginto.velocity.LoginTo",
+  "version": "${version}",
+  "main": "com.github.yager400.loginto.velocity.LoginTo",
   "authors": ["Yager400"],
   "dependencies": [
     {

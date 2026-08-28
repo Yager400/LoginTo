@@ -5,14 +5,12 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
-    compileOnly("com.velocitypowered:velocity-api:${rootProject.extra["velocityVersion"]}")
-    compileOnly("com.zaxxer:HikariCP:${rootProject.extra["hikariVersion"]}")
-    compileOnly("net.kyori:adventure-api:${rootProject.extra["adventureVersion"]}")
-    compileOnly("com.google.zxing:core:${rootProject.extra["zxingVersion"]}")
-    compileOnly("org.xerial:sqlite-jdbc:${rootProject.extra["sqliteVersion"]}")
-    compileOnly("com.mysql:mysql-connector-j:${rootProject.extra["mysqlVersion"]}")
-    compileOnly("org.postgresql:postgresql:${rootProject.extra["postgresVersion"]}")
-    compileOnly("com.h2database:h2:${rootProject.extra["h2Version"]}")
-    compileOnly("org.geysermc.floodgate:api:${rootProject.extra["floodgateVersion"]}")
+    compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    compileOnly("com.zaxxer:HikariCP:4.0.3")
+    compileOnly("net.kyori:adventure-api:4.26.1")
+    compileOnly("com.google.zxing:core:3.5.3")
+    compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
+    compileOnly("com.mysql:mysql-connector-j:8.2.0")
+    compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
     implementation("org.bstats:bstats-velocity:3.2.1")
 }

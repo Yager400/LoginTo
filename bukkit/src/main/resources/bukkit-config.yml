@@ -1,0 +1,83 @@
+config-version: "1"
+
+datastore:
+  # Database type, use one of this: SQLITE, MYSQL
+  database-type: "SQLITE"
+  host: ""
+  port: 0
+  database: ""
+  user: ""
+  password: ""
+
+settings:
+  password:
+    # Characters that are required in the password
+    required-character: ""
+    # Decline the registration if the player's password if too common
+    decline-on-common-password: true
+    # Specify the password length rules
+    password-length:
+      min: 8
+      max: 32
+    # Specify the maximum attempts for authenticating, if the player enters the password X times
+     # wrong, they will be kicked.
+    # If this is set to 0, this feature will be disabled
+    max-login-attempts: 3
+    # Amount of seconds the players will have for doing /register or /login before getting kicked
+    # If this is set to 0, this feature will be disabled
+    authentication-timeout: 0
+  sessions:
+    # If this is enabled, a cracked player won't need to
+     # do the login authentication if that player is from
+     # the same ip and the session is not invalid
+    enabled: true
+    # Session duration (in hours)
+    session-duration: 24
+  proxy:
+    # When enabled, LoginTo will delegate player authentication to the proxy.
+    # Instead of authenticating players locally, it checks the database to verify
+    # if the player was already logged in by the proxy. If not, movement is blocked.
+    # Both this server and the proxy must use the same MySQL database.
+    bridge-bukkit-proxy: false
+  premium:
+    # If this is enabled, any premium account would be able to
+     # join the server without doing /login or /register.
+    # If you are making a java and bedrock server and want this
+     # feature, make sure to install floodgate, otherwise every
+     # bedrock player without a java account will be kicked.
+    # If this setting is changed, a full server restart is required,
+     # not just a plugin reload
+    enabled: false
+    # Name's cache duration (in hours), if this is set to 0,
+     # everytime the same player joins the server, LoginTo will
+     # need to do 2 http request instead of 1 (this can slow down
+     # the authentication process)
+    cache-duration: 24
+    # If this is enabled, the plugin will generate a random password
+     # for premium and bedrock players
+    auto-register: true
+    # A list of player's name to skip during the premium authentication.
+    # Use this only if you or your friends don't have a premium account.
+    premium-bypass-list: []
+  spawn-setting:
+    # If this is enabled, the player will get teleported and those cords
+     # when they leave (the player will see the teleport on join)
+    enabled: false
+    # Change those cords so the players won't die after the registration
+    cords:
+      x: 0
+      y: 64
+      z: 0
+      world: "world"
+    # If this is enabled, after the login, the player will be teleported
+     # at the location where they left
+    restore-previous-location: true
+  # Check for an update every hour
+  check-for-updates: true
+  # If you want to support the plugin, consider leaving this on, this watermark
+   # will only appear once for every player
+  show-watermark: true
+  # If this is enabled, LoginTo will download a version of packetevents to use.
+  # If you are having problems with this, or you already have the packetevents
+   # plugin installed, turn this off
+  use-built-in-packetevents: true

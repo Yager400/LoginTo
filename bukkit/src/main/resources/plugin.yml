@@ -1,11 +1,12 @@
 name: LoginTo
-version: 3.8.1
-main: net.loginto.bukkit.LoginTo
-api-version: 1.13
+version: ${version}
+main: com.github.yager400.loginto.bukkit.LoginTo
+api-version: 1.18
 api: spigot
+folia-supported: true
 authors: [ Yager400 ]
 load: STARTUP
-softdepend: [ PlaceholderAPI, PacketEvents, floodgate ]
+softdepend: [ PlaceholderAPI, packetevents, floodgate ]
 commands:
   register:
     usage: /register <password> <confirm_password>
@@ -26,11 +27,11 @@ commands:
     usage: /premium [optional]<user>
     permission: loginto.premium.me
   cracked:
-    usage: /cracked
+    usage: /cracked [optional]<user>
     permission: loginto.cracked.me
-  getlogs:
-    usage: /getlogs <user> [optional]<dd/MM/yyyy>
-    permission: loginto.getlogs
+  loginto:
+    usage: /loginto help
+    permission: loginto.loginto
   otp:
     usage: /otp
     permission: loginto.otp
@@ -49,7 +50,9 @@ permissions:
     default: op
   loginto.cracked.me:
     default: true
-  loginto.getlogs:
+  loginto.cracked.other:
+    default: op
+  loginto.loginto:
     default: op
   loginto.otp:
     default: true

@@ -4,4 +4,4 @@ plugins {
 
 rootProject.name = "LoginTo"
 
-include("bukkit", "bungeecord", "velocity", "common")
+include("common", "folia-lib", "bukkit", "bungeecord", "velocity")
