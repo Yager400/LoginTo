@@ -145,11 +145,4 @@ public class CancelledEvents implements Listener {
             event.setCancelled(true);
         }
     }
-
-    @EventHandler
-    public void onPlayerWorldChange(PlayerChangedWorldEvent event) {
-        if (!Sessions.isPlayerLogged(event.getPlayer().getUniqueId())) {
-            FoliaLib.get().teleport(event.getPlayer(), event.getFrom().getSpawnLocation());
-        }
-    }
 }
