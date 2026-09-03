@@ -127,7 +127,8 @@ public class Messages {
     public static class sender {
         // Function for sending a message to a command sender (only used by commands since it's a CommandSender)
         public static void sendTextOrMessage(String message, CommandSender sender, HashMap<String, String> stringReplacement) {
-            if (sender instanceof Player player) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
                 Messages.player.sendText(message, player, stringReplacement);
             } else {
                 Messages.console.sendMessage(message, stringReplacement);

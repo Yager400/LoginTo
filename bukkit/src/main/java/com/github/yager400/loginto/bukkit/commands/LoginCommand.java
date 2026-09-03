@@ -30,10 +30,12 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             Messages.sender.sendTextOrMessage("<red>Not a player", sender, null);
             return true;
         }
+
+        Player player = (Player) sender;
 
         if (args.length != 1) {
             return false;

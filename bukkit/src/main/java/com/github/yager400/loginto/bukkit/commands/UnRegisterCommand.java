@@ -33,7 +33,8 @@ public class UnRegisterCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (sender instanceof Player player) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
             if (player.getName().equals(args[0])) {
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.UNREGISTER_CANNOTUNREGISTERYOURSELF), sender, null);
                 return true;
@@ -55,7 +56,8 @@ public class UnRegisterCommand implements CommandExecutor, TabCompleter {
 
         Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.UNREGISTER_ADMINUNREGISTERSUCCESS), sender, null);
 
-        if (sender instanceof Player player) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
             WebHooks.sendUnRegisterWebhook(player.getName(), player.getUniqueId(), target.getName(), target.getUniqueId());
         } else {
             WebHooks.sendUnRegisterWebhook("Console", new UUID(0L, 0L), target.getName(), target.getUniqueId());

@@ -34,13 +34,11 @@ public class LoginToCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            Messages.sender.sendTextOrMessage("""
-                    <gold>LoginTo admin command arguments
-                    -----
-                    <green>help <gold>Shows this message
-                    <green>reload <gold>Reload the plugin's file configurations
-                    -----
-                    """,
+            Messages.sender.sendTextOrMessage("<gold>LoginTo admin command arguments\n" +
+                    "-----\n" +
+                    "<green>help <gold>Shows this message\n" +
+                    "<green>reload <gold>Reload the plugin's file configurations\n" +
+                    "-----",
                     sender,
                     null
             );

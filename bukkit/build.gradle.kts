@@ -6,7 +6,7 @@ plugins {
 dependencies {
     compileOnly(project(":common"))
     compileOnly(project(":folia-lib"))
-    compileOnly("org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
     compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
     compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("net.kyori:adventure-text-serializer-legacy:4.26.1")
@@ -20,8 +20,8 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks.shadowJar {

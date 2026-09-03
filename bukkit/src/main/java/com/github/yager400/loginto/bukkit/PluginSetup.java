@@ -115,6 +115,8 @@ public class PluginSetup {
         libraries.add(new Library("net{}kyori:adventure-platform-api:4.3.4"));
         libraries.add(new Library("net{}kyori:adventure-platform-bukkit:4.3.4"));
         libraries.add(new Library("net{}kyori:adventure-api:4.26.1"));
+        libraries.add(new Library("org{}apache{}httpcomponents:httpclient:4.5.14"));
+        libraries.add(new Library("org{}apache{}httpcomponents:httpcore:4.4.16"));
 
         if (installPacketEvent) {
             libraries.add(new Library("com.github.retrooper:packetevents-api:2.13.0", Library.Resository.CODEMC));

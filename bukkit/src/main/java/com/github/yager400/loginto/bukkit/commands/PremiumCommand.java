@@ -53,10 +53,12 @@ public class PremiumCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             Messages.sender.sendTextOrMessage("<red>Not a player", sender, null);
             return true;
         }
+
+        Player player = (Player) sender;
 
         if (!warnedPlayers.contains(player)) {
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_PREMIUM_PREMIUMWARN), sender, null);

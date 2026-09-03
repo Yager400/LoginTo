@@ -52,10 +52,12 @@ public class CrackedCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             Messages.console.sendMessage("<red>Not a player", null);
             return true;
         }
+
+        Player player = (Player) sender;
 
         if (!warnedPlayers.contains(player)) {
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_CRACKED_CRACKEDWARN), sender, null);

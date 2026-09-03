@@ -57,7 +57,7 @@ public class OTPCodeMapUtils {
         ItemStack item = new ItemStack(Material.FILLED_MAP);
         MapMeta meta = (MapMeta) item.getItemMeta();
         assert meta != null;
-        meta.setMapView(map);
+        meta.setMapId(map.getId());
         item.setItemMeta(meta);
 
         FoliaLib.get().addItemToInventory(player, item);
