@@ -129,7 +129,7 @@ public class PluginSetup {
                     relocations,
                     new BukkitLibraryManager(plugin),
                     Paths.get(plugin.getDataFolder().getAbsolutePath(), "lib"),
-                    "4.0.0", // Change this only if a new library got added, updated or removed
+                    "4.0.1", // Change this only if a new library got added, updated or removed
                     groupsIdToExclude
             );
         } catch (Exception e) {
