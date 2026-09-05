@@ -8,14 +8,13 @@ It offers complete control over messages, along with a feature-rich configuratio
 LoginTo is simple to set up while still providing powerful features, including:
 - Premium authentication (auto-login)
 - Secure password hashing using BCrypt
-- Detailed login and registration logging
+- Full proxy support
 - Advanced configuration options
 
 It is built to help you keep your Minecraft server or network secure without sacrificing ease of use.
 
 ## **Updates**
-LoginTo is actively maintained and regularly updated with bug fixes and new features.  
-For version 3.x, updates will primarily focus on stability improvements and performance optimizations.
+LoginTo is actively maintained and regularly updated with bug fixes and new features.
 
 # Plugin
 
@@ -63,6 +62,10 @@ Bukkit
 
   <pre>/otp</pre>
   <p>Enable the OTP code command.</p>
+  <hr>
+
+  <pre>/loginto</pre>
+  <p>Enable the LoginTo admin command</p>
 
   </div>
 </details>
@@ -98,6 +101,10 @@ Velocity / Bungeecord
 
   <pre>/cracked</pre>
   <p>Sets your account as cracked (disables premium validation).</p>
+  <hr>
+
+  <pre>/loginto</pre>
+  <p>Enable the LoginTo admin command</p>
   <hr>
 
   </div>
@@ -148,6 +155,10 @@ Velocity / Bungeecord
       <pre>loginto.otp</pre>
       <p>Allows players to use the <code>/otp</code> command.<br>
       <strong>Default:</strong> Everyone</p>
+      <hr>
+      <pre>loginto.loginto</pre>
+      <p>Allows players to use the <code>/loginto</code> command.<br>
+      <strong>Default:</strong> OP</p>
   </details>
 
 <details style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer; margin-left: 10px">
@@ -178,20 +189,23 @@ Velocity / Bungeecord
       <p>Allows players to switch their account to cracked mode.<br>
       <strong>Default:</strong> Everyone</p>
       <hr>
+      <pre>loginto.loginto</pre>
+      <p>Allows players to use the <code>/loginto</code> command.<br>
+      <strong>Default:</strong> OP</p>
   </details>
 </details>
 
 
 ## **Images**
-  _Register command prompt_<br>
-  ![Register](https://cdn.modrinth.com/data/A5foNgax/images/cb2364a5cc1e7c8faa68e1591e4b9fad0211b9a5.png)<br>
-  _Login command prompt_<br>
-  
-  ![Login](https://cdn.modrinth.com/data/A5foNgax/images/2c7d60e5928a1b0d66ae08ac182135976ff143f7.png)<br>
-  
-  _100% fully customizable messages, from text to colors, also the plugin do **not** require a reload for applying this message, you will just need to save the file_<br>
-  
-  ![Message](https://cdn.modrinth.com/data/A5foNgax/images/33ff6f43640a172fca1d49ee2052cba2db08523f.png)<br>
+_Register command prompt_<br>
+![Register](https://cdn.modrinth.com/data/A5foNgax/images/cb2364a5cc1e7c8faa68e1591e4b9fad0211b9a5.png)<br>
+_Login command prompt_<br>
+
+![Login](https://cdn.modrinth.com/data/A5foNgax/images/2c7d60e5928a1b0d66ae08ac182135976ff143f7.png)<br>
+
+_100% fully customizable messages, from text to colors<br>
+
+![Message](https://cdn.modrinth.com/data/A5foNgax/images/33ff6f43640a172fca1d49ee2052cba2db08523f.png)<br>
 
 
 _Bstats from version 2.1_

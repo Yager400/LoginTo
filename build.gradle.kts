@@ -11,7 +11,7 @@ plugins {
 }
 
 // Add -SNAPSHOT at the end so the stable versions won't see this as an update
-val LoginToVersion = "4.0.1-SNAPSHOT"
+val LoginToVersion = "4.0.1"
 
 val javaVersion = JavaVersion.VERSION_17
 
