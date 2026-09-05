@@ -131,7 +131,12 @@ public class JoinEvent implements Listener {
             if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
                 JoinUtils.sendRegisterPrompt(player);
             } else {
-                Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINPROMPT), player, null);
+                FoliaLib.get().runTaskTimer(() -> {
+                    if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                        return;
+                    }
+                    Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINPROMPT), player, null);
+                }, 20, 80);
             }
         }
     }
@@ -146,13 +151,19 @@ public class JoinEvent implements Listener {
                     ? "<grey> - Service offered by LoginTo on Modrinth"
                     : "";
 
-            if (!LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).isEmpty()) {
-                HashMap<String, String> placeholders = new HashMap<>();
-                placeholders.put("%characters%", LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS));
-                Messages.player.sendText(message, player, placeholders);
-            } else {
-                Messages.player.sendText(message, player, null);
-            }
+            final String finalMessage = message;
+            FoliaLib.get().runTaskTimer(() -> {
+                if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                    return;
+                }
+                if (!LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).isEmpty()) {
+                    HashMap<String, String> placeholders = new HashMap<>();
+                    placeholders.put("%characters%", LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS));
+                    Messages.player.sendText(finalMessage, player, placeholders);
+                } else {
+                    Messages.player.sendText(finalMessage, player, null);
+                }
+            }, 20, 80);
         }
         public static void handleAutoRegistration(Player player, boolean isPremium, boolean isBedrock) {
             if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {

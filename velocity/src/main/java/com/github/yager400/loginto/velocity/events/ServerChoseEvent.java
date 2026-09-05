@@ -125,7 +125,12 @@ public class ServerChoseEvent {
             if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
                 JoinUtils.sendRegisterPrompt(player);
             } else {
-                Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINPROMPT), player, null, true);
+                LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
+                    if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                        return;
+                    }
+                    Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINPROMPT), player, null, false);
+                }).delay(1, TimeUnit.SECONDS).repeat(4, TimeUnit.SECONDS).schedule();
             }
         }
     }
@@ -140,13 +145,19 @@ public class ServerChoseEvent {
                     ? "<grey> - Service offered by LoginTo on Modrinth"
                     : "";
 
-            if (!LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).isEmpty()) {
-                HashMap<String, String> placeholders = new HashMap<>();
-                placeholders.put("%characters%", LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS));
-                Messages.player.sendText(message, player, placeholders, true);
-            } else {
-                Messages.player.sendText(message, player, null, true);
-            }
+            final String finalMessage = message;
+            LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
+                if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                    return;
+                }
+                if (!LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).isEmpty()) {
+                    HashMap<String, String> placeholders = new HashMap<>();
+                    placeholders.put("%characters%", LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS));
+                    Messages.player.sendText(finalMessage, player, placeholders, false);
+                } else {
+                    Messages.player.sendText(finalMessage, player, null, false);
+                }
+            }).delay(1, TimeUnit.SECONDS).repeat(4, TimeUnit.SECONDS).schedule();
         }
         public static void handleAutoRegistration(Player player, boolean isPremium, boolean isBedrock, PlayerChooseInitialServerEvent event) {
             if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
