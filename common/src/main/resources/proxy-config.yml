@@ -19,8 +19,8 @@ settings:
     password-length:
       min: 8
       max: 32
-      # Specify the maximum attempts for authenticating, if the player enters the password X times
-      # wrong, they will be kicked.
+    # Specify the maximum attempts for authenticating, if the player enters the password X times
+     # wrong, they will be kicked.
     # If this is set to 0, this feature will be disabled
     max-login-attempts: 3
     # Amount of seconds the players will have for doing /register or /login before getting kicked
@@ -28,8 +28,8 @@ settings:
     authentication-timeout: 0
   sessions:
     # If this is enabled, a cracked player won't need to
-    # do the login authentication if that player is from
-    # the same ip and the session is not invalid
+     # do the login authentication if that player is from
+     # the same ip and the session is not invalid
     enabled: true
     # Session duration (in hours)
     session-duration: 24
@@ -43,7 +43,7 @@ settings:
      # authentication has completed. (For this, create a new
      # server into your network) It's suggested to use a limbo
      # server for this.
-    # The pre and post login servers can be the same, but it's
+    # The pre- and post-login servers can be the same, but it's
      # better if there are 2 separated servers for the auth and
      # lobby
     server-teleport-on-pre-login: "auth"
@@ -52,26 +52,26 @@ settings:
     server-teleport-on-post-login: "lobby"
   premium:
     # If this is enabled, any premium account would be able to
-    # join the server without doing /login or /register.
+     # join the server without doing /login or /register.
     # If you are making a java and bedrock server and want this
-    # feature, make sure to install floodgate, otherwise every
-    # bedrock player without a java account will be kicked.
+     # feature, make sure to install floodgate, otherwise every
+     # bedrock player without a java account will be kicked.
     # If this setting is changed, a full server restart is required,
-    # not just a plugin reload
+     # not just a plugin reload
     enabled: false
-      # Name's cache duration (in hours), if this is set to 0,
+    # Name's cache duration (in hours), if this is set to 0,
       # everytime the same player joins the server, LoginTo will
       # need to do 2 http request instead of 1 (this can slow down
     # the authentication process)
     cache-duration: 24
-      # If this is enabled, the plugin will generate a random password
-    # for premium and bedrock players
+    # If this is enabled, the plugin will generate a random password
+     # for premium and bedrock players
     auto-register: true
     # A list of player's name to skip during the premium authentication.
     # Use this only if you or your friends don't have a premium account.
     premium-bypass-list: []
   # Check for an update every hour
   check-for-updates: true
-    # If you want to support the plugin, consider leaving this on, this watermark
-  # will only appear once for every player
+  # If you want to support the plugin, consider leaving this on, this watermark
+   # will only appear once for every player
   show-watermark: true

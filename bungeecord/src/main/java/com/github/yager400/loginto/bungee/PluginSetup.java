@@ -76,8 +76,8 @@ public class PluginSetup {
         FilesManager.downloadRockYou(Paths.get(plugin.getDataFolder().getAbsolutePath(), FilesManager.getPluginDataFolderName(), "rockyou.txt"));
 
         Map<String, Path> files = new HashMap<>();
-        files.put("bungee-config.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "config.yml"));
-        files.put("bungee-messages.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "messages.yml"));
+        files.put("proxy-config.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "config.yml"));
+        files.put("proxy-messages.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "messages.yml"));
         files.put("webhooks.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "webhooks.yml"));
 
         FilesManager.saveFiles(files, false);
@@ -172,13 +172,13 @@ public class PluginSetup {
             try {
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getInstance().getDataFolder(), "config.yml"),
-                        "bungee-config.yml",
+                        "proxy-config.yml",
                         "1",
                         ConfigKeys.CONFIGVERSION
                 );
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getInstance().getDataFolder(), "messages.yml"),
-                        "bungee-messages.yml",
+                        "proxy-messages.yml",
                         "1",
                         MessagesKeys.MESSAGESVERSION
                 );
