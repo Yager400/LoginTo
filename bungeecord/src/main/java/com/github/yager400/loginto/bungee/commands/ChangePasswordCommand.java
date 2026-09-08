@@ -11,6 +11,7 @@ import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -42,6 +43,12 @@ public class ChangePasswordCommand extends Command implements TabExecutor {
         String newPassword = args[0];
         String oldPassword = args[1];
 
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            return;
+        }
+
         LoginTo.getInstance().getProxy().getScheduler().runAsync(LoginTo.getInstance(), () -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(newPassword, characters)) {
@@ -61,16 +68,16 @@ public class ChangePasswordCommand extends Command implements TabExecutor {
                 return;
             }
 
-            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
-                return;
-            }
-
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
                 if (SecurityUtils.PasswordSecurity.isCommon(newPassword, LoginTo.getInstance().getDataFolder().toPath(), player.getName())) {
                     Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDISTOOSIMPLE), sender, null);
                     return;
                 }
+            }
+
+            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
+                return;
             }
 
             if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {

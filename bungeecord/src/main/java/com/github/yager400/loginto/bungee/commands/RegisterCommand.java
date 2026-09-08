@@ -12,6 +12,7 @@ import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
 import com.github.yager400.loginto.bungee.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import net.md_5.bungee.api.CommandSender;
@@ -49,6 +50,12 @@ public class RegisterCommand extends Command implements TabExecutor {
             return;
         }
 
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            return;
+        }
+
         LoginTo.getInstance().getProxy().getScheduler().runAsync(LoginTo.getInstance(), () -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(password, characters)) {
@@ -68,16 +75,16 @@ public class RegisterCommand extends Command implements TabExecutor {
                 return;
             }
 
-            if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
-                return;
-            }
-
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
                 if (SecurityUtils.PasswordSecurity.isCommon(password, LoginTo.getInstance().getDataFolder().toPath(), player.getName())) {
                     Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDISTOOSIMPLE), sender, null);
                     return;
                 }
+            }
+
+            if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+                return;
             }
 
             LoginTo.getDatabase().insertPlayer(player.getUniqueId(), password, "", false, false, false, player.getAddress().getAddress().getHostAddress());

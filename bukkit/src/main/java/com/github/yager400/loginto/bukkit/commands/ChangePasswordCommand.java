@@ -11,6 +11,7 @@ import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
@@ -50,6 +51,12 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            return true;
+        }
+
         FoliaLib.get().runTaskAsync(() -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(newPassword, characters)) {
@@ -69,16 +76,16 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
                 return;
             }
 
-            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
-                return;
-            }
-
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
                 if (SecurityUtils.PasswordSecurity.isCommon(newPassword, LoginTo.getInstance().getDataFolder().toPath(), player.getName())) {
                     Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDISTOOSIMPLE), sender, null);
                     return;
                 }
+            }
+
+            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
+                return;
             }
 
             try {

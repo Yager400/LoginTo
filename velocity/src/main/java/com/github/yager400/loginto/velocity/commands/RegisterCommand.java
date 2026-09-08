@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.velocity.LoginTo;
@@ -46,6 +47,12 @@ public class RegisterCommand implements SimpleCommand {
             return;
         }
 
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            return;
+        }
+
         LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(password, characters)) {
@@ -65,16 +72,16 @@ public class RegisterCommand implements SimpleCommand {
                 return;
             }
 
-            if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
-                return;
-            }
-
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
                 if (SecurityUtils.PasswordSecurity.isCommon(password, LoginTo.getDataDirectory(), player.getUsername())) {
                     Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDISTOOSIMPLE), sender, null);
                     return;
                 }
+            }
+
+            if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+                return;
             }
 
             LoginTo.getDatabase().insertPlayer(player.getUniqueId(), password, "", false, false, false, player.getRemoteAddress().getAddress().getHostAddress());

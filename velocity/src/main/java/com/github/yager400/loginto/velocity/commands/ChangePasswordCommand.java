@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.velocity.LoginTo;
 import com.github.yager400.loginto.velocity.fileskeys.ConfigKeys;
@@ -39,6 +40,12 @@ public class ChangePasswordCommand implements SimpleCommand {
         String newPassword = args[0];
         String oldPassword = args[1];
 
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            return;
+        }
+
         LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(newPassword, characters)) {
@@ -58,16 +65,16 @@ public class ChangePasswordCommand implements SimpleCommand {
                 return;
             }
 
-            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
-                return;
-            }
-
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
                 if (SecurityUtils.PasswordSecurity.isCommon(newPassword, LoginTo.getDataDirectory(), player.getUsername())) {
                     Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDISTOOSIMPLE), sender, null);
                     return;
                 }
+            }
+
+            if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOTREGISTERED), sender, null);
+                return;
             }
 
             if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
