@@ -96,49 +96,6 @@ public class PluginSetup {
 
         plugin.getLogger().warning("If you get any exception due to a missing, broken or wrong library, delete the folder /lib into the LoginTo folder.");
 
-        /*
-        HashMap<String, String> relocations = new HashMap<>();
-        relocations.put("com{}google{}zxing", "com{}github{}yager400{}loginto{}libs{}zxing");
-        relocations.put("com{}warrenstrange{}googleauth", "com{}github{}yager400{}loginto{}libs{}googleauth");
-        relocations.put("net{}kyori", "com{}github{}yager400{}loginto{}libs{}kyori");
-
-        List<String> groupsIdToExclude = new ArrayList<>();
-        groupsIdToExclude.add("io.netty");
-        groupsIdToExclude.add("io.projectreactor");
-        groupsIdToExclude.add("commons-logging");
-        groupsIdToExclude.add("avalon-framework");
-        groupsIdToExclude.add("org.checkerframework");
-
-        List<Library> libraries = new ArrayList<>();
-        libraries.add(new Library("com{}google{}zxing:core:3.5.3"));
-        libraries.add(new Library("com{}warrenstrange:googleauth:1.5.0"));
-        libraries.add(new Library("net{}kyori:adventure-text-serializer-legacy:4.26.1"));
-        libraries.add(new Library("net{}kyori:adventure-text-minimessage:4.26.1"));
-        libraries.add(new Library("net{}kyori:adventure-platform-api:4.3.4"));
-        libraries.add(new Library("net{}kyori:adventure-platform-bukkit:4.3.4"));
-        libraries.add(new Library("net{}kyori:adventure-api:4.26.1"));
-        libraries.add(new Library("org{}apache{}httpcomponents:httpclient:4.5.14"));
-        libraries.add(new Library("org{}apache{}httpcomponents:httpcore:4.4.16"));
-
-        if (installPacketEvent) {
-            libraries.add(new Library("com.github.retrooper:packetevents-api:2.13.0", Library.Resository.CODEMC));
-            libraries.add(new Library("com.github.retrooper:packetevents-spigot:2.13.0", Library.Resository.CODEMC));
-        }
-
-        try {
-            LibraryDownloader.downloadLibraries(
-                    libraries,
-                    relocations,
-                    new BukkitLibraryManager(plugin),
-                    Paths.get(plugin.getDataFolder().getAbsolutePath(), "lib"),
-                    "4.0.1", // Change this only if a new library got added, updated or removed
-                    groupsIdToExclude
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-         */
-
         LibraryManager manager = new BukkitLibraryManager(plugin);
 
         CommonLibraries.downloadLibraries(manager);

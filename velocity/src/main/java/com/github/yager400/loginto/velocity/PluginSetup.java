@@ -86,25 +86,6 @@ public class PluginSetup {
 
         LoginTo.getLogger().warn("If you get any exception due to a missing, broken or wrong library, delete the folder /lib into the LoginTo folder.");
 
-        /*
-        // Here in velocity we don't need any external api, so we run this only for downloading the necessary common api
-        HashMap<String, String> relocations = new HashMap<>();
-        List<String> groupsIdToExclude = new ArrayList<>();
-        List<Library> libraries = new ArrayList<>();
-        try {
-            LibraryDownloader.downloadLibraries(
-                    libraries,
-                    relocations,
-                    manager,
-                    Paths.get(LoginTo.getDataDirectory().toFile().getAbsolutePath(), "lib"),
-                    "4.0.0", // Change this only if a new library got added, updated or removed
-                    groupsIdToExclude
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-         */
-
         CommonLibraries.downloadLibraries(manager);
 
     }
