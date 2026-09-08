@@ -10,10 +10,8 @@ package com.github.yager400.loginto.common.utils;
 import com.github.yager400.loginto.common.data.files.FilesManager;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -21,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 public class SecurityUtils {
 
@@ -41,19 +40,18 @@ public class SecurityUtils {
 
         public static boolean isCommon(String password, Path dataSourcePath, String playerName) {
 
-            Path rockYouPath = Paths.get(dataSourcePath.toFile().getAbsolutePath(), FilesManager.getPluginDataFolderName(), "rockyou.txt");
-            FilesManager.downloadRockYou(rockYouPath);
-            File txtFile = rockYouPath.toFile();
+            FilesManager.downloadRockYou(dataSourcePath);
+            File txtFile = Paths.get(dataSourcePath.toFile().getAbsolutePath(), FilesManager.getPluginDataFolderName(), "rockyou.txt.gz").toFile();
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(txtFile))) {
+            try (GZIPInputStream gzipIn = new GZIPInputStream(new FileInputStream(txtFile));
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(gzipIn, StandardCharsets.UTF_8))) {
+
                 String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.equals(password)) {
                         return true;
                     }
                 }
-
-                return false;
             } catch (IOException e) {
                 e.printStackTrace();
             }

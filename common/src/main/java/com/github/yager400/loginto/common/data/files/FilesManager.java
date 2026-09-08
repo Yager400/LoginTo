@@ -53,22 +53,23 @@ public class FilesManager {
         });
     }
 
-    public static void downloadRockYou(Path fileDestination) {
+    public static void downloadRockYou(Path pluginDataFolder) {
         CompletableFuture.runAsync(() -> {
 
+            Path fileDestination = Paths.get(pluginDataFolder.toFile().getAbsolutePath(), FilesManager.getPluginDataFolderName(), "rockyou.txt.gz");
             URI rockyouURL = URI.create("https://weakpass.com/download/90/rockyou.txt.gz");
-            File txtFile = fileDestination.toFile();
+            File file = fileDestination.toFile();
 
-            if (txtFile.exists()) {
+            if (file.exists()) {
                 return;
             }
 
-            try (GZIPInputStream gzipIn = new GZIPInputStream(rockyouURL.toURL().openStream());
-                 FileOutputStream fileOut = new FileOutputStream(txtFile)) {
+            try (InputStream in = rockyouURL.toURL().openStream();
+                 FileOutputStream fileOut = new FileOutputStream(file)) {
 
                 byte[] buffer = new byte[8192];
                 int bytesRead;
-                while ((bytesRead = gzipIn.read(buffer)) != -1) {
+                while ((bytesRead = in.read(buffer)) != -1) {
                     fileOut.write(buffer, 0, bytesRead);
                 }
             } catch (IOException e) {

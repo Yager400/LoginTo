@@ -72,7 +72,7 @@ public class PluginSetup {
         Plugin plugin = LoginTo.getInstance();
 
         FilesManager.makePluginDataFolder(plugin.getDataFolder().toPath());
-        FilesManager.downloadRockYou(Paths.get(plugin.getDataFolder().getAbsolutePath(), FilesManager.getPluginDataFolderName(), "rockyou.txt"));
+        FilesManager.downloadRockYou(plugin.getDataFolder().toPath());
 
         Map<String, Path> files = new HashMap<>();
         files.put("proxy-config.yml", Paths.get(plugin.getDataFolder().getAbsolutePath(), "config.yml"));
