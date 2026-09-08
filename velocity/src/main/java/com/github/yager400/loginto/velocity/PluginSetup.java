@@ -10,8 +10,7 @@ package com.github.yager400.loginto.velocity;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.database.connectors.MySQLConnector;
 import com.github.yager400.loginto.common.data.database.connectors.SQLiteConnector;
-import com.github.yager400.loginto.common.data.dependencies.LibraryDownloader;
-import com.github.yager400.loginto.common.data.dependencies.libbyextension.Library;
+import com.github.yager400.loginto.common.data.dependencies.CommonLibraries;
 import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.utils.Updates;
@@ -87,6 +86,7 @@ public class PluginSetup {
 
         LoginTo.getLogger().warn("If you get any exception due to a missing, broken or wrong library, delete the folder /lib into the LoginTo folder.");
 
+        /*
         // Here in velocity we don't need any external api, so we run this only for downloading the necessary common api
         HashMap<String, String> relocations = new HashMap<>();
         List<String> groupsIdToExclude = new ArrayList<>();
@@ -103,6 +103,9 @@ public class PluginSetup {
         } catch (Exception e) {
             e.printStackTrace();
         }
+         */
+
+        CommonLibraries.downloadLibraries(manager);
 
     }
 

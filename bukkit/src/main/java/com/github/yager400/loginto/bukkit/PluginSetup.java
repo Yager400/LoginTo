@@ -18,14 +18,15 @@ import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.database.connectors.MySQLConnector;
 import com.github.yager400.loginto.common.data.database.connectors.SQLiteConnector;
-import com.github.yager400.loginto.common.data.dependencies.LibraryDownloader;
-import com.github.yager400.loginto.common.data.dependencies.libbyextension.Library;
+import com.github.yager400.loginto.common.data.dependencies.CommonLibraries;
 import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.utils.Updates;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
 import net.byteflux.libby.BukkitLibraryManager;
+import net.byteflux.libby.Library;
+import net.byteflux.libby.LibraryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -95,6 +96,7 @@ public class PluginSetup {
 
         plugin.getLogger().warning("If you get any exception due to a missing, broken or wrong library, delete the folder /lib into the LoginTo folder.");
 
+        /*
         HashMap<String, String> relocations = new HashMap<>();
         relocations.put("com{}google{}zxing", "com{}github{}yager400{}loginto{}libs{}zxing");
         relocations.put("com{}warrenstrange{}googleauth", "com{}github{}yager400{}loginto{}libs{}googleauth");
@@ -135,7 +137,46 @@ public class PluginSetup {
         } catch (Exception e) {
             e.printStackTrace();
         }
+         */
 
+        LibraryManager manager = new BukkitLibraryManager(plugin);
+
+        CommonLibraries.downloadLibraries(manager);
+
+        if (installPacketEvent) {
+            PluginSetup.downloadPELibs(manager);
+        }
+
+    }
+
+    private static void downloadPELibs(LibraryManager manager) {
+        String version = "2.13.0";
+        Library packeteventsAPI = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-api")
+                .version(version)
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "com{}github{}yager400{}loginto{}libs{}kyori")
+                .build();
+        manager.loadLibrary(packeteventsAPI);
+
+        Library packetEventsNettyCommon = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-netty-common")
+                .version(version)
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "com{}github{}yager400{}loginto{}libs{}kyori")
+                .build();
+        manager.loadLibrary(packetEventsNettyCommon);
+
+        Library packetevents = Library.builder()
+                .groupId("com.github.retrooper")
+                .artifactId("packetevents-spigot")
+                .version(version)
+                .repository("https://repo.codemc.io/repository/maven-releases/")
+                .relocate("net{}kyori", "com{}github{}yager400{}loginto{}libs{}kyori")
+                .build();
+        manager.loadLibrary(packetevents);
     }
 
     public static class PluginEventAndCommand {

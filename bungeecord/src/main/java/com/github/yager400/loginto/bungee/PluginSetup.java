@@ -14,8 +14,7 @@ import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.database.connectors.MySQLConnector;
 import com.github.yager400.loginto.common.data.database.connectors.SQLiteConnector;
-import com.github.yager400.loginto.common.data.dependencies.LibraryDownloader;
-import com.github.yager400.loginto.common.data.dependencies.libbyextension.Library;
+import com.github.yager400.loginto.common.data.dependencies.CommonLibraries;
 import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.utils.Updates;
@@ -89,6 +88,7 @@ public class PluginSetup {
 
         plugin.getLogger().warning("If you get any exception due to a missing, broken or wrong library, delete the folder /lib into the LoginTo folder.");
 
+        /*
         HashMap<String, String> relocations = new HashMap<>();
         relocations.put("net{}kyori", "com{}github{}yager400{}loginto{}libs{}kyori");
 
@@ -118,6 +118,9 @@ public class PluginSetup {
         } catch (Exception e) {
             e.printStackTrace();
         }
+         */
+
+        CommonLibraries.downloadLibraries(new BungeeLibraryManager(plugin));
 
     }
 

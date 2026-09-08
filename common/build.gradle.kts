@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly("com.zaxxer:HikariCP:4.0.3")
+    implementation("com.zaxxer:HikariCP:4.0.3")
     compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     compileOnly("com.mysql:mysql-connector-j:8.2.0")
     compileOnly("org.yaml:snakeyaml:2.2")
@@ -18,5 +18,5 @@ java {
 }
 
 tasks.shadowJar {
-    relocate("org.yaml", "com.github.yager400.loginto.libs.yaml")
+
 }

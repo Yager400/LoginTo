@@ -104,7 +104,11 @@ public class LoginTo extends JavaPlugin {
     public void onDisable() {
         database.close();
         PremiumCache.closeIfOpen();
-        PacketEvents.getAPI().terminate();
+        try {
+            PacketEvents.getAPI().terminate();
+        } catch (Throwable t) {
+            this.getPluginLoader().disablePlugin(this);
+        }
     }
 
     public static Plugin getInstance() {

@@ -11,7 +11,7 @@ plugins {
 }
 
 // Add -SNAPSHOT at the end so the stable versions won't see this as an update
-val LoginToVersion = "4.0.1"
+val LoginToVersion = "4.0.2-SNAPSHOT"
 
 val javaVersion = JavaVersion.VERSION_17
 
@@ -94,14 +94,13 @@ tasks {
         relocate("org.bstats", "com.github.yager400.loginto.libs.bstats")
         relocate("com.zaxxer.hikari", "com.github.yager400.loginto.libs.hikari")
         relocate("com.mysql", "com.github.yager400.loginto.libs.mysql")
-        relocate("org.postgresql", "com.github.yager400.loginto.libs.postgresql")
-        relocate("org.h2", "com.github.yager400.loginto.libs.h2")
         relocate("com.google.zxing", "com.github.yager400.loginto.libs.zxing")
         relocate("com.warrenstrange.googleauth", "com.github.yager400.loginto.libs.googleauth")
         relocate("org.apache.maven.model", "com.github.yager400.loginto.libs.maven.model")
         relocate("org.codehaus.plexus.util", "com.github.yager400.loginto.libs.plexus.util")
         relocate("org.apache", "com.github.yager400.loginto.libs.apache")
-        relocate("org.yaml.snakeyaml", "com.github.yager400.loginto.libs.yaml")
+        exclude("org/slf4j/**")
+        exclude("mozilla/**")
 
         dependsOn(processResources)
     }
