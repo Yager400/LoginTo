@@ -21,8 +21,6 @@ public class DisconnectEvent implements Listener {
 
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent event) {
-        PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
-
         ProxiedPlayer player = event.getPlayer();
 
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
@@ -34,6 +32,8 @@ public class DisconnectEvent implements Listener {
                 );
             }
         }
+
+        PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
     }
 
 }

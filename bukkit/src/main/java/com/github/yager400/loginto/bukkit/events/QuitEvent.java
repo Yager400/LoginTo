@@ -43,8 +43,6 @@ public class QuitEvent implements Listener {
             );
         }
 
-        PlayerStatus.setPlayerAsNotLogged(player);
-
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
             if (Sessions.isPlayerLogged(player.getUniqueId())) {
                 LoginTo.getDatabase().updateSession(
@@ -54,6 +52,8 @@ public class QuitEvent implements Listener {
                 );
             }
         }
+
+        PlayerStatus.setPlayerAsNotLogged(player);
     }
 
 }

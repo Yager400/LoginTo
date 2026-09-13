@@ -19,8 +19,6 @@ public class DisconnectEvent {
 
     @Subscribe
     public void onDisconnect(com.velocitypowered.api.event.connection.DisconnectEvent event) {
-        PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
-
         Player player = event.getPlayer();
 
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
@@ -32,6 +30,8 @@ public class DisconnectEvent {
                 );
             }
         }
+
+        PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
     }
 
 }
