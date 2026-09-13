@@ -10,6 +10,7 @@ package com.github.yager400.loginto.bukkit.events;
 import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,7 +28,6 @@ public class QuitEvent implements Listener {
     public void onQuit(PlayerQuitEvent event) {
 
         Player player = event.getPlayer();
-        UUID playerUUID = player.getUniqueId();
 
         // Save the last player's location
         // Save it only there, otherwise it will be overridden by the onJoin listener
@@ -46,11 +46,13 @@ public class QuitEvent implements Listener {
         PlayerStatus.setPlayerAsNotLogged(player);
 
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
-            LoginTo.getDatabase().updateSession(
-                    playerUUID,
-                    event.getPlayer().getAddress().getAddress().getHostAddress(),
-                    LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
-            );
+            if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                LoginTo.getDatabase().updateSession(
+                        player.getUniqueId(),
+                        event.getPlayer().getAddress().getAddress().getHostAddress(),
+                        LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
+                );
+            }
         }
     }
 

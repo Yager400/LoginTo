@@ -7,3 +7,5 @@ ___
 fix: fixed register spam
 ___
 feat: added a small comment on the sessions configuration
+___
+fix: fixed a problem while updating the sessions

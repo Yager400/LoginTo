@@ -8,6 +8,7 @@ See the LICENSE file for details.
 package com.github.yager400.loginto.velocity.events;
 
 
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.velocity.LoginTo;
 import com.github.yager400.loginto.velocity.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.velocity.playerutils.PlayerStatus;
@@ -23,11 +24,13 @@ public class DisconnectEvent {
         Player player = event.getPlayer();
 
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
-            LoginTo.getDatabase().updateSession(
-                    player.getUniqueId(),
-                    player.getRemoteAddress().getAddress().getHostAddress(),
-                    LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
-            );
+            if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                LoginTo.getDatabase().updateSession(
+                        player.getUniqueId(),
+                        player.getRemoteAddress().getAddress().getHostAddress(),
+                        LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
+                );
+            }
         }
     }
 

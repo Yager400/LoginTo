@@ -10,6 +10,7 @@ package com.github.yager400.loginto.bungee.events;
 import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.players.Sessions;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -25,19 +26,14 @@ public class DisconnectEvent implements Listener {
         ProxiedPlayer player = event.getPlayer();
 
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
-            LoginTo.getDatabase().updateSession(
-                    player.getUniqueId(),
-                    player.getAddress().getAddress().getHostAddress(),
-                    LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
-            );
+            if (Sessions.isPlayerLogged(player.getUniqueId())) {
+                LoginTo.getDatabase().updateSession(
+                        player.getUniqueId(),
+                        player.getAddress().getAddress().getHostAddress(),
+                        LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SESSIONS_SESSIONDURATION) * 60 * 60
+                );
+            }
         }
-
-        /*
-        ServerInfo preLoginServer = LoginTo.getInstance().getProxy().getServerInfo(LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PROXY_SERVERTELEPORTONPRELOGIN));
-        if (player.getServer() != null && player.getServer().getInfo() != preLoginServer) {
-            player.connect(preLoginServer);
-        }
-         */
     }
 
 }
