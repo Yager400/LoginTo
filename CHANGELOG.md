@@ -1,11 +1,9 @@
-### Version 4.0.1
+### Version 4.0.2
 
-Fixed a problem when teleporting the player to another world on bukkit
-
+Optimized the library downloading system and made it more stable
 ___
-
-Added support for older version of minecraft (1.13+)
-
+Reduced the rockyou file size to 50Mb
 ___
-
-Added a periodic feature for sending to the player the login/register prompt until they are not logged in
+Fixed a bug where a player could spam the /register command
+___
+Fixed a problem while updating the sessions

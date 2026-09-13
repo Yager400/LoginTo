@@ -1,11 +1,1 @@
-# 4.0.2-SNAPSHOT
-
-refactor: optimized the library downloading system and made it more stable
-___
-refactor: reduced the rockyou file size to 50Mb
-___
-fix: fixed register spam
-___
-feat: added a small comment on the sessions configuration
-___
-fix: fixed a problem while updating the sessions
+# 4.0.3-SNAPSHOT
