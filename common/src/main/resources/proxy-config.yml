@@ -30,6 +30,10 @@ settings:
     # If this is enabled, a cracked player won't need to
      # do the login authentication if that player is from
      # the same ip and the session is not invalid
+    # Warning: If your server is running behind a proxy or tunnel
+     # that does not forward the player's real IP address, disable
+     # this feature. Otherwise, all players may appear to have the
+     # same IP address (e.g. 127.0.0.1 or 192.168.x.x).
     enabled: true
     # Session duration (in hours)
     session-duration: 24

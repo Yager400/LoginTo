@@ -5,3 +5,5 @@ ___
 refactor: reduced the rockyou file size to 50Mb
 ___
 fix: fixed register spam
+___
+feat: added a small comment on the sessions configuration
