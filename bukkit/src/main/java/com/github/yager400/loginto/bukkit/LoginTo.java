@@ -47,16 +47,8 @@ public class LoginTo extends JavaPlugin {
 
         // Use the bukkit yaml reader, otherwise NoClassDefFoundError for SnakeYaml
         YamlConfiguration bukkitConfigReader = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        // Check for the old ConfigVersion path, it exists, install packetevents, otherwise check in the config (only new server)
-        if (bukkitConfigReader.contains("ConfigVersion")) {
-            try {
-                FilesManager.deleteDirectory(new File(getDataFolder(), "lib").toPath()); // Delete the old library folder (with the new package com.github it breaks)
-                new File(getDataFolder(), "rockyou.txt").delete(); // Also delete the old rockyou since it's over 130MB of space
-            } catch (IOException e) {e.printStackTrace();}
-            PluginSetup.downloadDependencies(true);
-        } else {
-            PluginSetup.downloadDependencies(bukkitConfigReader.getBoolean(ConfigKeys.SETTINGS_USEBUILTINPACKETEVENTS.value()));
-        }
+        PluginSetup.downloadDependencies(bukkitConfigReader.getBoolean(ConfigKeys.SETTINGS_USEBUILTINPACKETEVENTS.value()));
+
         PluginSetup.UpdateUtils.checkForFileUpdates();
 
         configReader = PluginSetup.getYamlRead(new File(getDataFolder(), "config.yml"));

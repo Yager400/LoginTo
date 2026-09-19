@@ -105,18 +105,4 @@ public class FilesManager {
         saveFile(filePath, file.toPath(), false);
     }
 
-    public static void deleteDirectory(Path directory) throws IOException {
-        if (Files.exists(directory)) {
-            Files.walk(directory)
-                .sorted(Comparator.reverseOrder())
-                .forEach(path -> {
-                    try {
-                        Files.delete(path);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        }
-    }
-
 }
