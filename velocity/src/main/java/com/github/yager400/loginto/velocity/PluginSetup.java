@@ -148,13 +148,11 @@ public class PluginSetup {
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getDataDirectory().toFile(), "config.yml"),
                         "proxy-config.yml",
-                        "1",
                         ConfigKeys.CONFIGVERSION
                 );
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getDataDirectory().toFile(), "messages.yml"),
                         "proxy-messages.yml",
-                        "1",
                         MessagesKeys.MESSAGESVERSION
                 );
             } catch (IOException e) {

@@ -219,13 +219,11 @@ public class PluginSetup {
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getInstance().getDataFolder(), "config.yml"),
                         "bukkit-config.yml",
-                        "1",
                         ConfigKeys.CONFIGVERSION
                 );
                 FilesManager.updateYamlFile(
                         new File(LoginTo.getInstance().getDataFolder(), "messages.yml"),
                         "bukkit-messages.yml",
-                        "1",
                         MessagesKeys.MESSAGESVERSION
                 );
             } catch (IOException e) {

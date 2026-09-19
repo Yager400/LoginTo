@@ -7,14 +7,13 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.common.data.files;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.zip.GZIPInputStream;
 
@@ -51,6 +50,13 @@ public class FilesManager {
         CompletableFuture.runAsync(() -> {
             saveFiles(files, replaceExisting);
         });
+    }
+
+    public static InputStreamReader getFileInputStreamReader(String filePath) {
+        return new InputStreamReader(
+                Objects.requireNonNull(FilesManager.class.getClassLoader().getResourceAsStream(filePath)),
+                StandardCharsets.UTF_8
+        );
     }
 
     public static void downloadRockYou(Path pluginDataFolder) {
@@ -90,12 +96,16 @@ public class FilesManager {
         }
     }
 
-    public static void updateYamlFile(File file, String filePath, String version, ValueKey versionKey) throws IOException {
-        try (YamlReader reader = new YamlReader(file)) {
-            if (version.equals(reader.getString(versionKey))) {
+    public static void updateYamlFile(File file, String filePath, ValueKey versionKey) throws IOException {
+        try (YamlReader diskConfigReader = new YamlReader(file);
+             YamlReader ramConfigReader = new YamlReader(FilesManager.getFileInputStreamReader(filePath))) {
+            String diskVersion = diskConfigReader.getString(versionKey);
+            String ramVersion = ramConfigReader.getString(versionKey);
+            if (diskVersion.equals(ramVersion)) {
                 return;
             }
-        } catch (Exception ignored) {}
+        } catch (IOException ignored) {}
+
         File destination = new File(file.getParentFile().getAbsolutePath(), file.getName() + ".old");
         Files.move(
                 file.toPath(),
