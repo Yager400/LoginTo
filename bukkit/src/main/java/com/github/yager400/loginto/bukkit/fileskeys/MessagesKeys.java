@@ -39,6 +39,7 @@ public enum MessagesKeys implements ValueKey {
     CHANGEPASSWORD_PASSWORDLENGTHERROR          ("changepassword.password-length-error"),
     CHANGEPASSWORD_PASSWORDISTOOSIMPLE          ("changepassword.password-is-too-simple"),
     CHANGEPASSWORD_NOOTPCODEFOUND               ("changepassword.no-otp-code-found"),
+    CHANGEPASSWORD_LEGACY_WRONGOLDPASSWORD      ("changepassword.legacy.wrong-old-password"),
     CHANGEPASSWORD_PASSWORDCHANGED              ("changepassword.password-changed"),
 
     OTP_OTPALREADYCREATED                       ("otp.otp-already-created"),

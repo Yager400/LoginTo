@@ -39,6 +39,8 @@ public enum ConfigKeys implements ValueKey {
     SETTINGS_SPAWNSETTING_CORDS_Z                   ("settings.spawn-setting.cords.z"),
     SETTINGS_SPAWNSETTING_CORDS_WORLD               ("settings.spawn-setting.cords.world"),
     SETTINGS_SPAWNSETTING_RESTOREPREVIOUSLOCATION   ("settings.spawn-setting.restore-previous-location"),
+    SETTINGS_OTP_ENABLED                            ("settings.otp.enabled"),
+    SETTINGS_OTP_LEGACYCHANGEPASSCOMMAND            ("settings.otp.legacy-changepass-command"),
     SETTINGS_CHECKFORUPDATES                        ("settings.check-for-updates"),
     SETTINGS_SHOWWATERMARK                          ("settings.show-watermark"),
     SETTINGS_USEBUILTINPACKETEVENTS                 ("settings.use-built-in-packetevents");

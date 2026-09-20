@@ -1,4 +1,4 @@
-messages-version: "1"
+messages-version: "2"
 
 # While modifying these messages, you can use the following features:
 
@@ -77,6 +77,8 @@ changepassword:
   password-is-too-simple: "<red>This password is too simple, chose another one."
   # The player didn't generate any otp token
   no-otp-code-found: "<red>Your account does not have an otp code saved, generate one by doing <green>/otp"
+  legacy:
+    wrong-old-password: "<red>The old password is incorrect!"
 
   # The password was changed successfully
   password-changed: "<green>Your password has been changed. Please rejoin and log in again."

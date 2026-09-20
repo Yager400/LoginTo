@@ -1,4 +1,4 @@
-config-version: "1"
+config-version: "2"
 
 datastore:
   # Database type, use one of this: SQLITE, MYSQL
@@ -76,6 +76,16 @@ settings:
     # If this is enabled, after the login, the player will be teleported
      # at the location where they left
     restore-previous-location: true
+  otp:
+    # If you want players to create and use an otp code for changing their
+     # password, leave this on. If this gives you any problem or you simply
+     # don't want this, turn this off.
+    # (If this feature is changed, it requires the server to be restarted)
+    enabled: true
+    # Use the legacy changepassword command?
+    # The syntax will be: /changepassword <old_password> <new_password>
+    # If the otp code is disabled, this will automatically be enabled
+    legacy-changepass-command: false
   # Check for an update every hour
   check-for-updates: true
   # If you want to support the plugin, consider leaving this on, this watermark

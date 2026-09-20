@@ -43,17 +43,10 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
         }
 
         String newPassword = args[0];
-        int otpCode;
-        try {
-            otpCode = Integer.parseInt(args[1]);
-        } catch (Exception e) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
-            return true;
-        }
 
         // If the player is logged, they already have an account
         if (Sessions.isPlayerLogged(player.getUniqueId())) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_ALREADYLOGGEDIN), sender, null);
             return true;
         }
 
@@ -88,23 +81,13 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
                 return;
             }
 
-            try {
-                GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
-                String secret = LoginTo.getDatabase().getSecret(player.getUniqueId());
-                if (secret == null || secret.isEmpty()) {
-                    Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOOTPCODEFOUND), sender, null);
-                    return;
-                }
-
-                if (googleAuthenticator.authorize(secret, otpCode)) {
-                    LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
-                    Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
-                } else {
-                    Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_ENABLED) ||
+                LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_LEGACYCHANGEPASSCOMMAND)) {
+                this.handleLegacyChangePass(newPassword, args[1], sender);
+            } else {
+                this.handleOTPChangePass(newPassword, args[1], sender);
             }
+
         });
 
         return true;
@@ -118,10 +101,48 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             list.add("<newPassword>");
         }
         if (args.length == 2) {
-            list.add("<otp_code>");
+            list.add("<otp_code/old_password>");
         }
 
         return list;
+    }
+
+    private void handleLegacyChangePass(String newPassword, String oldPassword, CommandSender sender) {
+        Player player = (Player) sender;
+        if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
+            LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+        } else {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_LEGACY_WRONGOLDPASSWORD), sender, null);
+        }
+    }
+
+    private void handleOTPChangePass(String newPassword, String otpCodeStr, CommandSender sender) {
+        int otpCode;
+        try {
+            otpCode = Integer.parseInt(otpCodeStr);
+        } catch (Exception e) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
+            return;
+        }
+        Player player = (Player) sender;
+        try {
+            GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
+            String secret = LoginTo.getDatabase().getSecret(player.getUniqueId());
+            if (secret == null || secret.isEmpty()) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOOTPCODEFOUND), sender, null);
+                return;
+            }
+
+            if (googleAuthenticator.authorize(secret, otpCode)) {
+                LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+            } else {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

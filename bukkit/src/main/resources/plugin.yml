@@ -21,7 +21,7 @@ commands:
     aliases: [ "delacc" ]
     permission: loginto.unregister
   changepassword:
-    usage: /changepassword <new_password> <otp_code>
+    usage: /changepassword <new_password> <otp_code/old_password>
     permission: loginto.changepassword
   premium:
     usage: /premium [optional]<user>

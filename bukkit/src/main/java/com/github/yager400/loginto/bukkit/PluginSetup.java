@@ -168,6 +168,10 @@ public class PluginSetup {
                 if (crackedMePerm != null)      crackedMePerm.setDefault(PermissionDefault.FALSE);
                 if (crackedOtherPerm != null)   crackedOtherPerm.setDefault(PermissionDefault.FALSE);
             }
+            if (!LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_ENABLED)) {
+                Permission otpCodePerm =    manager.getPermission("loginto.otp");
+                if (otpCodePerm != null)    otpCodePerm.setDefault(PermissionDefault.FALSE);
+            }
         }
 
         public static void initializeListeners() {
