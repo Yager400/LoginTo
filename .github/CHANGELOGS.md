@@ -5,3 +5,5 @@ ___
 refactor: yaml updater now get the file's latest version dynamically
 ___
 feat: the otp code function can now be disabled and return to the old /chagepassword
+___
+fix: updated packetevents for 26.3 support
