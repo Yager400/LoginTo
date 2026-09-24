@@ -24,6 +24,8 @@ import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.utils.Updates;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.LibraryManager;
@@ -34,11 +36,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class PluginSetup {
 
@@ -107,7 +110,27 @@ public class PluginSetup {
     }
 
     private static void downloadPELibs(LibraryManager manager) {
-        String version = "2.14.0";
+        String version = ((Supplier<String>) () -> {
+            // Fallback version used only if the fetch request fails.
+             // Represents the latest version available at build time.
+            String latestStaticVersion = "2.14.0";
+            URI url = URI.create("https://api.github.com/repos/retrooper/packetevents/releases/latest");
+            StringBuilder responseBody = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.toURL().openStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    responseBody.append(line);
+                }
+            } catch (Exception e) {
+                LoginTo.getInstance().getLogger().severe("Error while fetching the latest PacketEvents version, using " + latestStaticVersion);
+                return latestStaticVersion;
+            }
+            JsonObject json = JsonParser.parseString(responseBody.toString()).getAsJsonObject();
+            return json.get("name").getAsString();
+        }).get();
+
+        LoginTo.getInstance().getLogger().info("Latest version of PacketEvents found: " + version);
+
         Library packeteventsAPI = Library.builder()
                 .groupId("com.github.retrooper")
                 .artifactId("packetevents-api")
