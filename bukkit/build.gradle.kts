@@ -7,7 +7,7 @@ dependencies {
     compileOnly(project(":common"))
     compileOnly(project(":folia-lib"))
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
-    compileOnly("com.github.retrooper:packetevents-spigot:2.13.0")
+    compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")
     compileOnly("me.clip:placeholderapi:2.12.2")
     implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
     implementation("net.kyori:adventure-text-minimessage:4.26.1")

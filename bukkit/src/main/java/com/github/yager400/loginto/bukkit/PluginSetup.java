@@ -107,7 +107,7 @@ public class PluginSetup {
     }
 
     private static void downloadPELibs(LibraryManager manager) {
-        String version = "2.13.0";
+        String version = "2.14.0";
         Library packeteventsAPI = Library.builder()
                 .groupId("com.github.retrooper")
                 .artifactId("packetevents-api")
