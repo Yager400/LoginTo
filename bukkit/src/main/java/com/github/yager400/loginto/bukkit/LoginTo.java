@@ -9,6 +9,7 @@ package com.github.yager400.loginto.bukkit;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
+import com.github.yager400.loginto.common.api.ApiUtils;
 import com.github.yager400.loginto.common.data.files.WebhookKeys;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.data.database.Database;
@@ -61,6 +62,8 @@ public class LoginTo extends JavaPlugin {
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().load();
+
+        ApiUtils.initApi();
     }
 
     @Override

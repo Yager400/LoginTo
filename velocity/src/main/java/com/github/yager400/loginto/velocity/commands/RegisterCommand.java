@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
@@ -90,6 +91,8 @@ public class RegisterCommand implements SimpleCommand {
             PlayerStatus.setPlayerAsLogged(player);
 
             WebHooks.sendRegisterWebhook(player.getUsername(), player.getUniqueId());
+
+            EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(password));
         }).schedule();
     }
 

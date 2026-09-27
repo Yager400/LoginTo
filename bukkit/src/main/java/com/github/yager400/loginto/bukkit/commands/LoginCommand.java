@@ -12,8 +12,10 @@ import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.bukkit.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
+import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.command.Command;
@@ -70,6 +72,13 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
         PlayerStatus.setPlayerAsLogged(player);
 
         WebHooks.sendLoginWebhook(player.getName(), player.getUniqueId());
+
+        FoliaLib.get().runTaskAsync(() -> {
+            String hashedPassword = SecurityUtils.Hashing.hashString(password);
+            FoliaLib.get().runAtEntity(player, () -> {
+                EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), hashedPassword);
+            });
+        });
 
         return true;
     }

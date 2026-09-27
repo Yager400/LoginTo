@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity;
 
+import com.github.yager400.loginto.common.api.ApiUtils;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.files.WebhookKeys;
@@ -96,6 +97,8 @@ public class LoginTo {
                 e.printStackTrace();
             }
         }
+
+        ApiUtils.initApi();
     }
 
     @Subscribe

@@ -7,13 +7,13 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.velocity.LoginTo;
 import com.github.yager400.loginto.velocity.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.velocity.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.velocity.playerutils.Messages;
-import com.github.yager400.loginto.velocity.playerutils.PlayerStatus;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
@@ -63,8 +63,10 @@ public class UnregisterCommand implements SimpleCommand {
 
         if (sender instanceof Player player) {
             WebHooks.sendUnRegisterWebhook(player.getUsername(), player.getUniqueId(), args[0], targetUUID);
+            EventDispatcher.callPlayerAccountDeletionEvent(player.getUniqueId(), targetUUID);
         } else {
             WebHooks.sendUnRegisterWebhook("Console", new UUID(0L, 0L), args[0], targetUUID);
+            EventDispatcher.callPlayerAccountDeletionEvent(new UUID(0L, 0L), targetUUID);
         }
     }
 

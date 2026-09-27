@@ -12,11 +12,11 @@ import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.bukkit.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -94,6 +94,11 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
             PlayerStatus.setPlayerAsLogged(player);
 
             WebHooks.sendRegisterWebhook(player.getName(), player.getUniqueId());
+
+            String hashedPassword = SecurityUtils.Hashing.hashString(password);
+            FoliaLib.get().runAtEntity(player, () -> {
+                EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), hashedPassword);
+            });
         });
 
         return true;

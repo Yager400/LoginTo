@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":api"))
     implementation("com.zaxxer:HikariCP:4.0.3")
     compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     compileOnly("com.mysql:mysql-connector-j:8.2.0")

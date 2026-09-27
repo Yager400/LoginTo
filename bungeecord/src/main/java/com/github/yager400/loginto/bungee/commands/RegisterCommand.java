@@ -12,6 +12,7 @@ import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
 import com.github.yager400.loginto.bungee.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
@@ -93,6 +94,8 @@ public class RegisterCommand extends Command implements TabExecutor {
             PlayerStatus.setPlayerAsLogged(player);
 
             WebHooks.sendRegisterWebhook(player.getName(), player.getUniqueId());
+
+            EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(password));
         });
     }
 

@@ -16,7 +16,6 @@ import com.github.yager400.loginto.velocity.playerutils.Messages;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.Component;
 import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.List;

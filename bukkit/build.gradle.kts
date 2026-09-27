@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":api"))
     compileOnly(project(":common"))
     compileOnly(project(":folia-lib"))
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")

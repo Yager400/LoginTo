@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":api"))
     implementation(project(":common"))
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     implementation("com.zaxxer:HikariCP:4.0.3")

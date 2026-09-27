@@ -11,9 +11,9 @@ import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
-import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import org.bukkit.command.Command;
@@ -87,6 +87,11 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             } else {
                 this.handleOTPChangePass(newPassword, args[1], sender);
             }
+
+            String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
+            FoliaLib.get().runAtEntity(player, () -> {
+                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
+            });
 
         });
 

@@ -7,8 +7,10 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
+import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.velocity.LoginTo;
 import com.github.yager400.loginto.velocity.fileskeys.ConfigKeys;
@@ -67,6 +69,10 @@ public class LoginCommand implements SimpleCommand {
         PlayerStatus.setPlayerAsLogged(player);
 
         WebHooks.sendLoginWebhook(player.getUsername(), player.getUniqueId());
+
+        LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
+            EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(password));
+        }).schedule();
     }
 
     @Override

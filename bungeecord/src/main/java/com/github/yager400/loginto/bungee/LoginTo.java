@@ -8,6 +8,7 @@ See the LICENSE file for details.
 package com.github.yager400.loginto.bungee;
 
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
+import com.github.yager400.loginto.common.api.ApiUtils;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.files.WebhookKeys;
@@ -72,6 +73,8 @@ public class LoginTo extends Plugin  {
                 e.printStackTrace();
             }
         }
+
+        ApiUtils.initApi();
     }
 
     @Override

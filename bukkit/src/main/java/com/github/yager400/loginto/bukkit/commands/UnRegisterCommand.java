@@ -10,6 +10,7 @@ package com.github.yager400.loginto.bukkit.commands;
 import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
@@ -59,8 +60,10 @@ public class UnRegisterCommand implements CommandExecutor, TabCompleter {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             WebHooks.sendUnRegisterWebhook(player.getName(), player.getUniqueId(), target.getName(), target.getUniqueId());
+            EventDispatcher.callPlayerAccountDeletionEvent(target.getUniqueId(), player.getUniqueId());
         } else {
             WebHooks.sendUnRegisterWebhook("Console", new UUID(0L, 0L), target.getName(), target.getUniqueId());
+            EventDispatcher.callPlayerAccountDeletionEvent(target.getUniqueId(), new UUID(0L, 0L));
         }
 
         return true;

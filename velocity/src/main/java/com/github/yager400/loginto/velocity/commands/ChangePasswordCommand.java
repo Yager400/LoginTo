@@ -7,6 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.velocity.commands;
 
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.velocity.LoginTo;
@@ -80,6 +81,7 @@ public class ChangePasswordCommand implements SimpleCommand {
             if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
                 LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(newPassword));
             } else {
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOLDPASSWORD), sender, null);
             }

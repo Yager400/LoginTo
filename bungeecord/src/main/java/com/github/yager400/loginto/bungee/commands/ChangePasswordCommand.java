@@ -11,6 +11,7 @@ import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import net.md_5.bungee.api.CommandSender;
@@ -83,6 +84,7 @@ public class ChangePasswordCommand extends Command implements TabExecutor {
             if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
                 LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(newPassword));
             } else {
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOLDPASSWORD), sender, null);
             }

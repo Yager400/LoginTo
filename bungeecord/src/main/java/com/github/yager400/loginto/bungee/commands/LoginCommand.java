@@ -12,8 +12,10 @@ import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
 import com.github.yager400.loginto.bungee.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
+import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -71,6 +73,10 @@ public class LoginCommand extends Command implements TabExecutor {
         PlayerStatus.setPlayerAsLogged(player);
 
         WebHooks.sendLoginWebhook(player.getName(), player.getUniqueId());
+
+        LoginTo.getInstance().getProxy().getScheduler().runAsync(LoginTo.getInstance(), () -> {
+            EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(password));
+        });
     }
 
     @Override

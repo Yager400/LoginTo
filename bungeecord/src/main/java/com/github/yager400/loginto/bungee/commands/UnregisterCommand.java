@@ -11,6 +11,7 @@ import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
 import net.md_5.bungee.api.CommandSender;
@@ -66,8 +67,10 @@ public class UnregisterCommand extends Command implements TabExecutor {
 
         if (sender instanceof ProxiedPlayer player) {
             WebHooks.sendUnRegisterWebhook(player.getName(), player.getUniqueId(), args[0], targetUUID);
+            EventDispatcher.callPlayerAccountDeletionEvent(player.getUniqueId(), targetUUID);
         } else {
             WebHooks.sendUnRegisterWebhook("Console", new UUID(0L, 0L), args[0], targetUUID);
+            EventDispatcher.callPlayerAccountDeletionEvent(new UUID(0L, 0L), targetUUID);
         }
     }
 

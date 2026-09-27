@@ -7,11 +7,11 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bungee.events;
 
+import com.github.yager400.loginto.common.players.AuthenticatedPlayer;
 import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
-import com.github.yager400.loginto.common.players.AuthenticatedPlayer;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -22,7 +22,6 @@ import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class PreLogin implements Listener {
 

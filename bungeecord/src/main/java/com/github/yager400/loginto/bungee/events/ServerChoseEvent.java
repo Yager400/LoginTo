@@ -7,11 +7,13 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bungee.events;
 
+import com.github.yager400.loginto.api.events.PlayerAutoLoginEvent;
 import com.github.yager400.loginto.bungee.LoginTo;
 import com.github.yager400.loginto.bungee.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bungee.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bungee.playerutils.Messages;
 import com.github.yager400.loginto.bungee.playerutils.PlayerStatus;
+import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.AuthenticatedPlayer;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
 import com.github.yager400.loginto.common.players.Sessions;
@@ -91,6 +93,7 @@ public class ServerChoseEvent implements Listener {
 
             PlayerStatus.setPlayerAsLoggedViaEvent(event);
             Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_LOGIN_AUTOLOGINPREMIUM), player, null, true);
+            EventDispatcher.callPlayerAutoLoginEvent(player.getUniqueId(), PlayerAutoLoginEvent.AccountType.PREMIUM);
         }
         public static void bedrockAuthentication(ProxiedPlayer player, ServerConnectEvent event) {
             FloodgatePlayer floodgatePlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
@@ -113,6 +116,7 @@ public class ServerChoseEvent implements Listener {
 
             PlayerStatus.setPlayerAsLoggedViaEvent(event);
             Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_LOGIN_AUTOLOGINBEDROCK), player, null, true);
+            EventDispatcher.callPlayerAutoLoginEvent(player.getUniqueId(), PlayerAutoLoginEvent.AccountType.BEDROCK);
         }
         public static void normalOrCrackedAuthentication(ProxiedPlayer player) {
             Tries.addPlayer(player.getUniqueId());
