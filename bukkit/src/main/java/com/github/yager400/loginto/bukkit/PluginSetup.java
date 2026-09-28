@@ -209,14 +209,9 @@ public class PluginSetup {
             EventManager eventManager = PacketEvents.getAPI().getEventManager();
             eventManager.registerListener(new InventoryHiderPE(), PacketListenerPriority.LOWEST);
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED) && !LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PROXY_BRIDGEBUKKITPROXY)) {
-                if (!Bukkit.getOnlineMode()) {
-                    eventManager.registerListener(new AuthPacketEventListener(), PacketListenerPriority.LOWEST);
-                    if (Bukkit.getPluginManager().getPlugin("floodgate") == null) {
-                        LoginTo.getInstance().getLogger().warning("No floodgate detected! If a bedrock player joins the server, they will be kicked.");
-                    }
-                } else {
-                    plugin.getLogger().severe("The premium feature cannot be activated since the server is in online mode!\n" +
-                            "To fix this, go to the server.properties file and change online-mode to false.");
+                eventManager.registerListener(new AuthPacketEventListener(), PacketListenerPriority.LOWEST);
+                if (Bukkit.getPluginManager().getPlugin("floodgate") == null) {
+                    LoginTo.getInstance().getLogger().warning("No floodgate detected! If a bedrock player joins the server, they will be kicked.");
                 }
             }
         }

@@ -61,7 +61,6 @@ settings:
      # for premium and bedrock players
     auto-register: true
     # A list of player's name to skip during the premium authentication.
-    # Use this only if you or your friends don't have a premium account.
     premium-bypass-list: []
   spawn-setting:
     # If this is enabled, the player will get teleported and those cords

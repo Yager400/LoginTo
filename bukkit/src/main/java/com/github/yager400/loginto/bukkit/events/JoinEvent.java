@@ -43,8 +43,7 @@ public class JoinEvent implements Listener {
 
         PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
 
-        if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED)
-            && !Bukkit.getOnlineMode() /* It's better to do this check since the premium auth will still be active on online server */) {
+        if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED)) {
             AuthenticatedPlayer authenticatedPlayer = PlayerProtocolUtils.getAuthenticatedPlayer(event.getPlayer().getUniqueId());
 
             if (authenticatedPlayer == null) {

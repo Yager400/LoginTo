@@ -70,6 +70,17 @@ public class AuthPacketEventListener implements PacketListener {
 
             }
 
+            // If this server is in online-mode, all players will 100% be premium
+            if (Bukkit.getOnlineMode()) {
+                UUID playerOnlineUUID = packetLoginStart.getPlayerUUID().orElse(new UUID(0L, 0L));
+                PlayerProtocolUtils.addAuthenticatedPlayer(playerOnlineUUID, new AuthenticatedPlayer(
+                        playerOnlineUUID,
+                    true,
+                    false
+                ));
+                return;
+            }
+
             List<?> playerBypassList = LoginTo.getConfigReader().getList(ConfigKeys.SETTINGS_PREMIUM_PREMIUMBYPASSLIST);
             String pName = packetLoginStart.getUsername();
             UUID offlineUUID = PlayerProtocolUtils.generateUUIDFromUsername(pName);
@@ -162,6 +173,9 @@ public class AuthPacketEventListener implements PacketListener {
         }
 
         if (packetType == PacketType.Login.Client.ENCRYPTION_RESPONSE) {
+            // Return this method if the server is already in online mode, meaning that the enc req wal already sent by this server
+            if (Bukkit.getOnlineMode()) return;
+
             event.setCancelled(true);
             WrapperLoginClientEncryptionResponse packetResponse = new WrapperLoginClientEncryptionResponse(event);
             byte[] encSharedSecret = packetResponse.getEncryptedSharedSecret();
