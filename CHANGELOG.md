@@ -1,9 +1,9 @@
-### Version 4.0.2
+### Version 4.1.0
 
-Optimized the library downloading system and made it more stable
+Made the OTP code functionality able to be disabled, and using the old /changepassword command
 ___
-Reduced the rockyou file size to 50Mb
+Added support for minecraft 26.3
 ___
-Fixed a bug where a player could spam the /register command
+Added the first version of the API to listen to some LoginTo events
 ___
-Fixed a problem while updating the sessions
+Added an auto-fetch for the latest packetevents version (this change will not affect how the plugin works)
