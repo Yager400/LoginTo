@@ -7,13 +7,13 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.common.players;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Sessions {
 
-    private static final Set<UUID> loggedPlayers = new HashSet<>();
+    private static final Set<UUID> loggedPlayers = ConcurrentHashMap.newKeySet();
 
     public static void addPlayer(UUID playerUUID) {
         loggedPlayers.add(playerUUID);
