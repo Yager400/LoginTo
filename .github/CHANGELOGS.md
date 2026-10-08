@@ -1,11 +1,3 @@
-# 4.1.0-SNAPSHOT
+# 4.1.1-SNAPSHOT
 
-refactor: removed old lib and rockyou.txt deletion
-___
-refactor: yaml updater now get the file's latest version dynamically
-___
-feat: the otp code function can now be disabled and return to the old /chagepassword
-___
-fix: updated packetevents for 26.3 support
-___
-feat: packetevents version get fetched automatically
+rebase: PlayerStatus.setPlayerAsLogged now doesn't wait 5 ticks for logging a player

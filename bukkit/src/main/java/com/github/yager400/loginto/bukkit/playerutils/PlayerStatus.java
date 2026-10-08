@@ -22,11 +22,12 @@ import org.bukkit.potion.PotionEffectType;
 public class PlayerStatus {
 
     public static void setPlayerAsLogged(Player player) {
+        Sessions.addPlayer(player.getUniqueId());
+
+        Tries.removePlayer(player.getUniqueId());
+
+        // Execute those later
         FoliaLib.get().runTaskLater(() -> {
-            Sessions.addPlayer(player.getUniqueId());
-
-            Tries.removePlayer(player.getUniqueId());
-
             // Teleport the player to the last position
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SPAWNSETTING_RESTOREPREVIOUSLOCATION)
                     && LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SPAWNSETTING_ENABLED)) {
