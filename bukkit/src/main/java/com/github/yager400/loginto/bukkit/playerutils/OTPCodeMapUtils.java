@@ -8,13 +8,7 @@ See the LICENSE file for details.
 package com.github.yager400.loginto.bukkit.playerutils;
 
 import com.github.yager400.loginto.folia.FoliaLib;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.warrenstrange.googleauth.GoogleAuthenticator;
-import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
-import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,27 +20,6 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 public class OTPCodeMapUtils {
-
-    public static GoogleAuthenticatorKey getRandomKey() {
-        GoogleAuthenticator auth = new GoogleAuthenticator();
-
-        return auth.createCredentials();
-    }
-
-    public static BitMatrix getBitMatrix(String playerName, String serverName, GoogleAuthenticatorKey key) {
-        String otpUrl = GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(
-                playerName,
-                serverName,
-                key
-        );
-
-        try {
-            return new MultiFormatWriter().encode(otpUrl, BarcodeFormat.QR_CODE, 128, 128);
-        } catch (WriterException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public static void handleMapCreationAndDeletion(BitMatrix matrix, Player player) {
         MapView map = Bukkit.createMap(player.getWorld());
@@ -88,8 +61,5 @@ public class OTPCodeMapUtils {
                 }
             }
         }
-
     }
-
-
 }

@@ -6,6 +6,8 @@ plugins {
 dependencies {
     implementation(project(":api"))
     implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.mindrot:jbcrypt:0.4")
+    implementation("net.byteflux:libby-core:1.3.1")
     compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     compileOnly("com.mysql:mysql-connector-j:8.2.0")
     compileOnly("org.yaml:snakeyaml:2.2")

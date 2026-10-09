@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":api"))
     implementation(project(":common"))
+    implementation("net.byteflux:libby-bungee:1.3.1")
     compileOnly("net.md-5:bungeecord-api:1.20-R0.1")
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("net.kyori:adventure-api:4.26.1")

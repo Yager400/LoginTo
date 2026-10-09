@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(":api"))
     implementation(project(":common"))
+    implementation("net.byteflux:libby-velocity:1.3.1")
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     implementation("com.zaxxer:HikariCP:4.0.3")
     compileOnly("net.kyori:adventure-api:4.26.1")

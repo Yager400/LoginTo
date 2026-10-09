@@ -1,4 +1,4 @@
-config-version: "2"
+config-version: "3"
 
 datastore:
   # Database type, use one of this: SQLITE, MYSQL
@@ -81,6 +81,10 @@ settings:
      # don't want this, turn this off.
     # (If this feature is changed, it requires the server to be restarted)
     enabled: true
+    # How the otp should be given to the player? Chose one of those options:
+     # MAP -> Generate an in-game map containing the qrcode that will last for 60 seconds.
+     # URL -> Generate an url containing the qrcode (the qrcode url is qrcode.com)
+    otp-type: "MAP"
     # Use the legacy changepassword command?
     # The syntax will be: /changepassword <old_password> <new_password>
     # If the otp code is disabled, this will automatically be enabled

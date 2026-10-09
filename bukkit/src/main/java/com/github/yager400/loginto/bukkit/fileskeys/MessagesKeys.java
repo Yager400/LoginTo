@@ -43,7 +43,9 @@ public enum MessagesKeys implements ValueKey {
     CHANGEPASSWORD_PASSWORDCHANGED              ("changepassword.password-changed"),
 
     OTP_OTPALREADYCREATED                       ("otp.otp-already-created"),
-    OTP_OTPALERT                                ("otp.otp-alert"),
+    OTP_MAP_OTPALERTMAP                         ("otp.map.otp-alert-map"),
+    OTP_URL_OTPALERTURL                         ("otp.url.otp-alert-url"),
+    OTP_URL_OTPSENDURL                          ("otp.url.otp-send-url"),
 
     PREMIUM_CRACKED_ALREADYCRACKED              ("premium.cracked.already-cracked"),
     PREMIUM_CRACKED_CRACKEDWARN                 ("premium.cracked.cracked-warn"),

@@ -41,10 +41,8 @@ subprojects {
     }
 
     dependencies {
-        implementation("net.byteflux:libby-bukkit:1.3.1")
-        implementation("net.byteflux:libby-bungee:1.3.1")
-        implementation("net.byteflux:libby-velocity:1.3.1")
-        implementation("org.mindrot:jbcrypt:0.4")
+        implementation("com.google.zxing:core:3.5.3")
+        implementation("com.warrenstrange:googleauth:1.5.0")
     }
 
     tasks.withType<ProcessResources>().configureEach {
@@ -58,7 +56,6 @@ subprojects {
 
 repositories {
     mavenCentral()
-    maven("https://repo.alessiodp.com/releases")
 }
 
 dependencies {
@@ -67,11 +64,6 @@ dependencies {
     implementation(project(":bukkit", "shadow"))
     implementation(project(":bungeecord", "shadow"))
     implementation(project(":velocity", "shadow"))
-
-    implementation("net.byteflux:libby-bukkit:1.3.1")
-    implementation("net.byteflux:libby-bungee:1.3.1")
-    implementation("net.byteflux:libby-velocity:1.3.1")
-    implementation("org.mindrot:jbcrypt:0.4")
 }
 
 tasks.processResources {

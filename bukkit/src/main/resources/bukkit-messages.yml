@@ -1,4 +1,4 @@
-messages-version: "2"
+messages-version: "1"
 
 # While modifying these messages, you can use the following features:
 
@@ -86,10 +86,18 @@ changepassword:
 otp:
   # An OTP code has already been created for this user
   otp-already-created: "<red>You can only create one OTP token per account, ask an admin for the account unregistration."
-
-  # Warning shown to the player before giving them the map
-  # containing the QR code
-  otp-alert: "<bold><gold>WARNING:</gold></bold><red>This feature allows you to change your password during the login. \nYou will receive a map containing a QRCode to scan with your authenticator app (e.g. Google Authenticator). \nMake sure that you are not screen sharing. \nIf it is safe to proceed, type <green>/otp</green> again to generate your code. \nAfter 20 seconds the map will be automatically removed from the server."
+  map:
+    # Warning shown to the player before giving them the map
+    # containing the QR code
+    otp-alert-map: "<bold><gold>WARNING:</gold></bold><red>This feature allows you to change your password during login. \nYou will receive a map containing a QRCode to scan with your authenticator app (e.g. Google Authenticator). \nThe map contains your secret authentication key. Never share it with anyone! \nMake sure that you are not screen sharing. \nIf it is safe to proceed, type <green>/otp</green> again to generate your code. \nAfter 60 seconds the map will be automatically removed from the server."
+  url:
+    # Warning shown to the player before sending them the url
+    # for the QR code
+    otp-alert-url: "<bold><gold>WARNING:</gold></bold><red>This feature allows you to change your password during login. \nYou will receive a clickable URL containing a QR code to scan with your authenticator app (e.g. Google Authenticator). \nThe url contains your secret authentication key. Never share it with anyone! \nMake sure that you are not screen sharing. \nIf it is safe to proceed, type <green>/otp</green> again to generate your code."
+    # Message sent to the player when they must click on the
+     # provided qrcode link to scan it with their authenticator
+    # Placeholder: %otp_url% -> Place the generated URL in the message
+    otp-send-url: "<green>Click the url for opening the qrcode in your browser:<gold> %otp_url% \n<green>---------"
 
 # All messages related to the premium feature.
 # If this feature is disabled, ignore these settings.
