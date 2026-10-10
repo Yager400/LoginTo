@@ -5,3 +5,5 @@ ___
 rebase: made the Sessions Set thread-safe
 ___
 feat: added url-generation for otp code (only bukkit now)
+___
+feat: added OTP support on proxy

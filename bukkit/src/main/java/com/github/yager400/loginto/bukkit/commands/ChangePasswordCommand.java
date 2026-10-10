@@ -87,14 +87,7 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             } else {
                 this.handleOTPChangePass(newPassword, args[1], sender);
             }
-
-            String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
-            FoliaLib.get().runAtEntity(player, () -> {
-                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
-            });
-
         });
-
         return true;
     }
 
@@ -117,6 +110,10 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
         if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
             LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+            String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
+            FoliaLib.get().runAtEntity(player, () -> {
+                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
+            });
         } else {
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_LEGACY_WRONGOLDPASSWORD), sender, null);
         }
@@ -142,6 +139,10 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             if (googleAuthenticator.authorize(secret, otpCode)) {
                 LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+                String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
+                FoliaLib.get().runAtEntity(player, () -> {
+                    EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
+                });
             } else {
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
             }

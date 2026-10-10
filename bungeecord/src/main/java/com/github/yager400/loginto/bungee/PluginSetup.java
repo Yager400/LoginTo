@@ -102,6 +102,9 @@ public class PluginSetup {
             plugin.getProxy().getPluginManager().registerCommand(plugin, new PremiumCommand());
             plugin.getProxy().getPluginManager().registerCommand(plugin, new CrackedCommand());
             plugin.getProxy().getPluginManager().registerCommand(plugin, new LoginToCommand());
+            if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_ENABLED)) {
+                plugin.getProxy().getPluginManager().registerCommand(plugin, new OTPCommand());
+            }
         }
 
         public static void initializeListeners() {

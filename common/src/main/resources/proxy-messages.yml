@@ -1,4 +1,4 @@
-messages-version: "1"
+messages-version: "2"
 
 # While modifying these messages, you can use the following features:
 
@@ -64,8 +64,8 @@ unregister:
   admin-unregister-success: "<green>Account unregistered successfully."
 
 changepassword:
-  # The entered old password is incorrect
-  wrong-old-password: "<red>The old password is incorrect."
+  # The entered OTP code is incorrect
+  wrong-otp-code: "<red>The OTP code is incorrect."
   # This player is not registered
   not-registered: "<red>You are not registered yet!"
   # The new password does not contain the required characters (Placeholder: %characters%)
@@ -74,9 +74,24 @@ changepassword:
   password-length-error: "<red>Your password must be between %min_length% and %max_length% characters long."
   # This password is too simple
   password-is-too-simple: "<red>This password is too simple, chose another one."
+  # The player didn't generate any otp token
+  no-otp-code-found: "<red>Your account does not have an otp code saved, generate one by doing <green>/otp"
+  legacy:
+    wrong-old-password: "<red>The old password is incorrect!"
 
   # The password was changed successfully
   password-changed: "<green>Your password has been changed. Please rejoin and log in again."
+
+otp:
+  # An OTP code has already been created for this user
+  otp-already-created: "<red>You can only create one OTP token per account, ask an admin for the account unregistration."
+  # Warning shown to the player before sending them the url
+  # for the QR code
+  otp-alert-url: "<bold><gold>WARNING:</gold></bold><red>This feature allows you to change your password during login. \nYou will receive a clickable URL containing a QR code to scan with your authenticator app (e.g. Google Authenticator). \nThe url contains your secret authentication key. Never share it with anyone! \nMake sure that you are not screen sharing. \nIf it is safe to proceed, type <green>/otp</green> again to generate your code."
+  # Message sent to the player when they must click on the
+  # provided qrcode link to scan it with their authenticator
+  # Placeholder: %otp_url% -> Place the generated URL in the message
+  otp-send-url: "<green><bold><click:open_url:'%otp_url%'>Click this message for opening the qrcode in your browser</click>"
 
 # All messages related to the premium feature.
 # If this feature is disabled, ignore these settings.

@@ -107,6 +107,10 @@ public class PluginSetup {
             manager.register(cracked, new CrackedCommand());
             CommandMeta loginto = manager.metaBuilder("loginto").plugin(LoginTo.getInstance()).build();
             manager.register(loginto, new LoginToCommand());
+            if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_ENABLED)) {
+                CommandMeta otp = manager.metaBuilder("otp").plugin(LoginTo.getInstance()).build();
+                manager.register(otp, new OTPCommand());
+            }
         }
 
         public static void initializeListeners() {

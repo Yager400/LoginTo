@@ -27,7 +27,7 @@ public class CommandEvent implements Listener {
         }
         message = message.replace("/", "");
 
-        if (message.startsWith("login") || message.startsWith("register")) {
+        if (message.startsWith("login") || message.startsWith("register") || message.startsWith("changepassword")) {
             return;
         }
 

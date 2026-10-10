@@ -23,6 +23,7 @@ public class PermissionEvent implements Listener {
             case "loginto.changepassword":
             case "loginto.cracked.me":
             case "loginto.premium.me":
+            case "loginto.otp":
                 event.setHasPermission(true);
                 break;
         }

@@ -23,7 +23,7 @@ public class PermissionEvent {
             Tristate lpResult = luckPermsFunction.getPermissionValue(permission);
             return switch (permission) {
                 case "loginto.register", "loginto.login", "loginto.changepassword", "loginto.cracked.me",
-                     "loginto.premium.me" -> {
+                     "loginto.premium.me", "loginto.otp" -> {
                     if (lpResult != Tristate.UNDEFINED) {
                         yield lpResult;
                     }

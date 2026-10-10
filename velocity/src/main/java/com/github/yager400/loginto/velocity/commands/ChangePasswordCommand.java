@@ -17,6 +17,7 @@ import com.github.yager400.loginto.velocity.playerutils.Messages;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,12 +79,11 @@ public class ChangePasswordCommand implements SimpleCommand {
                 return;
             }
 
-            if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
-                LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
-                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(newPassword));
+            if (!LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_ENABLED) ||
+                    LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_OTP_LEGACYCHANGEPASSCOMMAND)) {
+                this.handleLegacyChangePass(newPassword, args[1], sender);
             } else {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOLDPASSWORD), sender, null);
+                this.handleOTPChangePass(newPassword, args[1], sender);
             }
         }).schedule();
     }
@@ -102,10 +102,49 @@ public class ChangePasswordCommand implements SimpleCommand {
             list.add("<newPassword>");
         }
         if (args.length == 2) {
-            list.add("<oldPassword>");
+            list.add("<otp_code/old_password>");
         }
 
         return list;
     }
 
+    private void handleLegacyChangePass(String newPassword, String oldPassword, CommandSource sender) {
+        Player player = (Player) sender;
+        if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), oldPassword)) {
+            LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+            EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(newPassword));
+        } else {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_LEGACY_WRONGOLDPASSWORD), sender, null);
+        }
+    }
+
+    private void handleOTPChangePass(String newPassword, String otpCodeStr, CommandSource sender) {
+        int otpCode;
+        try {
+            otpCode = Integer.parseInt(otpCodeStr);
+        } catch (Exception e) {
+            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
+            return;
+        }
+        Player player = (Player) sender;
+        try {
+            GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
+            String secret = LoginTo.getDatabase().getSecret(player.getUniqueId());
+            if (secret == null || secret.isEmpty()) {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_NOOTPCODEFOUND), sender, null);
+                return;
+            }
+
+            if (googleAuthenticator.authorize(secret, otpCode)) {
+                LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
+                EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), SecurityUtils.Hashing.hashString(newPassword));
+            } else {
+                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_WRONGOTPCODE), sender, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

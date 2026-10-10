@@ -21,7 +21,7 @@ public class CommandEvent {
     public void onPreLoginCommandExecution(CommandExecuteEvent event) {
 
         String command = event.getCommand();
-        if (command.startsWith("login") || command.startsWith("register")) {
+        if (command.startsWith("login") || command.startsWith("register") || command.startsWith("changepassword")) {
             return;
         }
 

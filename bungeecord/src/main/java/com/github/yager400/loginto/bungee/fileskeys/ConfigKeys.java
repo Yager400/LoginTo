@@ -35,6 +35,8 @@ public enum ConfigKeys implements ValueKey {
     SETTINGS_PREMIUM_CACHEDURATION                  ("settings.premium.cache-duration"),
     SETTINGS_PREMIUM_AUTOREGISTER                   ("settings.premium.auto-register"),
     SETTINGS_PREMIUM_PREMIUMBYPASSLIST              ("settings.premium.premium-bypass-list"),
+    SETTINGS_OTP_ENABLED                            ("settings.otp.enabled"),
+    SETTINGS_OTP_LEGACYCHANGEPASSCOMMAND            ("settings.otp.legacy-changepass-command"),
     SETTINGS_CHECKFORUPDATES                        ("settings.check-for-updates"),
     SETTINGS_SHOWWATERMARK                          ("settings.show-watermark");
 

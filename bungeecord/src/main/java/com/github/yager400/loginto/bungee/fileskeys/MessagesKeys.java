@@ -33,12 +33,18 @@ public enum MessagesKeys implements ValueKey {
     UNREGISTER_UNREGISTERSUCCESS                ("unregister.unregister-success"),
     UNREGISTER_ADMINUNREGISTERSUCCESS           ("unregister.admin-unregister-success"),
 
-    CHANGEPASSWORD_WRONGOLDPASSWORD             ("changepassword.wrong-old-password"),
+    CHANGEPASSWORD_WRONGOTPCODE                 ("changepassword.wrong-otp-code"),
     CHANGEPASSWORD_NOTREGISTERED                ("changepassword.not-registered"),
     CHANGEPASSWORD_NOREQUIREDCHARACTERSERROR    ("changepassword.no-required-character-error"),
     CHANGEPASSWORD_PASSWORDLENGTHERROR          ("changepassword.password-length-error"),
     CHANGEPASSWORD_PASSWORDISTOOSIMPLE          ("changepassword.password-is-too-simple"),
     CHANGEPASSWORD_PASSWORDCHANGED              ("changepassword.password-changed"),
+    CHANGEPASSWORD_LEGACY_WRONGOLDPASSWORD      ("changepassword.legacy.wrong-old-password"),
+    CHANGEPASSWORD_NOOTPCODEFOUND               ("changepassword.no-otp-code-found"),
+
+    OTP_OTPALREADYCREATED                       ("otp.otp-already-created"),
+    OTP_OTPALERTURL                             ("otp.otp-alert-url"),
+    OTP_SENDURL                                 ("otp.otp-send-url"),
 
     PREMIUM_CRACKED_ALREADYCRACKED              ("premium.cracked.already-cracked"),
     PREMIUM_CRACKED_CRACKEDWARN                 ("premium.cracked.cracked-warn"),
