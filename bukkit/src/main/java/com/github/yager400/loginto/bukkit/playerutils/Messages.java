@@ -7,11 +7,10 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bukkit.playerutils;
 
-import com.github.retrooper.packetevents.PacketEvents;
-import com.github.retrooper.packetevents.manager.server.ServerVersion;
-import com.github.retrooper.packetevents.protocol.player.ClientVersion;
-import com.github.retrooper.packetevents.protocol.player.User;
 import com.github.yager400.loginto.bukkit.LoginTo;
+import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.KyoriHandler;
+import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.LegacyKyoriHandler;
+import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.NativeKyoriHandler;
 import com.github.yager400.loginto.folia.FoliaLib;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -26,6 +25,16 @@ import java.util.HashMap;
 public class Messages {
 
     private static final MiniMessage mm = MiniMessage.miniMessage();
+    private static KyoriHandler kyoriHandler;
+    static {
+        try {
+            kyoriHandler = new NativeKyoriHandler();
+            LoginTo.getInstance().getLogger().info("Using paper's native kyori library.");
+        } catch (Exception e) {
+            kyoriHandler = new LegacyKyoriHandler();
+            LoginTo.getInstance().getLogger().warning("Using legacy kyori library, some tag might not render as excepted. Upgrade to a modern version of paper to fix this.");
+        }
+    }
 
     private static String getLegacyString(Component component) {
         return LegacyComponentSerializer.legacySection().serialize(component);
@@ -77,26 +86,12 @@ public class Messages {
                 if (message.startsWith("<title>")) {
                     sendTitle(message, player, stringReplacement);
                 } else {
-                    sendMessage(message, player, stringReplacement);
+                    String formattedMessage = formatMessage(message, player, stringReplacement);
+                    kyoriHandler.sendMessage(player, formattedMessage);
                 }
             });
         }
 
-        private static void sendMessage(String message, Player player, HashMap<String, String> stringReplacement) {
-            if (player == null) {
-                return;
-            }
-            User user = PacketEvents.getAPI().getPlayerManager().getUser(player);
-            if (user == null) {
-                return;
-            }
-            message = formatMessage(message, player, stringReplacement);
-            if (user.getPacketVersion().isNewerThanOrEquals(ClientVersion.V_1_16)) {
-                LoginTo.getAdventure().player(player).sendMessage(getMessageAsComponent(message));
-            } else {
-                player.sendMessage(getLegacyString(getMessageAsComponent(message)));
-            }
-        }
         private static void sendTitle(String message, Player player, HashMap<String, String> stringReplacement) {
             if (player == null) {
                 return;
@@ -113,17 +108,6 @@ public class Messages {
         }
     }
 
-    public static class console {
-        public static void sendMessage(String message, HashMap<String, String> stringReplacement) {
-            message = formatMessage(message, null, stringReplacement);
-            if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_16)) {
-                LoginTo.getAdventure().console().sendMessage(getMessageAsComponent(message));
-            } else {
-                Bukkit.getServer().getConsoleSender().sendMessage(getLegacyString(getMessageAsComponent(message)));
-            }
-        }
-    }
-
     public static class sender {
         // Function for sending a message to a command sender (only used by commands since it's a CommandSender)
         public static void sendTextOrMessage(String message, CommandSender sender, HashMap<String, String> stringReplacement) {
@@ -131,7 +115,8 @@ public class Messages {
                 Player player = (Player) sender;
                 Messages.player.sendText(message, player, stringReplacement);
             } else {
-                Messages.console.sendMessage(message, stringReplacement);
+                String formattedMessage = formatMessage(message, null, stringReplacement);
+                kyoriHandler.sendConsole(formattedMessage);
             }
         }
     }

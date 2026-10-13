@@ -7,3 +7,5 @@ ___
 feat: added url-generation for otp code (only bukkit now)
 ___
 feat: added OTP support on proxy
+___
+rebase: added legacy and native support for minimessage

@@ -53,7 +53,7 @@ public class CrackedCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!(sender instanceof Player)) {
-            Messages.console.sendMessage("<red>Not a player", null);
+            Messages.sender.sendTextOrMessage("<red>Not a player", sender, null);
             return true;
         }
 

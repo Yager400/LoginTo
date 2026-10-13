@@ -16,8 +16,10 @@ messages-version: "1"
 # LoginTo will replace them with their corresponding values.
 
 # External Support
-# LoginTo also supports MiniMessage for additional customization
- # and PlaceholderAPI (if installed).
+# LoginTo also supports the PlaceholderAPI (if installed) and
+ # MiniMessage. However, if you decide to use the latter, make
+ # sure that you are using Paper since some tags do not work.
+ # (MiniMessage legacy is used on spigot or paper older than 1.18.2)
 
 register:
   # This player is already registered
