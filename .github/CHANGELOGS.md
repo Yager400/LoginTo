@@ -9,3 +9,5 @@ ___
 feat: added OTP support on proxy
 ___
 rebase: added legacy and native support for minimessage
+___
+rebase: removed some useless libraries and fixed a dependency problem on older bukkit versions

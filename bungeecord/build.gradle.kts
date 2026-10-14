@@ -8,16 +8,13 @@ dependencies {
     implementation(project(":common"))
     implementation("net.byteflux:libby-bungee:1.3.1")
     compileOnly("net.md-5:bungeecord-api:1.20-R0.1")
-    implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("net.kyori:adventure-api:4.26.1")
-    implementation("com.google.zxing:core:3.5.3")
-    compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
-    compileOnly("com.mysql:mysql-connector-j:8.2.0")
-    compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
     implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
     implementation("net.kyori:adventure-text-minimessage:4.26.1")
     implementation("net.kyori:adventure-platform-bungeecord:4.3.4")
+    compileOnly("org.geysermc.floodgate:api:2.2.0-SNAPSHOT")
     implementation("org.bstats:bstats-bungeecord:3.2.1")
+    implementation("com.zaxxer:HikariCP:4.0.3")
 }
 
 tasks.shadowJar {

@@ -59,6 +59,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":api"))
     implementation(project(":common", "shadow"))
     implementation(project(":folia-lib"))
     implementation(project(":bukkit", "shadow"))
@@ -88,7 +89,6 @@ tasks {
         relocate("com.mysql", "com.github.yager400.loginto.libs.mysql")
         relocate("com.google.zxing", "com.github.yager400.loginto.libs.zxing")
         relocate("com.warrenstrange.googleauth", "com.github.yager400.loginto.libs.googleauth")
-        relocate("org.apache.maven.model", "com.github.yager400.loginto.libs.maven.model")
         relocate("org.codehaus.plexus.util", "com.github.yager400.loginto.libs.plexus.util")
         relocate("org.apache", "com.github.yager400.loginto.libs.apache")
         exclude("org/slf4j/**")

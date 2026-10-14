@@ -101,7 +101,11 @@ public class PluginSetup {
 
         LibraryManager manager = new BukkitLibraryManager(plugin);
 
-        CommonLibraries.downloadLibraries(manager);
+        // Do not download those dependencies on bukkit, those are
+         // already included in the server
+        // Uncomment this if one day, a specific driver version will
+         // be required
+        //CommonLibraries.downloadLibraries(manager);
 
         if (installPacketEvent) {
             PluginSetup.downloadPELibs(manager);
@@ -125,7 +129,13 @@ public class PluginSetup {
                 LoginTo.getInstance().getLogger().severe("Error while fetching the latest PacketEvents version, using " + latestStaticVersion);
                 return latestStaticVersion;
             }
-            JsonObject json = JsonParser.parseString(responseBody.toString()).getAsJsonObject();
+            JsonObject json;
+            try {
+                json = JsonParser.parseString(responseBody.toString()).getAsJsonObject();
+            } catch (NoSuchMethodError e) {
+                // Use this for older gson versions
+                json = new com.google.gson.JsonParser().parse(responseBody.toString()).getAsJsonObject();
+            }
             return json.get("name").getAsString();
         }).get();
 

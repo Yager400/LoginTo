@@ -11,7 +11,6 @@ dependencies {
     compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     compileOnly("com.mysql:mysql-connector-j:8.2.0")
     compileOnly("org.yaml:snakeyaml:2.2")
-    compileOnly("org.apache.maven:maven-model:3.9.9")
     compileOnly("com.google.code.gson:gson:2.10.1")
 }
 
