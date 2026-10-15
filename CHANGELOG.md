@@ -1,9 +1,9 @@
-### Version 4.1.0
+### Version 4.1.1
 
-Made the OTP code functionality able to be disabled, and using the old /changepassword command
+Added URL generation for OTP code, now it's more secure and cross-platform
 ___
-Added support for minecraft 26.3
+Added OTP code support for proxies
 ___
-Added the first version of the API to listen to some LoginTo events
+Added native kyori support for modern Paper, and kept legacy for Spigot or old Paper version
 ___
-Added an auto-fetch for the latest packetevents version (this change will not affect how the plugin works)
+Fixed a problem for version old version
