@@ -98,7 +98,7 @@ public class LoginTo {
             }
         }
 
-        ApiUtils.initApi();
+        ApiUtils.initApi(database);
     }
 
     @Subscribe

@@ -17,4 +17,12 @@ public interface EventManager {
      * @param <T> The Event
      */
     <T> void register(Class<T> eventClass, Consumer<T> consumer);
+
+    /**
+     * Call a global event for every plugin that is listening to LoginTo
+     * @param event The event class you want to call
+     * @param <T> The Event
+     * @since 4.2.0
+     */
+    <T> void callEvent(T event);
 }

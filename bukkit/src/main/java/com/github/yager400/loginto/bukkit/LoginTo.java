@@ -63,11 +63,14 @@ public class LoginTo extends JavaPlugin {
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
         PacketEvents.getAPI().load();
 
-        ApiUtils.initApi();
+        ApiUtils.initApi(database);
     }
 
     @Override
     public void onEnable() {
+
+        getLogger().info("Initialized listeners");
+        PluginSetup.PluginEventAndCommand.initializeListeners();
 
         // Run those things later, this is because on folia, it gives problems
          // initializing PacketEvents
@@ -84,8 +87,8 @@ public class LoginTo extends JavaPlugin {
                 getLogger().info("Initialized commands");
                 PluginSetup.PluginEventAndCommand.initializeCommands();
             }
-            getLogger().info("Initialized listeners");
-            PluginSetup.PluginEventAndCommand.initializeListeners();
+            getLogger().info("Initialized packetevents listeners");
+            PluginSetup.PluginEventAndCommand.initializePacketEventListeners();
         }, 20L);
 
         adventure = BukkitAudiences.create(this);

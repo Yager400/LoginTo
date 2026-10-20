@@ -74,7 +74,7 @@ public class LoginTo extends Plugin  {
             }
         }
 
-        ApiUtils.initApi();
+        ApiUtils.initApi(database);
     }
 
     @Override

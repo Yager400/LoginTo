@@ -7,7 +7,10 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.common.api;
 
+import com.github.yager400.loginto.api.LoginTo;
+import com.github.yager400.loginto.api.LoginToApi;
 import com.github.yager400.loginto.api.utils.EventManager;
+import com.github.yager400.loginto.common.data.database.Database;
 
 import java.util.List;
 import java.util.Map;
@@ -17,15 +20,16 @@ import java.util.function.Consumer;
 
 public class ApiUtils {
 
-    private static EventManagerImpl eventManagerImpl;
+    public static void initApi(Database database) {
+        EventManagerImpl eventManagerImpl = new EventManagerImpl();
 
-    public static void initApi() {
-        ApiUtils.eventManagerImpl = new EventManagerImpl();
-        com.github.yager400.loginto.api.LoginTo.setEventManager(ApiUtils.eventManagerImpl);
+        LoginToApi loginToApi = new LoginToApiImpl(database, eventManagerImpl);
+
+        LoginTo.setApi(loginToApi);
     }
 
     public static <T> void callEvent(T event) {
-        ApiUtils.eventManagerImpl.callEvent(event);
+        LoginTo.getApi().getEventManager().callEvent(event);
     }
 
     public static class EventManagerImpl implements EventManager {
@@ -37,6 +41,7 @@ public class ApiUtils {
             listeners.computeIfAbsent(eventClass, k -> new CopyOnWriteArrayList<>()).add(consumer);
         }
 
+        @Override
         public <T> void callEvent(T event) {
             List<Consumer<?>> eventConsumers = listeners.get(event.getClass());
             if (eventConsumers == null) return;

@@ -215,7 +215,9 @@ public class PluginSetup {
             pluginManager.registerEvents(new LoggedFromAnotherLocationEvent(), plugin);
             pluginManager.registerEvents(new PreCommandProcessEvent(), plugin);
             pluginManager.registerEvents(new QuitEvent(), plugin);
+        }
 
+        public static void initializePacketEventListeners() {
             EventManager eventManager = PacketEvents.getAPI().getEventManager();
             eventManager.registerListener(new InventoryHiderPE(), PacketListenerPriority.LOWEST);
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED) && !LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PROXY_BRIDGEBUKKITPROXY)) {
