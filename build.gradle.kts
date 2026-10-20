@@ -11,7 +11,7 @@ plugins {
 }
 
 // Add -SNAPSHOT at the end so the stable versions won't see this as an update
-val LoginToVersion = "4.1.1"
+val LoginToVersion = "4.2.0-SNAPSHOT"
 
 val javaVersion = JavaVersion.VERSION_17
 
@@ -28,21 +28,11 @@ subprojects {
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
-    repositories {
-        mavenCentral()
-        maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://hub.spigotmc.org/nexus/content/groups/public/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots")
-        maven("https://repo.codemc.io/repository/maven-releases/")
-        maven("https://repo.alessiodp.com/releases")
-        maven("https://repo.helpch.at/releases/")
-        maven("https://repo.opencollab.dev/main/")
-        maven("https://jitpack.io")
-    }
 
     dependencies {
         implementation("com.google.zxing:core:3.5.3")
         implementation("com.warrenstrange:googleauth:1.5.0")
+        implementation("com.github.Yager400:MinecraftUpdateChecker:1.0.0")
     }
 
     tasks.withType<ProcessResources>().configureEach {
@@ -52,10 +42,6 @@ subprojects {
             expand("version" to ver)
         }
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -91,6 +77,7 @@ tasks {
         relocate("com.warrenstrange.googleauth", "com.github.yager400.loginto.libs.googleauth")
         relocate("org.codehaus.plexus.util", "com.github.yager400.loginto.libs.plexus.util")
         relocate("org.apache", "com.github.yager400.loginto.libs.apache")
+        relocate("com.github.yager400.minecraftupdatechecker", "com.github.yager400.loginto.libs.minecraftupdatechecker")
         exclude("org/slf4j/**")
         exclude("mozilla/**")
 

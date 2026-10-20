@@ -7,44 +7,30 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.common.utils;
 
+import com.github.yager400.minecraftupdatechecker.MinecraftUpdateChecker;
+import com.github.yager400.minecraftupdatechecker.UpdateData;
+import com.github.yager400.minecraftupdatechecker.data.Loader;
+import com.github.yager400.minecraftupdatechecker.data.MinecraftVersion;
+import com.github.yager400.minecraftupdatechecker.data.PluginProvider;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.function.Consumer;
 
 public class Updates {
 
-    public static boolean isThereAnUpdate(String currentVersion) {
-        try {
-            URL url = new URL("https://raw.githubusercontent.com/Yager400/LoginTo/refs/heads/main/build.gradle.kts");
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-
-                String line;
-                String gitVersion = null;
-
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("LoginToVersion")) {
-                        gitVersion = line.replaceAll(".*=\\s*\"([^\"]+)\".*", "$1");
-                        break;
-                    }
-                }
-
-                if (gitVersion == null) {
-                    return true;
-                }
-
-                if (gitVersion.contains("SNAPSHOT")) {
-                    return false;
-                }
-
-                if (!currentVersion.equals(gitVersion)) {
-                    return true;
-                }
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
+    public static void checkForUpdates(String currentVersion, Consumer<UpdateData> onUpdate, Runnable errorUpdate) {
+        new MinecraftUpdateChecker()
+                .setPluginIdentifier("login-to")
+                .setVersion(currentVersion)
+                .setLoaders(Loader.VELOCITY, Loader.BUNGEECORD, Loader.WATERFALL, Loader.BUKKIT, Loader.SPIGOT, Loader.PAPER, Loader.PURPUR, Loader.FOLIA)
+                .setMinecraftVersionRange(MinecraftVersion.V1_13, MinecraftVersion.V26_3)
+                .setPluginProvider(PluginProvider.MODRINTH)
+                .onUpdatePresent(onUpdate)
+                .onError(scheduleError -> {
+                    errorUpdate.run();
+                })
+                .start();
     }
-
 }

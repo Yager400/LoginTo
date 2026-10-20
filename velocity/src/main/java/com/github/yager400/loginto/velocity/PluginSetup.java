@@ -139,11 +139,12 @@ public class PluginSetup {
     public static class UpdateUtils {
         public static void startUpdateCheckerCycle() {
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_CHECKFORUPDATES)) {
-                LoginTo.getServer().getScheduler().buildTask(LoginTo.getInstance(), () -> {
-                    if (Updates.isThereAnUpdate(LoginTo.getContainer().getDescription().getVersion().orElse("0"))) {
-                        LoginTo.getInstance().getLogger().info("A new update for LoginTo is out! Check it on https://modrinth.com/plugin/login-to \n(This is a periodic message)");
-                    }
-                }).delay(1, TimeUnit.HOURS);
+                Updates.checkForUpdates(LoginTo.getContainer().getDescription().getVersion().orElse("1.0.0"), updateData -> {
+                    LoginTo.getLogger().info("A new update for LoginTo is out! Check it on https://modrinth.com/plugin/login-to \n(This is a periodic message)");
+                },
+                () -> {
+                    LoginTo.getLogger().error("Unable to check for updates");
+                });
             }
         }
 

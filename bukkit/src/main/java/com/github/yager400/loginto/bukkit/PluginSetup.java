@@ -238,11 +238,12 @@ public class PluginSetup {
     public static class UpdateUtils {
         public static void startUpdateCheckerCycle() {
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_CHECKFORUPDATES)) {
-                FoliaLib.get().runTaskTimerAsync(() -> {
-                    if (Updates.isThereAnUpdate(LoginTo.getInstance().getDescription().getVersion())) {
-                        LoginTo.getInstance().getLogger().info("A new update for LoginTo is out! Check it on https://modrinth.com/plugin/login-to \n(This is a periodic message)");
-                    }
-                },  0, 72000L);
+                Updates.checkForUpdates(LoginTo.getInstance().getDescription().getVersion(), updateData -> {
+                    LoginTo.getInstance().getLogger().info("A new update for LoginTo is out! Check it on https://modrinth.com/plugin/login-to \n(This is a periodic message)");
+                },
+                () -> {
+                    LoginTo.getInstance().getLogger().severe("Unable to check for updates");
+                });
             }
         }
 
