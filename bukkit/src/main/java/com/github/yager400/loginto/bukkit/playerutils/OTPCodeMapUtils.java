@@ -7,7 +7,7 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bukkit.playerutils;
 
-import com.github.yager400.loginto.folia.FoliaLib;
+import com.github.yager400.loginto.bukkit.LoginTo;
 import com.google.zxing.common.BitMatrix;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,8 +33,10 @@ public class OTPCodeMapUtils {
         meta.setMapId(map.getId());
         item.setItemMeta(meta);
 
-        FoliaLib.get().addItemToInventory(player, item);
-        FoliaLib.get().runTaskLater( () -> {
+        LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+            player.getInventory().addItem(item);
+        });
+        LoginTo.getFoliaLib().getScheduler().runLater(() -> {
             map.getRenderers().clear();
             map.removeRenderer(rendered);
         }, 1200L); // Clear the map render after 60 seconds

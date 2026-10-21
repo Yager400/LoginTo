@@ -16,9 +16,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -72,6 +72,11 @@ public class Database {
         return null;
     }
 
+    public String getColumnIfExists(String columnName) throws SQLException {
+        DatabaseMetaData metaData = this.source.getConnection().getMetaData();
+        return metaData.getColumns(this.source.getConnection().getCatalog(), null, "username", null).getString("COLUMN_NAME");
+    }
+
     private void initDatabase(Path pluginDataSourcePath) {
 
         executeQuery("CREATE TABLE IF NOT EXISTS LoginTo_Players_Accounts(" +
@@ -87,9 +92,14 @@ public class Database {
                 "lastLocationCords TEXT);"
         );
 
-        // Add the column username to older database
-        executeQuery("ALTER TABLE LoginTo_Players_Accounts " +
-                    "ADD COLUMN username TEXT;");
+        try {
+            if (this.getColumnIfExists("username") != null) {
+                // Add the column username to older database
+                executeQuery("ALTER TABLE LoginTo_Players_Accounts " +
+                        "ADD COLUMN IF NOT EXISTS username TEXT;");
+            }
+        } catch (Exception ignored) {
+        }
 
         if (databaseType.equalsIgnoreCase("sqlite")) {
             if (V3_8ToV4_0SQLite.canMigrate(pluginDataSourcePath)) {

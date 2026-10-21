@@ -19,7 +19,6 @@ import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,7 +46,9 @@ public class JoinEvent implements Listener {
             AuthenticatedPlayer authenticatedPlayer = PlayerProtocolUtils.getAuthenticatedPlayer(event.getPlayer().getUniqueId());
 
             if (authenticatedPlayer == null) {
-                FoliaLib.get().kickPlayer(event.getPlayer(), Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_SKIPPEDAUTHENTICATION), event.getPlayer(), null));
+                LoginTo.getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), wrappedTask -> {
+                    event.getPlayer().kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_SKIPPEDAUTHENTICATION), event.getPlayer(), null));
+                });
                 return;
             }
 
@@ -77,7 +78,9 @@ public class JoinEvent implements Listener {
             Player authenticatedPlayerProfile = Bukkit.getPlayer(authenticatedPlayer.playerUUID);
 
             if (authenticatedPlayerProfile == null) {
-                FoliaLib.get().kickPlayer(player, Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_LOGGEDINWITHDIFFERENTUUID), player, null));
+                LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                    player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_LOGGEDINWITHDIFFERENTUUID), player, null));
+                });
                 return;
             }
 
@@ -100,7 +103,9 @@ public class JoinEvent implements Listener {
             FloodgatePlayer floodgatePlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
 
             if (floodgatePlayer == null) {
-                FoliaLib.get().kickPlayer(player, Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_JAVAPLAYERMARKEDASBEDROCK), player, null));
+                LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                    player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_JAVAPLAYERMARKEDASBEDROCK), player, null));
+                });
                 return;
             }
 
@@ -123,9 +128,11 @@ public class JoinEvent implements Listener {
             Tries.addPlayer(player.getUniqueId());
             int timeout = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_AUTHENTICATIONTIMEOUT);
             if (timeout > 0) {
-                FoliaLib.get().runTaskLater(() -> {
+                LoginTo.getFoliaLib().getScheduler().runLater(() -> {
                     if (!Sessions.isPlayerLogged(player.getUniqueId())) {
-                        FoliaLib.get().kickPlayer(player, Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORLONGWAITING), player, null));
+                        LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                            player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORLONGWAITING), player, null));
+                        });
                     }
                 }, timeout * 20L);
             }
@@ -133,7 +140,7 @@ public class JoinEvent implements Listener {
             if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
                 JoinUtils.sendRegisterPrompt(player);
             } else {
-                FoliaLib.get().runTaskTimer(() -> {
+                LoginTo.getFoliaLib().getScheduler().runTimer(() -> {
                     if (Sessions.isPlayerLogged(player.getUniqueId())) {
                         return;
                     }
@@ -154,7 +161,7 @@ public class JoinEvent implements Listener {
                     : "";
 
             final String finalMessage = message;
-            FoliaLib.get().runTaskTimer(() -> {
+            LoginTo.getFoliaLib().getScheduler().runTimer(() -> {
                 if (Sessions.isPlayerLogged(player.getUniqueId())) {
                     return;
                 }
@@ -202,7 +209,7 @@ public class JoinEvent implements Listener {
                         return;
                     }
                 }
-                FoliaLib.get().runAtEntity(event.getPlayer(), () -> {
+                LoginTo.getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), wrappedTask -> {
                     PlayerStatus.setPlayerAsLogged(event.getPlayer());
                 });
             });

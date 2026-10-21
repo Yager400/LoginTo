@@ -13,10 +13,8 @@ import com.github.yager400.loginto.common.api.ApiUtils;
 import com.github.yager400.loginto.common.data.files.WebhookKeys;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.data.database.Database;
-import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.bridge.DatabaseBridge;
-import com.github.yager400.loginto.folia.FoliaLib;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
@@ -38,12 +36,13 @@ public class LoginTo extends JavaPlugin {
     public static YamlReader webhookReader;
     public static BukkitAudiences adventure;
     public static DatabaseBridge databaseBridge;
+    public static com.tcoded.folialib.FoliaLib foliaLib;
 
     @Override
     public void onLoad() {
         LoginTo.instance = this;
         LoginTo.javaPlugin = this;
-        FoliaLib.init(this);
+        LoginTo.foliaLib = new com.tcoded.folialib.FoliaLib(this);
         PluginSetup.saveFiles();
 
         // Use the bukkit yaml reader, otherwise NoClassDefFoundError for SnakeYaml
@@ -74,7 +73,7 @@ public class LoginTo extends JavaPlugin {
 
         // Run those things later, this is because on folia, it gives problems
          // initializing PacketEvents
-        FoliaLib.get().runTaskLater(() -> {
+        LoginTo.getFoliaLib().getScheduler().runLater(() -> {
             PacketEvents.getAPI().init();
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PROXY_BRIDGEBUKKITPROXY)) {
                 try {
@@ -139,5 +138,9 @@ public class LoginTo extends JavaPlugin {
 
     public static DatabaseBridge getDatabaseBridge() {
         return databaseBridge;
+    }
+
+    public static com.tcoded.folialib.FoliaLib getFoliaLib() {
+        return foliaLib;
     }
 }

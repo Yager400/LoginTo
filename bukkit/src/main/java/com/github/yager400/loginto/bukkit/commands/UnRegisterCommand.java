@@ -12,7 +12,6 @@ import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.utils.WebHooks;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -52,7 +51,9 @@ public class UnRegisterCommand implements CommandExecutor, TabCompleter {
         LoginTo.getDatabase().removePlayerRecord(target.getUniqueId());
 
         if (target.isOnline()) {
-            FoliaLib.get().kickPlayer(target.getPlayer(), Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.UNREGISTER_UNREGISTERSUCCESS)));
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(target.getPlayer(), wrappedTask -> {
+                target.getPlayer().kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.UNREGISTER_UNREGISTERSUCCESS)));
+            });
         }
 
         Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.UNREGISTER_ADMINUNREGISTERSUCCESS), sender, null);

@@ -47,7 +47,6 @@ subprojects {
 dependencies {
     implementation(project(":api"))
     implementation(project(":common", "shadow"))
-    implementation(project(":folia-lib"))
     implementation(project(":bukkit", "shadow"))
     implementation(project(":bungeecord", "shadow"))
     implementation(project(":velocity", "shadow"))
@@ -78,7 +77,6 @@ tasks {
         relocate("org.codehaus.plexus.util", "com.github.yager400.loginto.libs.plexus.util")
         relocate("org.apache", "com.github.yager400.loginto.libs.apache")
         relocate("com.github.yager400.minecraftupdatechecker", "com.github.yager400.loginto.libs.minecraftupdatechecker")
-        exclude("org/slf4j/**")
         exclude("mozilla/**")
 
         dependsOn(processResources)

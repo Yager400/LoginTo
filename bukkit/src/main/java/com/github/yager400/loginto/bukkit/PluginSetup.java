@@ -23,7 +23,6 @@ import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.utils.Updates;
 import com.github.yager400.loginto.common.utils.WebHooks;
-import com.github.yager400.loginto.folia.FoliaLib;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.byteflux.libby.BukkitLibraryManager;

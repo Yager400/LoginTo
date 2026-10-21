@@ -11,7 +11,6 @@ import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,7 +26,7 @@ public class PlayerStatus {
         Tries.removePlayer(player.getUniqueId());
 
         // Execute those later
-        FoliaLib.get().runTaskLater(() -> {
+        LoginTo.getFoliaLib().getScheduler().runLater(() -> {
             // Teleport the player to the last position
             if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SPAWNSETTING_RESTOREPREVIOUSLOCATION)
                     && LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SPAWNSETTING_ENABLED)) {
@@ -39,7 +38,7 @@ public class PlayerStatus {
                     double y = Double.parseDouble(positionInformation[2]);
                     double z = Double.parseDouble(positionInformation[3]);
                     Location location = new Location(world, x, y, z);
-                    FoliaLib.get().teleport(player, location);
+                    LoginTo.getFoliaLib().getScheduler().teleportAsync(player, location);
                 }
             }
 
@@ -47,7 +46,9 @@ public class PlayerStatus {
             player.updateInventory();
 
             // Remove the potion effect from the player
-            FoliaLib.get().removePotionEffect(player, PotionEffectType.BLINDNESS);
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                player.removePotionEffect(PotionEffectType.BLINDNESS);
+            });
         }, 5L); // Run this after 0.25 seconds so the player can be fully initialized
 
         // Update the player's name since it might be null
@@ -63,7 +64,9 @@ public class PlayerStatus {
             player.leaveVehicle();
         }
 
-        FoliaLib.get().addPotionEffect(player, new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1));
+        LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1));
+        });
 
         // Teleport to the spawn
         if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SPAWNSETTING_ENABLED)) {
@@ -72,7 +75,9 @@ public class PlayerStatus {
             double y =      LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SPAWNSETTING_CORDS_Y) + 0.5;
             double z =      LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_SPAWNSETTING_CORDS_Z) + 0.5;
 
-            FoliaLib.get().teleport(player, new Location(world, x, y, z));
+            LoginTo.getFoliaLib().getScheduler().runLater(() -> {
+                LoginTo.getFoliaLib().getScheduler().teleportAsync(player, new Location(world, x, y, z));
+            }, 1);
         }
     }
 

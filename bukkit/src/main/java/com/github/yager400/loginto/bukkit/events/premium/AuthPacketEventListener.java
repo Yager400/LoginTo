@@ -25,7 +25,6 @@ import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.players.AuthenticatedPlayer;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -106,8 +105,7 @@ public class AuthPacketEventListener implements PacketListener {
             }
 
             event.setCancelled(true);
-            FoliaLib.get().runTaskAsync(() -> {
-
+            LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
                 //Execute an http request to mojang servers for knowing if the players if premium or not, returns the response code code
                 int mojangNameApiResCode = PlayerProtocolUtils.getMojangAccountType(pName, cacheDB);
 
@@ -124,7 +122,8 @@ public class AuthPacketEventListener implements PacketListener {
                         || (LoginTo.getDatabase().isCracked(offlineUUID) && databaseContainsPlayer))) {
                     plugin.getLogger().info("Cracked");
                     //Run this in sync mode to avoid problems
-                    FoliaLib.get().runTask(() -> {
+
+                    LoginTo.getFoliaLib().getScheduler().runNextTick(wrappedTask1 -> {
                         PlayerProtocolUtils.addAuthenticatedPlayer(offlineUUID, new AuthenticatedPlayer(
                                 offlineUUID,
                                 false,
@@ -159,7 +158,7 @@ public class AuthPacketEventListener implements PacketListener {
                     PacketEvents.getAPI().getProtocolManager().sendPacket(event.getChannel(), packetEncReq);
 
                     // Map cleaning, this is used because, if the player is cracked, he will get disconnected at this point
-                    FoliaLib.get().runTaskLater(() -> {
+                    LoginTo.getFoliaLib().getScheduler().runLater(() -> {
                         onLoginUsers.remove(user);
                     }, 200);
 
@@ -210,7 +209,7 @@ public class AuthPacketEventListener implements PacketListener {
             }
 
             String serverHash = ProtocolUtils.getServerIdHashString("", sharedSecret, userTarget.pair.getPublic());
-            FoliaLib.get().runTaskAsync(() -> {
+            LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
                 try {
                     String sessionURL = String.format(
                             "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=%s&serverId=%s",
@@ -222,7 +221,7 @@ public class AuthPacketEventListener implements PacketListener {
                     connection.setRequestMethod("GET");
                     connection.connect();
                     int status = connection.getResponseCode();
-                    FoliaLib.get().runTask(() -> {
+                    LoginTo.getFoliaLib().getScheduler().runNextTick(wrappedTask2 -> {
                         if (status != 200) {
                             //Instead of letting the player connect as cracked, they shouldn't be able to use this username,
                              //so the connection is closed
@@ -246,7 +245,7 @@ public class AuthPacketEventListener implements PacketListener {
                         onLoginUsers.remove(user);
 
                         //Clean up if the player disconnect after the server verified them
-                        FoliaLib.get().runTaskLater(() -> {
+                        LoginTo.getFoliaLib().getScheduler().runLater(() -> {
                             PlayerProtocolUtils.getAuthenticatedPlayer(userTarget.uuid);
                         }, 200);
                     });

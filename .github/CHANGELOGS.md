@@ -9,3 +9,5 @@ ___
 docs: rewrite README with updated information and improved layout. Added the docs commit type
 ___
 feat: added the username column to the database (#34)
+___
+rebase: switched from integrated folia-lib to an external api (FoliaLib)

@@ -7,7 +7,6 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bukkit.commands;
 
-import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;

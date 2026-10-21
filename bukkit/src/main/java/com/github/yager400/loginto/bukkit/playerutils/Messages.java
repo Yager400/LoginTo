@@ -11,7 +11,6 @@ import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.KyoriHandler;
 import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.LegacyKyoriHandler;
 import com.github.yager400.loginto.bukkit.playerutils.kyorihandlers.NativeKyoriHandler;
-import com.github.yager400.loginto.folia.FoliaLib;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -82,7 +81,7 @@ public class Messages {
 
         public static void sendText(String message, Player player, HashMap<String, String> stringReplacement) {
             // Run this with the folia lib since the player might not be in the thread we are calling this function
-            FoliaLib.get().runAtEntity(player, () -> {
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
                 if (message.startsWith("<title>")) {
                     sendTitle(message, player, stringReplacement);
                 } else {

@@ -14,7 +14,6 @@ import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
-import com.github.yager400.loginto.folia.FoliaLib;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -50,7 +49,7 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        FoliaLib.get().runTaskAsync(() -> {
+        LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(newPassword, characters)) {
                 HashMap<String, String> placeholders = new HashMap<>();
@@ -111,7 +110,7 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
             LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
             String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
-            FoliaLib.get().runAtEntity(player, () -> {
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask ->{
                 EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
             });
         } else {
@@ -140,7 +139,7 @@ public class ChangePasswordCommand implements CommandExecutor, TabCompleter {
                 LoginTo.getDatabase().updatePassword(player.getUniqueId(), newPassword);
                 Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.CHANGEPASSWORD_PASSWORDCHANGED), sender, null);
                 String hashedPassword = SecurityUtils.Hashing.hashString(newPassword);
-                FoliaLib.get().runAtEntity(player, () -> {
+                LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
                     EventDispatcher.callPlayerChangePasswordEvent(player.getUniqueId(), hashedPassword);
                 });
             } else {

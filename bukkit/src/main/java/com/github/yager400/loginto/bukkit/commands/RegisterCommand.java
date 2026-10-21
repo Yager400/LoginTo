@@ -16,7 +16,6 @@ import com.github.yager400.loginto.common.api.EventDispatcher;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -57,7 +56,7 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        FoliaLib.get().runTaskAsync(() -> {
+        LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
             char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
             if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(password, characters)) {
                 HashMap<String, String> placeholders = new HashMap<>();
@@ -96,7 +95,7 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
             WebHooks.sendRegisterWebhook(player.getName(), player.getUniqueId());
 
             String hashedPassword = SecurityUtils.Hashing.hashString(password);
-            FoliaLib.get().runAtEntity(player, () -> {
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
                 EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), hashedPassword);
             });
         });

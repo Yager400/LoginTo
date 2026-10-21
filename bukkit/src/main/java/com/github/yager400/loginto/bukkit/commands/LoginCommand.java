@@ -17,7 +17,6 @@ import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
-import com.github.yager400.loginto.folia.FoliaLib;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,7 +60,9 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
             if (tries > 0) {
                 Tries.incrementTries(player.getUniqueId());
                 if (Tries.isPlayerOutOfTries(player.getUniqueId(), tries)) {
-                    FoliaLib.get().kickPlayer(player, Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORFAILINGTHELOGIN)));
+                    LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                        player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORFAILINGTHELOGIN)));
+                    });
                     return true;
                 }
             }
@@ -73,9 +74,9 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
 
         WebHooks.sendLoginWebhook(player.getName(), player.getUniqueId());
 
-        FoliaLib.get().runTaskAsync(() -> {
+        LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
             String hashedPassword = SecurityUtils.Hashing.hashString(password);
-            FoliaLib.get().runAtEntity(player, () -> {
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
                 EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), hashedPassword);
             });
         });

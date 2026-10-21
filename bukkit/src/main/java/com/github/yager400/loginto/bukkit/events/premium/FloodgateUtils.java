@@ -11,7 +11,6 @@ import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.common.players.AuthenticatedPlayer;
 import com.github.yager400.loginto.common.players.PlayerProtocolUtils;
-import com.github.yager400.loginto.folia.FoliaLib;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.bukkit.plugin.Plugin;
@@ -25,7 +24,7 @@ public class FloodgateUtils {
 
         if (bedrockPlayer != null && !bedrockPlayer.getXuid().isEmpty()) {
             plugin.getLogger().info("Bedrock");
-            FoliaLib.get().runTask(() -> {
+            LoginTo.getFoliaLib().getScheduler().runNextTick(wrappedTask -> {
                 PlayerProtocolUtils.addAuthenticatedPlayer(bedrockPlayer.getJavaUniqueId(), new AuthenticatedPlayer(
                         bedrockPlayer.getJavaUniqueId(),
                         false,

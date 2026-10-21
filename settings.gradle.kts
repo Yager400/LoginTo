@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = "LoginTo"
 
-include("api", "common", "folia-lib", "bukkit", "bungeecord", "velocity")
+include("api", "common", "bukkit", "bungeecord", "velocity")
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -18,5 +18,6 @@ dependencyResolutionManagement {
         maven("https://repo.helpch.at/releases/")
         maven("https://repo.opencollab.dev/main/")
         maven("https://jitpack.io")
+        maven("https://repo.tcoded.com/releases")
     }
 }
