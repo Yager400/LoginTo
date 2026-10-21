@@ -1,200 +1,60 @@
 ![LoginTo](https://cdn.modrinth.com/data/cached_images/9d4250ca2166d5977633f4c456472eb6e43a178a.png)
+<div align="center">
+    <a href="https://github.com/Yager400/LoginTo/actions"><img src="https://img.shields.io/github/actions/workflow/status/Yager400/LoginTo/.github%2Fworkflows%2Fgradle.yml?branch=main&style=for-the-badge"></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/Yager400/LoginTo?style=for-the-badge"></a>
+    <a href="https://bstats.org/plugin/bukkit/LoginTo/28083"><img src="https://img.shields.io/bstats/servers/28083?style=for-the-badge"></a>
+    <a href="https://www.jitpack.io/#Yager400/LoginTo"><img src="https://img.shields.io/jitpack/version/com.github.Yager400/LoginTo?style=for-the-badge&logo=jitpack"></a>
+    <a href="https://modrinth.com/plugin/login-to"><img src="https://img.shields.io/modrinth/dt/login-to?style=for-the-badge&logo=modrinth"></a>
+</div>
 
 ## **What is LoginTo?**
-LoginTo is a fully customizable authentication plugin for your Minecraft servers or network.  
-It offers complete control over messages, along with a feature-rich configuration file that allows you to easily adjust and personalize every aspect of the plugin.
+LoginTo is a simple, fast, customizable and open source authentication plugin for Minecraft servers and networks.<br>
+It supports a wide range of Minecraft server versions and proxy platforms, providing a consistent authentication experience across supported environments.
 
-## **Why choose LoginTo?**
-LoginTo is simple to set up while still providing powerful features, including:
-- Premium authentication (auto-login)
+## **Features**
+LoginTo is simple to set up and use while still providing useful features:
+- AutoLogin for premium and bedrock players
+- Bruteforce protection
+- Login timeout
+- Player inventories are hidden until authentication
 - Secure password hashing using BCrypt
-- Full proxy support
-- Advanced configuration options
+- All the messages are fully customizable
+- Provides a free and simple API to hook in the plugin
+- OTP verification for password changes
+- Much more...
 
-It is built to help you keep your Minecraft server or network secure without sacrificing ease of use.
+## **Updates and support**
+LoginTo is actively maintained, with minor releases being shipped within a week or less.<br>
+You can get support by joining in the <a href="https://discord.gg/wZfZ8Q54mX">discord server</a> or ask for help in the <a href="https://github.com/Yager400/LoginTo/issues">github issues</a>
 
-## **Updates**
-LoginTo is actively maintained and regularly updated with bug fixes and new features.
+## **Plugin permissions**
 
-# Plugin
-
-<details>
-  <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">
-    Commands
-  </summary>
-
-  <details>
-  <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer; margin-left: 10px">
-Bukkit
-</summary>
-<div style="margin-top: 10px">
-
-  <pre>/register &lt;password> &lt;confirmPassword></pre>
-  <p>Registers a new account.<br>
-  <strong>Aliases:</strong> /r, /reg</p>
-  <hr>
-
-  <pre>/login &lt;password></pre>
-  <p>Logs into your account.<br>
-  <strong>Aliases:</strong> /l</p>
-  <hr>
-
-  <pre>/delacc &lt;player> &lt;confirm></pre>
-  <p>Deletes a player's account.<br>
-  <strong>Permission:</strong> OP (by default)</p>
-  <hr>
-
-  <pre>/changepassword &lt;oldPassword> &lt;newPassword></pre>
-  <p>Changes your account password.</p>
-  <hr>
-
-  <pre>/premium [player]</pre>
-  <p>Sets yourself or another player as a premium user.</p>
-  <hr>
-
-  <pre>/cracked</pre>
-  <p>Sets your account as cracked (disables premium validation).</p>
-  <hr>
-
-  <pre>/getlogs &lt;player> [date: dd/MM/yyyy]</pre>
-  <p>Displays login and registration logs for a player.</p>
-  <hr>
-
-  <pre>/otp</pre>
-  <p>Enable the OTP code command.</p>
-  <hr>
-
-  <pre>/loginto</pre>
-  <p>Enable the LoginTo admin command</p>
-
-  </div>
-</details>
-
-<details>
-  <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer; margin-left: 10px">
-Velocity / Bungeecord
-</summary>
-<div style="margin-top: 10px">
-
-  <pre>/register &lt;password> &lt;confirmPassword></pre>
-  <p>Registers a new account.<br>
-  <strong>Aliases:</strong> /r, /reg</p>
-  <hr>
-
-  <pre>/login &lt;password></pre>
-  <p>Logs into your account.<br>
-  <strong>Aliases:</strong> /l</p>
-  <hr>
-
-  <pre>/unregister &lt;player_name> &lt;confirm></pre>
-  <p>Deletes a player's account.<br>
-  <strong>Permission:</strong> OP (by default)</p>
-  <hr>
-
-  <pre>/changepassword &lt;oldPassword> &lt;newPassword></pre>
-  <p>Changes your account password.</p>
-  <hr>
-
-  <pre>/premium</pre>
-  <p>Sets your account as premium</p>
-  <hr>
-
-  <pre>/cracked</pre>
-  <p>Sets your account as cracked (disables premium validation).</p>
-  <hr>
-
-  <pre>/loginto</pre>
-  <p>Enable the LoginTo admin command</p>
-  <hr>
-
-  </div>
-</details>
-</details>
-
-<details>
-  <summary style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer;">
-    Permissions
-  </summary>
-
-  <details style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer; margin-left: 10px">
-    <summary>
-      Bukkit
-    </summary>
+Permission for using the **/register** command
 <pre>loginto.register</pre>
-      <p>Allows players to use the <code>/register</code> command.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.login</pre>
-      <p>Allows players to use the <code>/login</code> command.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.delacc</pre>
-      <p>Allows players to delete accounts using <code>/delacc</code>.<br>
-      <strong>Default:</strong> OP</p>
-      <hr>
-      <pre>loginto.changepassword</pre>
-      <p>Allows players to change their password with <code>/changepassword</code>.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.premium.me</pre>
-      <p>Allows players to set their own account as premium.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.premium.other</pre>
-      <p>Allows setting other players as premium using <code>/premium &lt;player></code>.<br>
-      <strong>Default:</strong> OP</p>
-      <hr>
-      <pre>loginto.cracked</pre>
-      <p>Allows players to switch their account to cracked mode.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.getlogs</pre>
-      <p>Allows viewing login and registration logs with <code>/getlogs</code>.<br>
-      <strong>Default:</strong> OP</p>
-      <hr>
-      <pre>loginto.otp</pre>
-      <p>Allows players to use the <code>/otp</code> command.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.loginto</pre>
-      <p>Allows players to use the <code>/loginto</code> command.<br>
-      <strong>Default:</strong> OP</p>
-  </details>
-
-<details style="background-color: #4a4a4a; border-radius: 5px; margin-top: 20px; cursor:pointer; margin-left: 10px">
-    <summary>
-      Velocity / Bungeecord
-    </summary>
-      <pre>loginto.register</pre>
-      <p>Allows players to use the <code>/register</code> command.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.login</pre>
-      <p>Allows players to use the <code>/login</code> command.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.unregister</pre>
-      <p>Allows players to delete accounts using <code>/delacc</code>.<br>
-      <strong>Default:</strong> No (requires luckperms)</p>
-      <hr>
-      <pre>loginto.changepassword</pre>
-      <p>Allows players to change their password with <code>/changepassword</code>.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.premium</pre>
-      <p>Allows players to set their own account as premium.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.cracked</pre>
-      <p>Allows players to switch their account to cracked mode.<br>
-      <strong>Default:</strong> Everyone</p>
-      <hr>
-      <pre>loginto.loginto</pre>
-      <p>Allows players to use the <code>/loginto</code> command.<br>
-      <strong>Default:</strong> OP</p>
-  </details>
-</details>
-
+___
+Permission for using the **/login** command
+<pre>loginto.login</pre>
+___
+Permission for using the **/unregister** command
+<pre>loginto.unregister</pre>
+___
+Permission for using the **/changepassword** command
+<pre>loginto.changepassword</pre>
+___
+Permission for using the **/premium** command
+<pre>loginto.premium.me</pre>
+___
+Permission for using the **/premium** command *on other players*
+<pre>loginto.premium.other</pre>
+___
+Permission for using the **/cracked** command
+<pre>loginto.cracked.me</pre>
+___
+Permission for using the **/cracked** command *on other players*
+<pre>loginto.cracked.other</pre>
+___
+Permission for using the **/otp** command
+<pre>loginto.otp</pre>
 
 ## **Images**
 _Register command prompt_<br>
@@ -203,7 +63,7 @@ _Login command prompt_<br>
 
 ![Login](https://cdn.modrinth.com/data/A5foNgax/images/2c7d60e5928a1b0d66ae08ac182135976ff143f7.png)<br>
 
-_100% fully customizable messages, from text to colors<br>
+_100% fully customizable messages, from text to colors_<br>
 
 ![Message](https://cdn.modrinth.com/data/A5foNgax/images/33ff6f43640a172fca1d49ee2052cba2db08523f.png)<br>
 

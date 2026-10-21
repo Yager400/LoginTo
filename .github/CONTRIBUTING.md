@@ -9,6 +9,7 @@ We use **Conventional Commits**. Commits should look like this:
 - `feat: ...` for a new feature.
 - `fix: ...` for a bug fix.
 - `refactor: ...` for changes that don't modify the behavior of the plugin.
+- `docs: ...` for documentation or Markdown file changes.
 ---
 # Changelog Guidelines
 
