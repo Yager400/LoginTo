@@ -85,7 +85,7 @@ public class RegisterCommand implements SimpleCommand {
                 return;
             }
 
-            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), password, "", false, false, false, player.getRemoteAddress().getAddress().getHostAddress());
+            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), player.getUsername(), password, "", false, false, false, player.getRemoteAddress().getAddress().getHostAddress());
 
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS), sender, null);
             PlayerStatus.setPlayerAsLogged(player);

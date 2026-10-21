@@ -35,6 +35,9 @@ public class PlayerStatus {
                 LoginTo.getDatabaseBridge().addPlayer(player.getUniqueId());
             }
         }
+
+        // Update the player's name since it might be null
+        LoginTo.getDatabase().updateUsername(player.getUniqueId(), player.getName());
     }
 
     public static void setPlayerAsNotLogged(ProxiedPlayer player) {
@@ -65,6 +68,9 @@ public class PlayerStatus {
                 LoginTo.getDatabaseBridge().addPlayer(event.getPlayer().getUniqueId());
             }
         }
+
+        // Update the player's name since it might be null
+        LoginTo.getDatabase().updateUsername(event.getPlayer().getUniqueId(), event.getPlayer().getName());
     }
 
     public static void setPlayerAsNotLoggedViaEvent(ServerConnectEvent event) {

@@ -88,7 +88,7 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
                 return;
             }
 
-            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), password, "", false, false, false, player.getAddress().getAddress().getHostAddress());
+            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), player.getName(), password, "", false, false, false, player.getAddress().getAddress().getHostAddress());
 
             Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS), sender, null);
             PlayerStatus.setPlayerAsLogged(player);

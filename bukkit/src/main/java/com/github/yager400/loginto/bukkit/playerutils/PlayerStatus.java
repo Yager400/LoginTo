@@ -49,6 +49,9 @@ public class PlayerStatus {
             // Remove the potion effect from the player
             FoliaLib.get().removePotionEffect(player, PotionEffectType.BLINDNESS);
         }, 5L); // Run this after 0.25 seconds so the player can be fully initialized
+
+        // Update the player's name since it might be null
+        LoginTo.getDatabase().updateUsername(player.getUniqueId(), player.getName());
     }
 
     public static void setPlayerAsNotLogged(Player player) {

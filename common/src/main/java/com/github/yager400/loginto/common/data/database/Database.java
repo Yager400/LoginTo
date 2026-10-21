@@ -76,6 +76,7 @@ public class Database {
 
         executeQuery("CREATE TABLE IF NOT EXISTS LoginTo_Players_Accounts(" +
                 "uuid TEXT NOT NULL," +
+                "username TEXT," +
                 "password TEXT NOT NULL," +
                 "secret TEXT," +
                 "isPremium BOOLEAN," +
@@ -85,6 +86,10 @@ public class Database {
                 "joinEpoch BIGINT," +
                 "lastLocationCords TEXT);"
         );
+
+        // Add the column username to older database
+        executeQuery("ALTER TABLE LoginTo_Players_Accounts " +
+                    "ADD COLUMN username TEXT;");
 
         if (databaseType.equalsIgnoreCase("sqlite")) {
             if (V3_8ToV4_0SQLite.canMigrate(pluginDataSourcePath)) {
@@ -100,10 +105,11 @@ public class Database {
         }
     }
 
-    public void insertPlayer(UUID uuid, String password, String secret, Boolean isPremium, Boolean isBedrock, Boolean isCracked, String joinIP) {
+    public void insertPlayer(UUID uuid, String username, String password, String secret, Boolean isPremium, Boolean isBedrock, Boolean isCracked, String joinIP) {
         CompletableFuture.runAsync(() -> executeQuery(
-                "INSERT INTO LoginTo_Players_Accounts(uuid, password, secret, isPremium, isBedrock, isCracked, joinIp, joinEpoch) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+                "INSERT INTO LoginTo_Players_Accounts(uuid, username, password, secret, isPremium, isBedrock, isCracked, joinIp, joinEpoch) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
                 uuid.toString(),
+                username,
                 SecurityUtils.Hashing.hashString(password),
                 secret,
                 isPremium,
@@ -111,6 +117,14 @@ public class Database {
                 isCracked,
                 SecurityUtils.Hashing.hashString(joinIP),
                 System.currentTimeMillis()/1000
+        ));
+    }
+
+    public void updateUsername(UUID uuid, String username) {
+        CompletableFuture.runAsync(() -> executeQuery(
+                "UPDATE LoginTo_Players_Accounts SET username = ? WHERE uuid = ?;",
+                username,
+                uuid.toString()
         ));
     }
 
