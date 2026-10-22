@@ -74,7 +74,7 @@ public class Database {
 
     public String getColumnIfExists(String columnName) throws SQLException {
         DatabaseMetaData metaData = this.source.getConnection().getMetaData();
-        return metaData.getColumns(this.source.getConnection().getCatalog(), null, "username", null).getString("COLUMN_NAME");
+        return metaData.getColumns(this.source.getConnection().getCatalog(), null, columnName, null).getString("COLUMN_NAME");
     }
 
     private void initDatabase(Path pluginDataSourcePath) {

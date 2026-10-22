@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation(project(":api"))
     compileOnly(project(":common"))
-    implementation("com.tcoded:FoliaLib:0.5.1")
+    implementation("com.github.TechnicallyCoded:FoliaLib:0.4.4")
     implementation("net.byteflux:libby-bukkit:1.3.1")
     compileOnly("org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT")
     compileOnly("com.github.retrooper:packetevents-spigot:2.14.0")

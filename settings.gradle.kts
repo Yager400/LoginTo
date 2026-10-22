@@ -18,6 +18,5 @@ dependencyResolutionManagement {
         maven("https://repo.helpch.at/releases/")
         maven("https://repo.opencollab.dev/main/")
         maven("https://jitpack.io")
-        maven("https://repo.tcoded.com/releases")
     }
 }
