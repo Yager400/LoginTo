@@ -43,7 +43,7 @@ public class Messages {
         return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
-    private static String formatMessage(String message, Player player, HashMap<String, String> stringReplacement) {
+    public static String formatMessage(String message, Player player, HashMap<String, String> stringReplacement) {
         // PlaceholderAPI replacement
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             if (player != null) {

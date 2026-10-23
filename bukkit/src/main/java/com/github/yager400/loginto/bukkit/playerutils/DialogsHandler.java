@@ -23,9 +23,12 @@ import com.github.retrooper.packetevents.resources.ResourceLocation;
 import com.github.retrooper.packetevents.wrapper.common.server.WrapperCommonServerShowDialog;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientCustomClickAction;
 import com.github.yager400.loginto.bukkit.LoginTo;
+import com.github.yager400.loginto.bukkit.commands.LoginCommand;
+import com.github.yager400.loginto.bukkit.commands.RegisterCommand;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.DialogKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
+import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.players.Tries;
 import org.bukkit.entity.Player;
 
@@ -53,6 +56,13 @@ public class DialogsHandler extends PacketListenerAbstract {
     }
 
     public static void handleDialogResponse(Player player, WrapperPlayClientCustomClickAction packet) {
+        if (!packet.getId().toString().startsWith(NAMESPACE)) {
+            // This is not a LoginTo dialog
+            return;
+        }
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            return;
+        }
         LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
             try {
                 if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
@@ -71,23 +81,19 @@ public class DialogsHandler extends PacketListenerAbstract {
     private static void handleResponseLogin(Player player, WrapperPlayClientCustomClickAction packet) throws Exception {
         String action = packet.getId().toString();
         if (action.endsWith(SEND_PSW)) {
-            if (Tries.isPlayerOutOfTries(player.getUniqueId(), LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_MAXLOGINATTEMPTS))) {
-                LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
-                    player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORFAILINGTHELOGIN)));
-                });
-                return;
-            }
             if (!(packet.getPayload() instanceof NBTCompound)) {
                 return;
             }
             NBTCompound compound = (NBTCompound) packet.getPayload();
             String password = compound.getStringTagValueOrThrow(PASSWORD);
-            if (LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), password)) {
-                PlayerStatus.setPlayerAsLogged(player);
-                Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINSUCCESS), player, null);
-            } else {
-                Tries.incrementTries(player.getUniqueId());
-                DialogUtils.sendDialog(player, true, true);
+
+            String message = LoginCommand.handleLogin(player, password);
+            if (message != null) {
+                if (message.equalsIgnoreCase(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINSUCCESS))) {
+                    Messages.player.sendText(message, player, null);
+                } else {
+                    DialogUtils.sendDialog(player, true, message);
+                }
             }
         } else if (action.endsWith(DISCONNECT)) {
             LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
@@ -105,15 +111,13 @@ public class DialogsHandler extends PacketListenerAbstract {
             NBTCompound compound = (NBTCompound) packet.getPayload();
             String password = compound.getStringTagValueOrThrow(PASSWORD);
             String password2 = compound.getStringTagValueOrThrow(CONFIRMED_PASSWORD);
-            if (!password.equals(password2)) {
-                return;
-            }
-            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), player.getName(),
-                    password, "", false, false,
-                    false, player.getAddress().getAddress().getHostAddress());
 
-            PlayerStatus.setPlayerAsLogged(player);
-            Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS), player, null);
+            String message = RegisterCommand.handleRegistration(player, password, password2);
+            if (!message.equalsIgnoreCase(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS))) {
+                DialogUtils.sendDialog(player, false, message);
+            } else {
+                Messages.player.sendText(message, player, null);
+            }
         } else if (action.endsWith(DISCONNECT)) {
             LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
                 player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getDialogReader().getString(DialogKeys.MESSAGES_KICK_REGISTERKICK)));
@@ -122,12 +126,12 @@ public class DialogsHandler extends PacketListenerAbstract {
     }
 
     public static class DialogUtils {
-        public static void sendDialog(Player player, boolean forLogin, boolean addWrongPswBody) {
+        public static void sendDialog(Player player, boolean forLogin, String errorMessage) {
             List<DialogBody> bodies = new ArrayList<>();
-            if (addWrongPswBody) {
+            if (errorMessage != null) {
                 bodies.add(
                         new PlainMessageDialogBody(
-                                new PlainMessage(Messages.toCompForm(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_WRONGPASSWORD), player, null), 200)
+                                new PlainMessage(Messages.toCompForm(errorMessage, player, null), 200)
                         )
                 );
             }

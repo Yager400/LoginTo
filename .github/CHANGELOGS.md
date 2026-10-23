@@ -13,3 +13,5 @@ ___
 rebase: switched from integrated folia-lib to an external api (FoliaLib)
 ___
 feat: added experimental dialog support
+___
+fix: fixed dialog login and register, now it's the same as the command

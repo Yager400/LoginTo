@@ -77,7 +77,7 @@ public class JoinEvent implements Listener {
             if (PacketEvents.getAPI().getPlayerManager().getUser(event.getPlayer())
                     .getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21_6) &&
                 LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_USEDIALOGSWHENPOSSIBLE)) {
-                DialogsHandler.DialogUtils.sendDialog(event.getPlayer(), LoginTo.getDatabase().databaseContainsPlayer(event.getPlayer().getUniqueId()), false);
+                DialogsHandler.DialogUtils.sendDialog(event.getPlayer(), LoginTo.getDatabase().databaseContainsPlayer(event.getPlayer().getUniqueId()), null);
             } else {
                 Authentications.normalOrCrackedAuthentication(event.getPlayer());
             }

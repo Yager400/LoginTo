@@ -42,43 +42,11 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
             return false;
         }
 
-        if (Sessions.isPlayerLogged(player.getUniqueId())) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_ALREADYLOGGEDIN), sender, null);
-            return true;
-        }
-
-        if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_NOTREGISTERED), sender, null);
-            return true;
-        }
-
-        String password = args[0];
-
-        if (!LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), password)) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_WRONGPASSWORD), sender, null);
-            int tries = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_MAXLOGINATTEMPTS);
-            if (tries > 0) {
-                Tries.incrementTries(player.getUniqueId());
-                if (Tries.isPlayerOutOfTries(player.getUniqueId(), tries)) {
-                    LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
-                        player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORFAILINGTHELOGIN)));
-                    });
-                    return true;
-                }
-            }
-            return true;
-        }
-
-        Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINSUCCESS), sender, null);
-        PlayerStatus.setPlayerAsLogged(player);
-
-        WebHooks.sendLoginWebhook(player.getName(), player.getUniqueId());
-
         LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
-            String hashedPassword = SecurityUtils.Hashing.hashString(password);
-            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
-                EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), hashedPassword);
-            });
+            String message = LoginCommand.handleLogin(player, args[0]);
+            if (message != null) {
+                Messages.sender.sendTextOrMessage(message, sender, null);
+            }
         });
 
         return true;
@@ -93,6 +61,41 @@ public class LoginCommand implements CommandExecutor, TabCompleter {
         }
 
         return list;
+    }
+
+    public static String handleLogin(Player player, String password) {
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            return LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_ALREADYLOGGEDIN);
+        }
+
+        if (!LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+            return LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_NOTREGISTERED);
+        }
+
+        if (!LoginTo.getDatabase().isPasswordCorrect(player.getUniqueId(), password)) {
+            int tries = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_MAXLOGINATTEMPTS);
+            if (tries > 0) {
+                Tries.incrementTries(player.getUniqueId());
+                if (Tries.isPlayerOutOfTries(player.getUniqueId(), tries)) {
+                    LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask -> {
+                        player.kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.DURINGLOGIN_KICKEDFORFAILINGTHELOGIN)));
+                    });
+                    return null;
+                }
+            }
+            return LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_WRONGPASSWORD);
+        }
+        PlayerStatus.setPlayerAsLogged(player);
+
+        WebHooks.sendLoginWebhook(player.getName(), player.getUniqueId());
+
+        LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
+            String hashedPassword = SecurityUtils.Hashing.hashString(password);
+            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
+                EventDispatcher.callPlayerLoginEvent(player.getUniqueId(), hashedPassword);
+            });
+        });
+        return LoginTo.getMessageReader().getString(MessagesKeys.LOGIN_LOGINSUCCESS);
     }
 
 }

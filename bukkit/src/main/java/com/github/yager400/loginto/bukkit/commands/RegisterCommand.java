@@ -13,6 +13,7 @@ import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.bukkit.playerutils.PlayerStatus;
 import com.github.yager400.loginto.common.api.EventDispatcher;
+import com.github.yager400.loginto.common.data.files.ValueKey;
 import com.github.yager400.loginto.common.players.Sessions;
 import com.github.yager400.loginto.common.utils.SecurityUtils;
 import com.github.yager400.loginto.common.utils.WebHooks;
@@ -45,59 +46,9 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
         String password = args[0];
         String confirmPassword = args[1];
 
-        if (!password.equals(confirmPassword)) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDCONFIRMATIONMISMATCH), sender, null);
-            return true;
-        }
-
-        // If the player is logged, they already have an account
-        if (Sessions.isPlayerLogged(player.getUniqueId())) {
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
-            return true;
-        }
-
         LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
-            char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
-            if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(password, characters)) {
-                HashMap<String, String> placeholders = new HashMap<>();
-                placeholders.put("%characters%", new String(characters));
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_NOREQUIREDCHARACTERERROR), sender, placeholders);
-                return;
-            }
-
-            int min = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_PASSWORDLENGTH_MIN);
-            int max = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_PASSWIRDLENGTH_MAX);
-            if (!SecurityUtils.PasswordSecurity.matchesLengthRequirement(password, min, max)) {
-                HashMap<String, String> placeholders = new HashMap<>();
-                placeholders.put("%min_length%", String.valueOf(min));
-                placeholders.put("%max_length%", String.valueOf(max));
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDLENGTHERROR), sender, placeholders);
-                return;
-            }
-
-            if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
-                if (SecurityUtils.PasswordSecurity.isCommon(password, LoginTo.getInstance().getDataFolder().toPath(), player.getName())) {
-                    Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDISTOOSIMPLE), sender, null);
-                    return;
-                }
-            }
-
-            if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
-                Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED), sender, null);
-                return;
-            }
-
-            LoginTo.getDatabase().insertPlayer(player.getUniqueId(), player.getName(), password, "", false, false, false, player.getAddress().getAddress().getHostAddress());
-
-            Messages.sender.sendTextOrMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS), sender, null);
-            PlayerStatus.setPlayerAsLogged(player);
-
-            WebHooks.sendRegisterWebhook(player.getName(), player.getUniqueId());
-
-            String hashedPassword = SecurityUtils.Hashing.hashString(password);
-            LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
-                EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), hashedPassword);
-            });
+            String message = RegisterCommand.handleRegistration(player, password, confirmPassword);
+            Messages.sender.sendTextOrMessage(message, sender, null);
         });
 
         return true;
@@ -113,6 +64,55 @@ public class RegisterCommand implements CommandExecutor, TabCompleter {
             list.add("<confirmPassword>");
         }
         return list;
+    }
+
+    public static String handleRegistration(Player player, String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDCONFIRMATIONMISMATCH);
+        }
+
+        // If the player is logged, they already have an account
+        if (Sessions.isPlayerLogged(player.getUniqueId())) {
+            return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED);
+        }
+
+
+        char[] characters = LoginTo.getConfigReader().getString(ConfigKeys.SETTINGS_PASSWORD_REQUIREDCHARACTERS).toCharArray();
+        if (characters.length > 0 && !SecurityUtils.PasswordSecurity.doesIncludeReqChars(password, characters)) {
+            HashMap<String, String> placeholders = new HashMap<>();
+            placeholders.put("%characters%", new String(characters));;
+            return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED);
+        }
+
+        int min = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_PASSWORDLENGTH_MIN);
+        int max = LoginTo.getConfigReader().getInt(ConfigKeys.SETTINGS_PASSWORD_PASSWIRDLENGTH_MAX);
+        if (!SecurityUtils.PasswordSecurity.matchesLengthRequirement(password, min, max)) {
+            HashMap<String, String> placeholders = new HashMap<>();
+            placeholders.put("%min_length%", String.valueOf(min));
+            placeholders.put("%max_length%", String.valueOf(max));
+            return Messages.formatMessage(LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDLENGTHERROR), player, placeholders);
+        }
+
+        if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PASSWORD_DECLINEONCOMMONPASSWORD)) {
+            if (SecurityUtils.PasswordSecurity.isCommon(password, LoginTo.getInstance().getDataFolder().toPath(), player.getName())) {
+                return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_PASSWORDISTOOSIMPLE);
+            }
+        }
+
+        if (LoginTo.getDatabase().databaseContainsPlayer(player.getUniqueId())) {
+            return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_ALREADYREGISTERED);
+        }
+
+        LoginTo.getDatabase().insertPlayer(player.getUniqueId(), player.getName(), password, "", false, false, false, player.getAddress().getAddress().getHostAddress());
+        PlayerStatus.setPlayerAsLogged(player);
+
+        WebHooks.sendRegisterWebhook(player.getName(), player.getUniqueId());
+
+        String hashedPassword = SecurityUtils.Hashing.hashString(password);
+        LoginTo.getFoliaLib().getScheduler().runAtEntity(player, wrappedTask2 -> {
+            EventDispatcher.callPlayerRegistrationEvent(player.getUniqueId(), hashedPassword);
+        });
+        return LoginTo.getMessageReader().getString(MessagesKeys.REGISTER_REGISTRATIONSUCCESS);
     }
 
 }
