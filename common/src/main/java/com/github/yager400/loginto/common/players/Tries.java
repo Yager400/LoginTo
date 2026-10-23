@@ -31,11 +31,14 @@ public class Tries {
             int tries1 = tries.get(playerUUID);
             tries.remove(playerUUID);
             tries.put(playerUUID, tries1 + 1);
+        } else {
+            addPlayer(playerUUID);
+            incrementTries(playerUUID);
         }
     }
 
     public static boolean isPlayerOutOfTries(UUID playerUUID, int maximumAttempts) {
-        return tries.get(playerUUID) >= maximumAttempts;
+        return tries.get(playerUUID) != null && tries.get(playerUUID) >= maximumAttempts;
     }
 
 }

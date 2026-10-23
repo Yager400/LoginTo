@@ -1,4 +1,4 @@
-config-version: "3"
+config-version: "4"
 
 datastore:
   # Database type, use one of this: SQLITE, MYSQL
@@ -98,3 +98,14 @@ settings:
   # If you are having problems with this, or you already have the packetevents
    # plugin installed, turn this off
   use-built-in-packetevents: true
+  # If this feature is enabled, LoginTo will use the dialogs instead of the
+   # classic commands when possible.
+  # LoginTo will usually use dialogs when the user that is joining has a client
+   # with a version higher than 1.21.5
+  # If this feature is enabled, a new file called "dialogs.yml" will be generated
+    # in the plugin's folder
+  # Warning: This feature is experimental, try it only if you wanna see how it
+   # behaves on your server or want to see what it does, but for a public server,
+   # disable this.
+  # If this feature is changed, a server restart is required
+  use-dialogs-when-possible: false

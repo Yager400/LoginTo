@@ -15,6 +15,7 @@ import com.github.yager400.loginto.bukkit.events.*;
 import com.github.yager400.loginto.bukkit.events.premium.AuthPacketEventListener;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
+import com.github.yager400.loginto.bukkit.playerutils.DialogsHandler;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.database.connectors.MySQLConnector;
 import com.github.yager400.loginto.common.data.database.connectors.SQLiteConnector;
@@ -225,6 +226,7 @@ public class PluginSetup {
                     LoginTo.getInstance().getLogger().warning("No floodgate detected! If a bedrock player joins the server, they will be kicked.");
                 }
             }
+            eventManager.registerListener(new DialogsHandler());
         }
     }
 

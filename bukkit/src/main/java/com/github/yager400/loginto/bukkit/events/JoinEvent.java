@@ -7,10 +7,13 @@ See the LICENSE file for details.
  */
 package com.github.yager400.loginto.bukkit.events;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.protocol.player.ClientVersion;
 import com.github.yager400.loginto.api.events.PlayerAutoLoginEvent;
 import com.github.yager400.loginto.bukkit.LoginTo;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.bukkit.fileskeys.MessagesKeys;
+import com.github.yager400.loginto.bukkit.playerutils.DialogsHandler;
 import com.github.yager400.loginto.bukkit.playerutils.Messages;
 import com.github.yager400.loginto.bukkit.playerutils.PlayerStatus;
 import com.github.yager400.loginto.common.api.EventDispatcher;
@@ -42,35 +45,43 @@ public class JoinEvent implements Listener {
 
         PlayerStatus.setPlayerAsNotLogged(event.getPlayer());
 
-        if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED)) {
-            AuthenticatedPlayer authenticatedPlayer = PlayerProtocolUtils.getAuthenticatedPlayer(event.getPlayer().getUniqueId());
+        LoginTo.getFoliaLib().getScheduler().runAsync(wrappedTask -> {
+            if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_PREMIUM_ENABLED)) {
+                AuthenticatedPlayer authenticatedPlayer = PlayerProtocolUtils.getAuthenticatedPlayer(event.getPlayer().getUniqueId());
 
-            if (authenticatedPlayer == null) {
-                LoginTo.getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), wrappedTask -> {
-                    event.getPlayer().kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_SKIPPEDAUTHENTICATION), event.getPlayer(), null));
-                });
-                return;
+                if (authenticatedPlayer == null) {
+                    LoginTo.getFoliaLib().getScheduler().runAtEntity(event.getPlayer(), wrappedTask2 -> {
+                        event.getPlayer().kickPlayer(Messages.getLegacyFormattedMessage(LoginTo.getMessageReader().getString(MessagesKeys.PREMIUM_SKIPPEDAUTHENTICATION), event.getPlayer(), null));
+                    });
+                    return;
+                }
+
+                if (authenticatedPlayer.isBedrock) {
+                    Authentications.bedrockAuthentication(event.getPlayer());
+                    return;
+                }
+                if (authenticatedPlayer.isPremium) {
+                    Authentications.premiumAuthentication(event.getPlayer(), authenticatedPlayer);
+                    return;
+                }
             }
 
-            if (authenticatedPlayer.isBedrock) {
-                Authentications.bedrockAuthentication(event.getPlayer());
-                return;
+            if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
+                if (LoginTo.getDatabase().databaseContainsPlayer(event.getPlayer().getUniqueId()) && !LoginTo.getDatabase().isSessionEndedOrInvalid(event.getPlayer().getUniqueId(), event.getPlayer().getAddress().getAddress().getHostAddress())) {
+                    PlayerStatus.setPlayerAsLogged(event.getPlayer());
+                    Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.SESSIONS_LOGGEDINWITHSESSION), event.getPlayer(), null);
+                    return;
+                }
             }
-            if (authenticatedPlayer.isPremium) {
-                Authentications.premiumAuthentication(event.getPlayer(), authenticatedPlayer);
-                return;
-            }
-        }
 
-        if (LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_SESSIONS_ENABLED)) {
-            if (LoginTo.getDatabase().databaseContainsPlayer(event.getPlayer().getUniqueId()) && !LoginTo.getDatabase().isSessionEndedOrInvalid(event.getPlayer().getUniqueId(), event.getPlayer().getAddress().getAddress().getHostAddress())) {
-                PlayerStatus.setPlayerAsLogged(event.getPlayer());
-                Messages.player.sendText(LoginTo.getMessageReader().getString(MessagesKeys.SESSIONS_LOGGEDINWITHSESSION), event.getPlayer(), null);
-                return;
+            if (PacketEvents.getAPI().getPlayerManager().getUser(event.getPlayer())
+                    .getClientVersion().isNewerThanOrEquals(ClientVersion.V_1_21_6) &&
+                LoginTo.getConfigReader().getBoolean(ConfigKeys.SETTINGS_USEDIALOGSWHENPOSSIBLE)) {
+                DialogsHandler.DialogUtils.sendDialog(event.getPlayer(), LoginTo.getDatabase().databaseContainsPlayer(event.getPlayer().getUniqueId()), false);
+            } else {
+                Authentications.normalOrCrackedAuthentication(event.getPlayer());
             }
-        }
-
-        Authentications.normalOrCrackedAuthentication(event.getPlayer());
+        });
     }
 
     protected static class Authentications {

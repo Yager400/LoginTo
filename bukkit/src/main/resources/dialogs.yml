@@ -1,0 +1,33 @@
+dialog-version: "1"
+
+# PLEASE READ THIS
+# This is a new experimental feature and it might contain bugs
+# If you find any problem, please report it on github, since this
+ # is an experimental feature, even security problem regarding this
+ # can be reported in the github issues here: https://github.com/Yager400/LoginTo/issues
+# Some messages are shared with the commands, for example the login
+ # error can be found in the messages.yml, so before using this feature,
+ # make sure that you have changed the messages.yml file
+
+messages:
+  buttons:
+    # The message of the send button (aka the confirm button)
+    send-password: "<green>Send"
+    # The message of the disconnect button (when the player
+     # doesn't want to authenticate)
+    disconnect: "<red>Disconnect"
+  labels:
+    # The password label
+    password: "Type here your password"
+    # The password retype label (for registration)
+    retype-password: "Retype here your password"
+  # Dialogs titles, those messages will tell the player
+   # why they are seeing this dialog
+  dialog-titles:
+    login: "<aqua>Please log in before playing"
+    register: "<aqua>Please register yourself before playing"
+  # Error or action that will kick the player
+  kick:
+    error-while-managing-dialog: "<red>There was a problem while managing your dialog response"
+    login-kick: "<red>You must log in to play on this server"
+    register-kick: "<red>You must register yourself before playing on this server"

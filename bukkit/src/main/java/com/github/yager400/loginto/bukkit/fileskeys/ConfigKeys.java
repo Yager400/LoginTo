@@ -44,7 +44,8 @@ public enum ConfigKeys implements ValueKey {
     SETTINGS_OTP_LEGACYCHANGEPASSCOMMAND            ("settings.otp.legacy-changepass-command"),
     SETTINGS_CHECKFORUPDATES                        ("settings.check-for-updates"),
     SETTINGS_SHOWWATERMARK                          ("settings.show-watermark"),
-    SETTINGS_USEBUILTINPACKETEVENTS                 ("settings.use-built-in-packetevents");
+    SETTINGS_USEBUILTINPACKETEVENTS                 ("settings.use-built-in-packetevents"),
+    SETTINGS_USEDIALOGSWHENPOSSIBLE                 ("settings.use-dialogs-when-possible");
 
     private final String s;
 

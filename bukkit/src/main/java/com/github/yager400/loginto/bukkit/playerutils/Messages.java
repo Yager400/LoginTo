@@ -35,6 +35,10 @@ public class Messages {
         }
     }
 
+    public static Component toCompForm(String message, Player player, HashMap<String, String> replacement) {
+        return mm.deserialize(formatMessage(message, player, replacement));
+    }
+
     private static String getLegacyString(Component component) {
         return LegacyComponentSerializer.legacySection().serialize(component);
     }

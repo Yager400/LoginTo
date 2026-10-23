@@ -11,3 +11,5 @@ ___
 feat: added the username column to the database (#34)
 ___
 rebase: switched from integrated folia-lib to an external api (FoliaLib)
+___
+feat: added experimental dialog support

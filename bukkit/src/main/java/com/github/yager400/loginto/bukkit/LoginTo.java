@@ -10,11 +10,13 @@ package com.github.yager400.loginto.bukkit;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.yager400.loginto.bukkit.fileskeys.ConfigKeys;
 import com.github.yager400.loginto.common.api.ApiUtils;
+import com.github.yager400.loginto.common.data.files.FilesManager;
 import com.github.yager400.loginto.common.data.files.WebhookKeys;
 import com.github.yager400.loginto.common.data.PremiumCache;
 import com.github.yager400.loginto.common.data.database.Database;
 import com.github.yager400.loginto.common.data.files.YamlReader;
 import com.github.yager400.loginto.common.bridge.DatabaseBridge;
+import com.tcoded.folialib.FoliaLib;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
@@ -24,7 +26,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 public class LoginTo extends JavaPlugin {
 
@@ -34,15 +36,16 @@ public class LoginTo extends JavaPlugin {
     public static YamlReader configReader;
     public static YamlReader messageReader;
     public static YamlReader webhookReader;
+    public static YamlReader dialogReader;
     public static BukkitAudiences adventure;
     public static DatabaseBridge databaseBridge;
-    public static com.tcoded.folialib.FoliaLib foliaLib;
+    public static FoliaLib foliaLib;
 
     @Override
     public void onLoad() {
         LoginTo.instance = this;
         LoginTo.javaPlugin = this;
-        LoginTo.foliaLib = new com.tcoded.folialib.FoliaLib(this);
+        LoginTo.foliaLib = new FoliaLib(this);
         PluginSetup.saveFiles();
 
         // Use the bukkit yaml reader, otherwise NoClassDefFoundError for SnakeYaml
@@ -54,6 +57,10 @@ public class LoginTo extends JavaPlugin {
         configReader = PluginSetup.getYamlRead(new File(getDataFolder(), "config.yml"));
         messageReader = PluginSetup.getYamlRead(new File(getDataFolder(), "messages.yml"));
         webhookReader = PluginSetup.getYamlRead(new File(getDataFolder(), "webhooks.yml"));
+        if (configReader.getBoolean(ConfigKeys.SETTINGS_USEDIALOGSWHENPOSSIBLE)) {
+            FilesManager.saveFile("dialogs.yml", Paths.get(getDataFolder().getAbsolutePath(), "dialogs.yml"), false);
+            dialogReader = PluginSetup.getYamlRead(new File(getDataFolder(), "dialogs.yml"));
+        }
 
         LoginTo.database = PluginSetup.initDatabase(configReader);
 
@@ -136,11 +143,15 @@ public class LoginTo extends JavaPlugin {
         return webhookReader;
     }
 
+    public static YamlReader getDialogReader() {
+        return dialogReader;
+    }
+
     public static DatabaseBridge getDatabaseBridge() {
         return databaseBridge;
     }
 
-    public static com.tcoded.folialib.FoliaLib getFoliaLib() {
+    public static FoliaLib getFoliaLib() {
         return foliaLib;
     }
 }
